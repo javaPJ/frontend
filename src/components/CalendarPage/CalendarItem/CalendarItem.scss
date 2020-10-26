@@ -1,0 +1,30 @@
+.calendarItem-back {
+  width: 150px;
+  height:80px;
+  border: 1px solid #707070;
+  padding: 1px;
+  float: left;
+
+  .calendarItem-day {
+    border-radius: 45px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+  }
+
+  .calendar-schedule0 {
+    margin: 2px -1px;
+    width: 132px;
+    height: 20px;
+    padding: 5px 10px;
+    background-color: #ff9c9a;
+    color: white;
+    font-size: 15px;
+  }
+
+  .calendar-more {
+    margin-top: 5px;
+    margin-left: 10px;
+    font-size: 13px;
+  }
+}
