@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../components/Header/Header';
 import ServerBar from '../components/ServerBarPage/ServerBar/ServerBar';
 import MenuBar from '../components/MenuBarPage/MenuBar/MenuBar';
+import Calendar from '../components/CalendarPage/Calendar/Calendar';
 import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/MainCreate';
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
@@ -48,6 +49,7 @@ function Schedule() {
 
   return (
     <div>
+      <Calendar menubar={menubar}></Calendar>
       <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)}></MenuBar>
       <Header title={title[0]}></Header>
       <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
