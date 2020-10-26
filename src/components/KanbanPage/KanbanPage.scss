@@ -1,0 +1,158 @@
+.kanbanpage-back {
+    position: absolute;
+    left: 0px;
+    top: 80px;
+
+    .drag-n-group {
+        height: 630px;
+        overflow: scroll;
+        display: flex;
+        padding: 0px 50px;
+
+        &::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+
+        .dnd-group {
+            background-color: #E4E4E4;
+            margin: 10px;
+            border-radius: 5px;
+            width: 300px;
+            padding: 10px;
+            float: left;
+
+            .group-title {
+                text-align: left;
+                margin-bottom: 10px;
+                font-size: 20px;
+                background-color: #343742;
+                height: 35px;
+                align-items: center;
+                display: flex;
+                padding: 10px;
+                border-radius: 5px;
+                color: white;
+
+                .title {
+                    float: left;
+                    width: 250px;
+                    cursor: pointer;
+                }
+
+                .plus, .minus {
+                    margin: 0px 5px;
+                    cursor: pointer;
+                }
+            }
+
+            .item-group {
+                width:300px;
+                max-height: 520px;
+                overflow: scroll;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .addItem-back {
+                    border-radius: 5px;
+                    width: 290px;
+                    height: auto;
+                    background-color: white;
+                    padding: 5px;
+                    margin-bottom: 10px;
+                    
+                    .addItem-textarea {
+                        resize: none;
+                        padding: 5px;
+                        width: 95%;
+                        min-height: 20px;
+                        outline: none;
+                        border: none;
+                        font-size: 20px;
+
+                        &::-webkit-scrollbar {
+                            display: none;
+                        }
+                    }
+
+                    .addItem-button {
+                        padding: 5px;
+                        height: 27px;
+                        display: end;
+
+                        .addItem-cancel {
+                            padding: 5px 12px;
+                            float: right;  
+                            margin-right: 10px;
+                            background-color: #EF233C;
+                            border: none;
+                            border-radius: 5px;
+                            color: white;
+                            outline: none;
+                        }
+
+                        .addItem-add {
+                            padding: 5px 12px;
+                            float: right;
+                            background-color: #8D99AE;
+                            border: none;
+                            border-radius: 5px;
+                            color: white;
+                            outline: none;
+                        }
+                    }
+                }
+
+                .dnd-item {
+                    width: 250px;
+                    display: flex;
+                    padding: 1.5rem;
+                    align-items: center;
+                    background-color: white;
+                    color: black;
+                    min-height: 20px;
+                    border-radius: 5px;
+    
+                    &:not(:last-of-type) {
+                        margin-bottom: .5rem;
+                    }
+    
+                    * {
+                        margin: 0;
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+        }
+
+        .new-group {
+            background-color: #E4E4E4;
+            margin: 10px;
+            border-radius: 5px;
+            width: 300px;
+            padding: 10px;
+            float: left;
+
+            .new-title {
+                text-align: left;
+                margin-bottom: 10px;
+                font-size: 20px;
+                background-color: #8D99AE;
+                height: 35px;
+                align-items: center;
+                display: flex;
+                padding: 10px;
+                border-radius: 5px;
+                color: white;
+                cursor: pointer;
+            }
+
+            .newItem-group {
+                width:300px;
+                max-height: 520px;
+            }
+        }
+    }
+}
