@@ -1,0 +1,39 @@
+.serverjoin-back {
+  -ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none;
+  text-align: center;
+
+  .back-button {
+    text-align: justify;
+    width: 15px;
+    cursor: pointer;
+  }
+
+  .serverjoin-img {
+    height: 150px;
+    width: auto;
+  }
+
+  .pin-input {
+    width: 350px;
+    height: 35px;
+    border: 1px solid black;
+    outline: none;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 7px;
+    margin-top: 60px;
+  }
+
+  .team-join {
+    width: 250px;
+    height: 50px;
+    color: white;
+    background-color: #8D99AE;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    margin-top: 30px;
+    cursor: pointer;
+  }
+}
