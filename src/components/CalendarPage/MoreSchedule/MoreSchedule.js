@@ -38,7 +38,7 @@ const MoreSchedule = ({check, year, month, day, moreCancel, scheduleView}) => {
         <div className={cx('moreschedule-content-header')}>내용</div>
         <div className={cx('moreschedule-plus')}><AiOutlinePlus color="#343742" size="25"></AiOutlinePlus></div>
         <div className={cx('moreschedule-schedule')}>
-          {moreSchedule}
+            { check.length !== 0 && moreSchedule }
         </div>
       </div>
     </div>

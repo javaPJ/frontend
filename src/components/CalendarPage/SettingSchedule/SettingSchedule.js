@@ -82,7 +82,7 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
         } else {
           members.splice(parseInt(memberId)-1, 1, {key: parseInt(memberId), name: memberName, check: !thisCheck});
   
-          for(var i = 0; i < thisMember.length; i++) {
+          for(i = 0; i < thisMember.length; i++) {
             if(thisMember[i]['name'] === memberName) {
               thisMember.splice(i, 1);
             }
@@ -125,14 +125,14 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
 
         const thisCheck = tasks[(parseInt(taskId))-1].check;
 
-        if(thisCheck == false) {
+        if(thisCheck === false) {
           tasks.splice(parseInt(taskId)-1, 1, {key: parseInt(taskId), name: taskName, check: !thisCheck});
 
           thisTask.push({key: parseInt(taskId), name: taskName});
         } else {
           tasks.splice(parseInt(taskId)-1, 1, {key: parseInt(taskId), name: taskName, check: !thisCheck});
 
-          for(var i = 0; i < thisTask.length; i++) {
+          for(i = 0; i < thisTask.length; i++) {
             if(thisTask[i]['name'] === taskName) {
               thisTask.splice(i, 1);
             }

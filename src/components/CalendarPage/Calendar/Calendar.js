@@ -14,7 +14,6 @@ const Calendar = ({menubar}) => {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth()+1);
   const [lists, setLists] = useState([]);
-  const [onload, setOnload] = useState(false);
   const [thisYear, setThisYear] = useState('');
   const [thisMonth, setThisMonth] = useState('');
   const [thisDay, setThisDay] = useState('');
@@ -140,7 +139,6 @@ const Calendar = ({menubar}) => {
   }
 
   const thisDayClick = (e) => {
-    alert("dayClick");
     setMore(true);
     setScheduleVisible(false);
     setThisYear(parseInt((e.target.id).split(',')[0]))
@@ -153,6 +151,7 @@ const Calendar = ({menubar}) => {
     setScheduleVisible(true);
     setTitle(e.target.innerText);
   }
+  
 
   let size = menubar ? "120px" : "0px";
 
@@ -179,7 +178,14 @@ const Calendar = ({menubar}) => {
         </div>
       </div>
       { more === true &&
-        <MoreSchedule year={thisYear} month={thisMonth} day={thisDay} moreCancel={() => {setMore(false); alert("cancelDay")}} scheduleView={scheduleView} check={lists[lists.findIndex(checkThisDay)].schedule} />
+        <MoreSchedule 
+          year={thisYear} 
+          month={thisMonth} 
+          day={thisDay} 
+          moreCancel={(e) => {e.preventDefault(); setMore(false);}} 
+          scheduleView={scheduleView} 
+          check={lists[lists.findIndex(checkThisDay)].schedule} 
+        />
       }
       { scheduleVisible === true &&
         <SettingSchedule textTitle={title} settingCancel={() => setScheduleVisible(false)}></SettingSchedule>
