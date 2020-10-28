@@ -1,12 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
 import styles from './../KanbanPage.scss';
-import SettingSchedule from './../../CalendarPage/SettingSchedule/SettingSchedule';
+import SettingSchedule from '../../SettingSchedule/SettingSchedule';
 import classNames from 'classnames/bind';
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, handleGroupChange}) => {
+const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, handleGroupChange, handleDeleteTitle}) => {
     const [list, setList] = useState([]),
           [dragging, setDragging] = useState(false),
           [addItemGroup, setAddItemGroup] = useState(-1),
@@ -15,6 +15,8 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
           [newTitleCreate, setNewTitleCreate] = useState(false),
           [viewSchedule, setViewSchedule] = useState(false),
           [scheduleTitle, setScheduleTitle] = useState(''),
+          [rightClick, setRightClick] = useState([]),
+          [rightOption, setRightOption] = useState(''),
           [height, setHeight] = useState('20px');
 
     const dragItem = useRef();
@@ -77,6 +79,28 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
         setHeight(sTextarea.style.height);
     }
 
+    const handleRightClick = (e, num1, num2) => {
+        e.preventDefault();
+        
+        var btn = e.button;
+        if (btn === 2) {
+            if(data[num1].items.length === 1) {
+                setRightOption("-30px");
+            } else {
+                if((data[num1].items.length)/2 < num2+1 ){
+                    setRightOption("-155px");
+                } else {
+                    setRightOption("-30px");
+                }
+            }
+            setViewSchedule(false);
+            setRightClick([num1, num2]);
+            setTimeout(() => {
+            setRightClick([])
+            }, 2000)
+        }
+      }
+
     return (
         <>
             <div className={cx('drag-n-group')}>
@@ -92,8 +116,13 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
                                 :
                                 <div className={cx('title')} onClick={(e) => {e.preventDefault();setTitleChange(grpI);}}>{grp.title}</div>
                             }
-                            <div className={cx('plus')} onClick={(e) => handleAddItem(grpI)}><AiOutlinePlus></AiOutlinePlus></div>
-                            <div className={cx('minus')} onClick={(e) => {handleDeleteGroup(grpI); setDeleteClick(true); setAddItemGroup(-1);}}><AiOutlineMinus></AiOutlineMinus></div>
+                            <div className={cx('plus')} onClick={(e) => {handleAddItem(grpI);setRightClick([]);}}><AiOutlinePlus></AiOutlinePlus></div>
+                            <div 
+                                className={cx('minus')} 
+                                onClick={(e) => {handleDeleteGroup(grpI); setDeleteClick(true); setAddItemGroup(-1);}}
+                            >
+                                <AiOutlineMinus></AiOutlineMinus>
+                            </div>
                         </div>
                         <div className={cx('item-group')}>
                             { grpI === addItemGroup &&
@@ -113,16 +142,26 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
                                 </div>
                             }
                             {grp.items.map((item, itemI) => (
-                                <div 
-                                    draggable 
-                                    onDragStart={(e) => {handleDragStart(e, {grpI, itemI})}} 
-                                    onDragEnter={dragging ?(e) => {handleDragEnter(e, {grpI, itemI})} : null}
-                                    key={item} 
-                                    className={cx('dnd-item')}
-                                    style={getStyles({grpI, itemI})}
-                                    onClick={() => {setViewSchedule(true);setScheduleTitle(item)}}
-                                >
-                                    {item}
+                                <div style={{height: "80px"}}>
+                                    <div 
+                                        draggable 
+                                        onDragStart={(e) => {handleDragStart(e, {grpI, itemI})}} 
+                                        onDragEnter={dragging ?(e) => {handleDragEnter(e, {grpI, itemI})} : null}
+                                        key={item} 
+                                        className={cx('dnd-item')}
+                                        style={getStyles({grpI, itemI})}
+                                        onClick={() => {setViewSchedule(true);setScheduleTitle(item)}}
+                                        onContextMenu={(e) => handleRightClick(e, grpI, itemI)}
+                                    >
+                                        {item}
+                                    </div>
+                                    { (rightClick[0] === grpI && rightClick[1] === itemI) &&
+                                        <div style={{top: rightOption}} className={cx('dnd-item-delete')}>
+                                            <li>맨 위로 이동</li>
+                                            <li>맨 아래로 이동</li>
+                                            <li onClick={(e) => {handleDeleteTitle(grpI, itemI); setRightClick([])}}>삭제</li>
+                                        </div>
+                                    }
                                 </div>
                             ))}
                         </div>

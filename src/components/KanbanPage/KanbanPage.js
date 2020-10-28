@@ -13,9 +13,15 @@ const KanbanPage = ({menubar}) => {
           [titleAdd, setTitleAdd] = useState(-1),
           [groupChange, setGroupChange] = useState(''),
           [groupChangeNum, setGroupChangeNum] = useState(-1),
-          [newGroup, setNewGroup] = useState('');
+          [newGroup, setNewGroup] = useState(''),
+          [deleteTitle, setDeleteTitle] = useState(-1);
 
     useEffect(() => {
+
+        if(deleteTitle !== -1) {
+            data.splice(deleteTitle, 1, {key: deleteTitle+1, title: groupName, items: groupItem});
+            setDeleteTitle(-1);
+        }
 
         if(newGroup !== '') {
             data.push({key: data.length+1, title: newGroup, items: []});
@@ -53,7 +59,7 @@ const KanbanPage = ({menubar}) => {
             setGroupDelete(-2);
             return ;
         }
-    }, [groupDelete, titleAdd, groupChangeNum, newGroup]);
+    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle]);
 
     const handleDeleteGroup = (num) => {
         setGroupDelete(num);
@@ -78,6 +84,14 @@ const KanbanPage = ({menubar}) => {
         setTitleAdd(num);
     }
 
+    const handleDeleteTitle = (num1, num2) => {
+        setGroupName(data[num1].title);
+        var array = data[num1].items;
+        array.splice(num2, 1);
+        setGroupItem(array);
+        setDeleteTitle(num1);
+    }
+
     let  backLeft = menubar? "250px" : "60px";
     let size = menubar ? "1270px" : "1470px";
 
@@ -89,6 +103,7 @@ const KanbanPage = ({menubar}) => {
                 handleAddGroup={handleAddGroup}
                 handleAddTitle={handleAddTitle}
                 handleGroupChange={handleGroupChange}
+                handleDeleteTitle={handleDeleteTitle}
             >
             </DragNDrop>
         </div>
