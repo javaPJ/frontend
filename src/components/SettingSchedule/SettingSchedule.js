@@ -7,36 +7,37 @@ import { AiOutlineClose, AiOutlineDelete, AiOutlinePlus, AiOutlineMinus } from "
 const cx = classNames.bind(styles);
 
 const SettingSchedule = ({textTitle, settingCancel}) => {
-  const [title, setTitle] = useState('');
-  const [writer, setWriter] = useState('nickname');
+  const [title, setTitle] = useState(textTitle),
+        [writer, setWriter] = useState('nickname');
 
   var today = new Date();
 
-  const [year, setYear] = useState(today.getFullYear());
-  const [month, setMonth] = useState(today.getMonth()+1);
-  const [day, setDay] = useState(today.getDate());
+  const [year, setYear] = useState(today.getFullYear()),
+        [month, setMonth] = useState(today.getMonth()+1),
+        [day, setDay] = useState(today.getDate());
 
-  const [content, setContent] = useState('');
-  const [startDay, setStartDay] = useState('');
-  const [endDay, setEndDay] = useState('');
+  const [content, setContent] = useState(''),
+        [startDay, setStartDay] = useState(''),
+        [endDay, setEndDay] = useState('');
 
-  const [members, setMembers] = useState([]);
-  const [memberTarget, setMemberTarget] = useState([]);
-  const [memberCheck, setMemberCheck] = useState(false);
-  const [thisMember, setThisMember] = useState([]);
+  const [members, setMembers] = useState([]),
+        [memberTarget, setMemberTarget] = useState([]),
+        [memberCheck, setMemberCheck] = useState(false),
+        [thisMember, setThisMember] = useState([]);
 
-  const [tasks, setTasks] = useState([]);
-  const [taskTarget, setTaskTarget] = useState([]);
-  const [taskCheck, setTaskCheck] = useState(false);
-  const [thisTask, setThisTask] = useState([]);
+  const [tasks, setTasks] = useState([]),
+        [taskTarget, setTaskTarget] = useState([]),
+        [taskCheck, setTaskCheck] = useState(false),
+        [thisTask, setThisTask] = useState([]);
 
-  const [labels, setLabels] = useState(['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D']);
-  const [thisLabel, setThisLabel] = useState('');
+  const [labels, setLabels] = useState(['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D']),
+        [thisLabel, setThisLabel] = useState('');
 
   const [height, setHeight] = useState('20px');
 
+  const [titleChange, setTitleChange] = useState(false);
+
   useEffect(() => {
-    setTitle(textTitle);
     setMembers([]);
     setTasks([]);
 
@@ -194,7 +195,10 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
     label => {
       let borderColor = (thisLabel === label) ? "#43454D" : label;
       return(
-        <div className={cx('settingschedule-labelCircle')} style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} onClick={(e) => setThisLabel(label)}>#</div>  
+        <div 
+        className={cx('settingschedule-labelCircle')} 
+        style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
+        onClick={(e) => {if(thisLabel === label){setThisLabel('')}else{setThisLabel(label)}}}>#</div>  
       )
     }
   )
@@ -206,7 +210,11 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
           <div className={cx('settingschedule-deleteIcon')}><AiOutlineDelete size="25"></AiOutlineDelete></div>
           <div className={cx('settingschedule-closeIcon')}><AiOutlineClose onClick={settingCancel} size="25"></AiOutlineClose></div>
         </div>
-        <div className={cx('settingschedule-title')}>{title}</div>
+        { titleChange === false ?
+          <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)}>{title}</div>
+          :
+          <input className={cx('settingschedule-title-input')} onKeyDown={(e) => {if(e.keyCode === 13){setTitle(e.target.value); setTitleChange(false);}}}/>
+        }
         <div className={cx('settingschedule-writer-impormation')}>
           <div className={cx('settingschedule-writer')}>작성자 {writer}</div>
           <div className={cx('settingschedule-writeday')}>작성일 {year}-{month}-{day}</div>
