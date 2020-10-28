@@ -135,6 +135,7 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
                         <input 
                             className={cx('new-title-input')} 
                             onKeyDown={(e) => {if(e.keyCode === 13){setNewTitleCreate(false);handleAddGroup(e.target.value);}}}
+                            placeholder="그룹 이름을 지정해주세요"
                         />
                     }
                     <div className={cx('newItem-group')}></div>

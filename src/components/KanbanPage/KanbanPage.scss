@@ -180,6 +180,10 @@
                 border: none;
                 width: 300px;
                 cursor: text;
+
+                &::placeholder {
+                    color: white;
+                }
             }
 
             .newItem-group {
