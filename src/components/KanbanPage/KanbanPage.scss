@@ -151,33 +151,20 @@
                     }
                 }
 
-                .label-color {
-                    width: 10px;
-                    background-color: red;
-                    color: red;
-                    font-size: 1px;
-                    display: inline-block;
-                    height: 70px;
-                    border-radius: 5px 0px 0px 5px;
-                    position: relative;
-                    top: -25px;
-                    left: -25px;
-                }
+               
 
                 .dnd-item {
-                    width: 250px;
-                    display: inline-block;
-                    padding: 24px;
-                    align-items: center;
+                    width: 298px;
+                    // display: inline-block;
+                    // align-items: center;
                     background-color: white;
                     color: black;
-                    min-height: 20px;
                     border-radius: 5px;
                     overflow:hidden; 
                     text-overflow:ellipsis; 
                     white-space:nowrap;
-                    height: 21px;
-
+                    height: 69px;
+                    position: relative;
     
                     &:not(:last-of-type) {
                         margin-bottom: .5rem;
@@ -187,9 +174,21 @@
                         margin: 0;
                         font-size: 1.2rem;
                     }
-                }
 
-                
+                    .label-color {
+                        width: 10px;
+                        font-size: 1px;
+                        height: 70px;
+                        border-radius: 5px 0px 0px 5px;
+                        float: left;
+                    }
+
+                    .dnd-item-text {
+                        position: absolute;
+                        left: 25px;
+                        top: 20px;
+                    }
+                }
             }
         }
 

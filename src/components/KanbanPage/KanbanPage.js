@@ -22,10 +22,16 @@ const KanbanPage = ({menubar}) => {
           [itemI, setItemI] = useState(-1),
           [move, setMove] = useState(-1),
           [deleteTitle, setDeleteTitle] = useState(-1),
+          [changeTitle, setChangeTitle] = useState(-1),
           dragItem = useRef(),
           dragNode = useRef();
 
     useEffect(() => {
+
+        if(changeTitle !== -1) {
+            data.splice(changeTitle, 1, {key: changeTitle+1, title: groupName, items: groupItem});
+            setChangeTitle(-1);
+        }
 
         if(move !== -1) {
             data.splice(move, 1, {key: move + 1, title: groupName, items: groupItem});
@@ -73,7 +79,7 @@ const KanbanPage = ({menubar}) => {
             setGroupDelete(-2);
             return ;
         }
-    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move]);
+    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move, changeTitle]);
 
     const handleDeleteGroup = (num) => {
         setGroupDelete(num);
@@ -185,6 +191,15 @@ const KanbanPage = ({menubar}) => {
         }
     }
 
+    const handleChangeTitle = (e, num1, num2) => {
+        var changetitle = e.target.value;
+        setGroupName(data[num1].title);
+        var array = data[num1].items;
+        array[num2] = changetitle;
+        setGroupItem(array);
+        setChangeTitle(num1);
+    }
+
     let  backLeft = menubar? "250px" : "60px";
     let size = menubar ? "1270px" : "1470px";
 
@@ -202,6 +217,7 @@ const KanbanPage = ({menubar}) => {
                 handleGroupChange={handleGroupChange}
                 handleDeleteTitle={handleDeleteTitle}
                 handleRightClick={handleRightClick}
+                handleChangeTitle={handleChangeTitle}
             >
             </DragNDrop>
             {  rightClick === true &&

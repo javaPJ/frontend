@@ -6,20 +6,35 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const DragNDrop = ({data, handleDragStart, handleDragEnter, dragging, getStyles, handleDeleteGroup, handleAddGroup, handleAddTitle, handleGroupChange, handleDeleteTitle, handleRightClick}) => {
+const DragNDrop = ({
+        data, 
+        handleDragStart, 
+        handleDragEnter, 
+        dragging, getStyles, 
+        handleDeleteGroup, 
+        handleAddGroup, 
+        handleAddTitle, 
+        handleGroupChange, 
+        handleRightClick, 
+        handleChangeTitle
+    }) => {
     const [list, setList] = useState([]),
           [addItemGroup, setAddItemGroup] = useState(-1),
           [deleteClick, setDeleteClick] = useState(false),
           [titleChange, setTitleChange] = useState(-1),
           [newTitleCreate, setNewTitleCreate] = useState(false),
-          [viewSchedule, setViewSchedule] = useState(false),
+          [viewSchedule, setViewSchedule] = useState([false, -1, -1]),
           [scheduleTitle, setScheduleTitle] = useState(''),
-          [height, setHeight] = useState('20px');
+          [height, setHeight] = useState('20px'),
+          labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'],
+          [thisLabel, setThisLabel] = useState(''),
+          [labelArray, setLabelArray] = useState([]);
 
-    
 
     useEffect(() => {
         setList(data);
+ 
+
     }, [data, deleteClick]);
 
     const handleAddItem = (num) => {
@@ -31,6 +46,26 @@ const DragNDrop = ({data, handleDragStart, handleDragEnter, dragging, getStyles,
         sTextarea.style.height = "1px";
         sTextarea.style.height = sTextarea.scrollHeight + "px";
         setHeight(sTextarea.style.height);
+    }
+
+    const handleLabelcolor = (label, num1, num2) => {
+        if(label === thisLabel) {
+            setThisLabel('');
+            for(var index = 0; index < labelArray.length; index++) {
+                if(labelArray[index].first === num1 && labelArray[index].second === num2) {
+                    labelArray.splice(index, 1);
+                }
+            }
+        } else {
+            setThisLabel(label);
+            labelArray.push({first: num1, second: num2, color: label});
+
+            for(var index = 0; index < labelArray.length; index++) {
+                if(labelArray[index].first === num1 && labelArray[index].second === num2 && labelArray[index].color !== label) {
+                    labelArray.splice(index, 1);
+                } 
+            }
+        }
     }
 
     return (
@@ -82,11 +117,14 @@ const DragNDrop = ({data, handleDragStart, handleDragEnter, dragging, getStyles,
                                         key={item} 
                                         className={cx('dnd-item')}
                                         style={getStyles({grpI, itemI})}
-                                        onClick={() => {setViewSchedule(true);setScheduleTitle(item)}}
+                                        onClick={() => {setViewSchedule([true, grpI, itemI]);setScheduleTitle(item)}}
                                         onContextMenu={(e) => handleRightClick(e, grpI, itemI)}
                                     >
-                                        <div className={cx('label-color')}>.</div>
-                                        {item}
+                                        { labelArray.map((labelColor) => (
+                                            (labelColor.first === grpI && labelColor.second === itemI) &&
+                                            <div style={{color: labelColor.color, backgroundColor: labelColor.color}} className={cx('label-color')}>.</div>
+                                         ))}
+                                        <div className={cx('dnd-item-text')}>{item}</div>
                                     </div>
                                 </div>
                             ))}
@@ -106,9 +144,18 @@ const DragNDrop = ({data, handleDragStart, handleDragEnter, dragging, getStyles,
                     <div className={cx('newItem-group')}></div>
                 </div>
             </div>
-            { viewSchedule === true &&
+            { viewSchedule[0] === true &&
                 <div style={{position: "absolute", top: '-80px', right: "-5px"}}>
-                    <SettingSchedule textTitle={scheduleTitle} settingCancel={() => setViewSchedule(false)}></SettingSchedule>
+                    <SettingSchedule 
+                        textTitle={scheduleTitle} 
+                        handleChangeTitle={handleChangeTitle} 
+                        groupN={viewSchedule[1]} 
+                        itemN={viewSchedule[2]} 
+                        settingCancel={() => {setViewSchedule([]);setThisLabel('')}}
+                        labels={labels}
+                        thisLabel={thisLabel}
+                        handleLabelcolor={handleLabelcolor}
+                    ></SettingSchedule>
                 </div>
             }
         </>
