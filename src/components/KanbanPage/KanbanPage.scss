@@ -3,6 +3,41 @@
     left: 0px;
     top: 80px;
 
+    .dnd-item-delete {
+        position: absolute;
+        list-style: none;
+        width: 139px;
+        height: 129px;
+        background-color: white;
+        color: #343742;
+        border: 1px solid #343742;
+        border-radius: 7px;
+        box-shadow: 0px 0px 10px 0px #8D99AE;
+
+        li{
+            padding: 5px 10px;
+            cursor: pointer;
+
+            &:first-child {
+                border-radius: 7px 7px 0px 0px;
+            }
+            &:last-child {
+                border-radius: 0px 0px 7px 7px;
+            }
+            &:not(:last-of-type) {
+                border-bottom: 1px solid #343742;
+            }
+            &:hover:nth-child(-n+3){
+                background-color: #8D99AE;
+                color: white;
+            }
+            &:hover:nth-child(n+3):nth-child(-n+4) {
+                background-color: #EF233C;
+                color: white;
+            }
+        }
+    }
+
     .drag-n-group {
         height: 630px;
         overflow: scroll;
@@ -116,6 +151,19 @@
                     }
                 }
 
+                .label-color {
+                    width: 10px;
+                    background-color: red;
+                    color: red;
+                    font-size: 1px;
+                    display: inline-block;
+                    height: 70px;
+                    border-radius: 5px 0px 0px 5px;
+                    position: relative;
+                    top: -25px;
+                    left: -25px;
+                }
+
                 .dnd-item {
                     width: 250px;
                     display: inline-block;
@@ -141,42 +189,7 @@
                     }
                 }
 
-                .dnd-item-delete {
-                    position: relative;
-                    list-style: none;
-                    width: 140px;
-                    height: 96px;
-                    background-color: white;
-                    top: -30px;
-                    left: 20px;
-                    color: #343742;
-                    border: 1px solid #343742;
-                    border-radius: 7px;
-                    box-shadow: 0px 0px 10px 0px #8D99AE;
-
-                    li{
-                        padding: 5px 10px;
-                        cursor: pointer;
-
-                        &:first-child {
-                            border-radius: 7px 7px 0px 0px;
-                        }
-                        &:last-child {
-                            border-radius: 0px 0px 7px 7px;
-                        }
-                        &:not(:last-of-type) {
-                            border-bottom: 1px solid #343742;
-                        }
-                        &:hover:not(:last-of-type){
-                            background-color: #8D99AE;
-                            color: white;
-                        }
-                        &:hover:last-child {
-                            background-color: #EF233C;
-                            color: white;
-                        }
-                    }
-                }
+                
             }
         }
 

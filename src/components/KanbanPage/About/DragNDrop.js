@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from './../KanbanPage.scss';
 import SettingSchedule from '../../SettingSchedule/SettingSchedule';
 import classNames from 'classnames/bind';
@@ -6,70 +6,24 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, handleGroupChange, handleDeleteTitle}) => {
+const DragNDrop = ({data, handleDragStart, handleDragEnter, dragging, getStyles, handleDeleteGroup, handleAddGroup, handleAddTitle, handleGroupChange, handleDeleteTitle, handleRightClick}) => {
     const [list, setList] = useState([]),
-          [dragging, setDragging] = useState(false),
           [addItemGroup, setAddItemGroup] = useState(-1),
           [deleteClick, setDeleteClick] = useState(false),
           [titleChange, setTitleChange] = useState(-1),
           [newTitleCreate, setNewTitleCreate] = useState(false),
           [viewSchedule, setViewSchedule] = useState(false),
           [scheduleTitle, setScheduleTitle] = useState(''),
-          [rightClick, setRightClick] = useState([]),
-          [rightOption, setRightOption] = useState(''),
           [height, setHeight] = useState('20px');
 
-    const dragItem = useRef();
-    const dragNode = useRef();
+    
 
     useEffect(() => {
         setList(data);
     }, [data, deleteClick]);
 
-    const handleDragStart = (e, params) => {
-        dragItem.current = params;
-        dragNode.current = e.target;
-        dragNode.current.addEventListener('dragend', handleDragEnd);
-        setTimeout(() => {
-            setDragging(true);
-        }, 0);
-    }
-
-    const handleDragEnter = (e, params) => {
-        const currentItem =dragItem.current;
-        if(e.target !== dragNode.current) {
-            setList(oldList => {
-                let newList = JSON.parse(JSON.stringify(oldList));
-                newList[params.grpI].items.splice(params.itemI, 0, newList[currentItem.grpI].items.splice(currentItem.itemI,1)[0]);
-                dragItem.current = params;
-                return newList
-            })
-        }
-    }
-
-    const handleDragEnd = () => {
-        setDragging(false);
-        dragNode.current.removeEventListener('dragend', handleDragEnd);
-        dragItem.current = null;
-        dragNode.current = null;
-    }
-
     const handleAddItem = (num) => {
         setAddItemGroup(num);
-    }
-
-    const current = {
-        background: "#E4E4E4",
-        color: "#E4E4E4"
-    }
-
-    const getStyles = (params) => {
-        if(dragging){
-            const currentItem = dragItem.current;
-            if(currentItem.grpI === params.grpI && currentItem.itemI === params.itemI) {
-                return current;
-            }
-        }
     }
 
     const ySize = () => {
@@ -78,28 +32,6 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
         sTextarea.style.height = sTextarea.scrollHeight + "px";
         setHeight(sTextarea.style.height);
     }
-
-    const handleRightClick = (e, num1, num2) => {
-        e.preventDefault();
-        
-        var btn = e.button;
-        if (btn === 2) {
-            if(data[num1].items.length === 1) {
-                setRightOption("-30px");
-            } else {
-                if((data[num1].items.length)/2 < num2+1 ){
-                    setRightOption("-155px");
-                } else {
-                    setRightOption("-30px");
-                }
-            }
-            setViewSchedule(false);
-            setRightClick([num1, num2]);
-            setTimeout(() => {
-            setRightClick([])
-            }, 2000)
-        }
-      }
 
     return (
         <>
@@ -116,7 +48,7 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
                                 :
                                 <div className={cx('title')} onClick={(e) => {e.preventDefault();setTitleChange(grpI);}}>{grp.title}</div>
                             }
-                            <div className={cx('plus')} onClick={(e) => {handleAddItem(grpI);setRightClick([]);}}><AiOutlinePlus></AiOutlinePlus></div>
+                            <div className={cx('plus')} onClick={(e) => {handleAddItem(grpI)}}><AiOutlinePlus></AiOutlinePlus></div>
                             <div 
                                 className={cx('minus')} 
                                 onClick={(e) => {handleDeleteGroup(grpI); setDeleteClick(true); setAddItemGroup(-1);}}
@@ -153,15 +85,9 @@ const DragNDrop = ({data, handleDeleteGroup, handleAddGroup, handleAddTitle, han
                                         onClick={() => {setViewSchedule(true);setScheduleTitle(item)}}
                                         onContextMenu={(e) => handleRightClick(e, grpI, itemI)}
                                     >
+                                        <div className={cx('label-color')}>.</div>
                                         {item}
                                     </div>
-                                    { (rightClick[0] === grpI && rightClick[1] === itemI) &&
-                                        <div style={{top: rightOption}} className={cx('dnd-item-delete')}>
-                                            <li>맨 위로 이동</li>
-                                            <li>맨 아래로 이동</li>
-                                            <li onClick={(e) => {handleDeleteTitle(grpI, itemI); setRightClick([])}}>삭제</li>
-                                        </div>
-                                    }
                                 </div>
                             ))}
                         </div>
