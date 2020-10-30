@@ -6,17 +6,25 @@ import { AiOutlineClose, AiOutlineDelete, AiOutlinePlus, AiOutlineMinus } from "
 
 const cx = classNames.bind(styles);
 
-const SettingSchedule = ({textTitle, settingCancel, handleChangeTitle, groupN, itemN, labels, thisLabel, handleLabelcolor}) => {
+const SettingSchedule = ({
+    textTitle, 
+    settingCancel, 
+    handleChangeTitle, 
+    groupN, 
+    itemN, 
+    labels, 
+    thisLabel, 
+    handleLabelcolor, 
+    handleSettingDelete, 
+    noneVisibleSchedule
+  }) => {
   const [title, setTitle] = useState(textTitle),
         [writer, setWriter] = useState('nickname');
 
-  var today = new Date();
-
-  const [year, setYear] = useState(today.getFullYear()),
-        [month, setMonth] = useState(today.getMonth()+1),
-        [day, setDay] = useState(today.getDate());
-
   const [content, setContent] = useState(''),
+        [year, setYear] = useState('2020'),
+        [month, setMonth] = useState('10'),
+        [day, setDay] = useState('9'),
         [startDay, setStartDay] = useState(''),
         [endDay, setEndDay] = useState('');
 
@@ -195,7 +203,7 @@ const SettingSchedule = ({textTitle, settingCancel, handleChangeTitle, groupN, i
         <div 
           className={cx('settingschedule-labelCircle')} 
           style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
-          onClick={(e) => {handleLabelcolor(label, groupN, itemN)}}
+          onClick={(e) => handleLabelcolor(label, groupN, itemN)}
         >
           .
         </div>  
@@ -219,8 +227,8 @@ const SettingSchedule = ({textTitle, settingCancel, handleChangeTitle, groupN, i
     <div className={cx('settingschedule-back')}>
       <div className={cx('settingschedule-header')}>
         <div className={cx('settingschedule-icon')}>
-          <div className={cx('settingschedule-deleteIcon')}><AiOutlineDelete size="25"></AiOutlineDelete></div>
-          <div className={cx('settingschedule-closeIcon')}><AiOutlineClose onClick={(e) => settingCancel()} size="25"></AiOutlineClose></div>
+          <div className={cx('settingschedule-deleteIcon')}><AiOutlineDelete onClick={() => {handleSettingDelete(groupN, itemN);noneVisibleSchedule()}} size="25"></AiOutlineDelete></div>
+          <div className={cx('settingschedule-closeIcon')}><AiOutlineClose onClick={() => settingCancel()} size="25"></AiOutlineClose></div>
         </div>
         { titleChange === false ?
           <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)}>{title}</div>
@@ -235,7 +243,15 @@ const SettingSchedule = ({textTitle, settingCancel, handleChangeTitle, groupN, i
       <div className={cx('settingschedule-content')}>
         <div className={cx('settingschedule-textDiv')}>
           <div className={cx('settingschedule-textTitle')}>내용</div>
-          <textarea className={cx('settingschedule-textInput')} style={{height: height}} id="text_content" onKeyDown={() => ySize()} onKeyUp={() => ySize()} onChange={(e) => setContent(e.target.value)} placeHolder="내용을 입력해주세요."></textarea>
+          <textarea 
+          className={cx('settingschedule-textInput')} 
+          style={{height: height}} 
+          id="text_content" 
+          onKeyDown={() => ySize()} 
+          onKeyUp={() => ySize()} 
+          onChange={(e) => setContent(e.target.value)} 
+          placeHolder="내용을 입력해주세요."
+          ></textarea>
         </div>
 
         <div className={cx('settingschedule-dayDiv')}>

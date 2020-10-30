@@ -13,11 +13,14 @@ const DragNDrop = ({
         dragging, getStyles, 
         handleDeleteGroup, 
         handleAddGroup, 
+        handleSettingDelete,
         handleAddTitle, 
         handleGroupChange, 
         handleRightClick, 
         handleChangeTitle
     }) => {
+
+
     const [list, setList] = useState([]),
           [addItemGroup, setAddItemGroup] = useState(-1),
           [deleteClick, setDeleteClick] = useState(false),
@@ -66,6 +69,11 @@ const DragNDrop = ({
                 } 
             }
         }
+    }
+
+    const settingCancel = () => {
+        setViewSchedule([]);
+        setThisLabel('');
     }
 
     return (
@@ -151,7 +159,9 @@ const DragNDrop = ({
                         handleChangeTitle={handleChangeTitle} 
                         groupN={viewSchedule[1]} 
                         itemN={viewSchedule[2]} 
-                        settingCancel={() => {setViewSchedule([]);setThisLabel('')}}
+                        handleSettingDelete={handleSettingDelete}
+                        noneVisibleSchedule={() => setViewSchedule([])}
+                        settingCancel={(changed) => {settingCancel(changed)}}
                         labels={labels}
                         thisLabel={thisLabel}
                         handleLabelcolor={handleLabelcolor}

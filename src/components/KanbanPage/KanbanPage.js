@@ -140,6 +140,15 @@ const KanbanPage = ({menubar}) => {
         setRightClick(false);
     }
 
+    const handleSettingDelete = (num1, num2) => {
+        setGroupName(data[num1].title);
+        var array = data[num1].items;
+        array.splice(num2, 1);
+        setGroupItem(array);
+        setDeleteTitle(num1);
+        setRightClick(false);
+    }
+
     const handleDeleteTitle = () => {
         setGroupName(data[grpI].title);
         var array = data[grpI].items;
@@ -215,9 +224,9 @@ const KanbanPage = ({menubar}) => {
                 handleAddGroup={handleAddGroup}
                 handleAddTitle={handleAddTitle}
                 handleGroupChange={handleGroupChange}
-                handleDeleteTitle={handleDeleteTitle}
                 handleRightClick={handleRightClick}
                 handleChangeTitle={handleChangeTitle}
+                handleSettingDelete={handleSettingDelete}
             >
             </DragNDrop>
             {  rightClick === true &&
