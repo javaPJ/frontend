@@ -34,18 +34,15 @@ const MenuItem = ({ id, title, now }) => {
         return;
     }
   }
+  console.log(now);
+  let fontColor = now ? "#EF233C" : "#8D99AE";
+  let fontBold = now ? "bold" : "none";
 
   return(
     <div className={cx('menuitem-back')} onClick={handleMenuSelect}>
-      {now === true ?
         <div className={cx('menuitem-contents')}>
-          <div className={cx('menuitem-title')} style={{color: "#EF233C", fontWeight: "bold"}}>{title}</div>
+          <div className={cx('menuitem-title')} style={{color: fontColor, fontWeight: fontBold}}>{title}</div>
         </div>
-        :
-        <div className={cx('menuitem-contents')}>
-          <div className={cx('menuitem-title')} style={{color: "#8D99AE"}}>{title}</div>
-        </div>
-      }
     </div>
   )
 }
