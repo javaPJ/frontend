@@ -11,6 +11,7 @@ const KanbanPage = ({menubar}) => {
           [groupDelete, setGroupDelete] = useState(-1),
           [groupName, setGroupName] = useState(''),
           [groupItem, setGroupItem] = useState([]),
+          [groupList, setGroupList] = useState([]),
           [titleAdd, setTitleAdd] = useState(-1),
           [groupChange, setGroupChange] = useState(''),
           [groupChangeNum, setGroupChangeNum] = useState(-1),
@@ -23,10 +24,16 @@ const KanbanPage = ({menubar}) => {
           [move, setMove] = useState(-1),
           [deleteTitle, setDeleteTitle] = useState(-1),
           [changeTitle, setChangeTitle] = useState(-1),
+          [labelChange, setLabelChange] = useState(-1),
           dragItem = useRef(),
           dragNode = useRef();
 
     useEffect(() => {
+
+        if(labelChange !== -1) {
+            data.splice(labelChange, 1, {key: labelChange+1, title: data[labelChange].title, items: groupItem});
+            setLabelChange(-1);
+        }
 
         if(changeTitle !== -1) {
             data.splice(changeTitle, 1, {key: changeTitle+1, title: groupName, items: groupItem});
@@ -45,6 +52,7 @@ const KanbanPage = ({menubar}) => {
 
         if(newGroup !== '') {
             data.push({key: data.length+1, title: newGroup, items: []});
+            groupList.push(newGroup);
             setNewGroup('');
         }
 
@@ -57,6 +65,7 @@ const KanbanPage = ({menubar}) => {
 
         if(groupChangeNum !== -1) {
             data.splice(groupChangeNum, 1, {key: groupChangeNum+1, title: groupChange, items: groupItem});
+            groupList.splice(groupChangeNum, 1, groupChange);
             setGroupItem([]);
             setGroupChange('');
             setGroupChangeNum(-1);
@@ -64,22 +73,23 @@ const KanbanPage = ({menubar}) => {
 
         if(groupDelete === -1) {
             setData([
-                {key: 1, title: 'Group 1', items: ['1', '2', '3']},
-                {key: 2, title: 'Group 2', items: ['4', '5']},
-                {key: 3, title: 'Group 3', items: ['6', '7']},
-                {key: 4, title: 'Group 4', items: ['8', '9']},
-                {key: 5, title: 'Group 5', items: ['10', '11']},
+                {key: 1, title: 'Group 1', items: [{key: 1, title: '1', color: 'white'}, {key: 2, title: '2', color: 'white'}]},
+                {key: 2, title: 'Group 2', items: [{key: 1, title: '3', color: 'white'}, {key: 2, title: '4', color: 'white'}]},
             ]);
+            setGroupList(['Group 1', 'Group 2']);
+
             setGroupDelete(-2);
         } else if(groupDelete === -2){
             return ;
         } else {
             data.splice(groupDelete, 1);
-            console.log(data);
+            groupList.splice(groupDelete, 1);
             setGroupDelete(-2);
             return ;
         }
-    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move, changeTitle]);
+
+
+    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move, changeTitle, labelChange]);
 
     const handleDeleteGroup = (num) => {
         setGroupDelete(num);
@@ -99,7 +109,11 @@ const KanbanPage = ({menubar}) => {
         var thistitle = document.getElementById('text_content').value;
         setGroupName(data[num].title);
         var array = data[num].items;
-        array.unshift(thistitle);
+        for(var index=0;index<array.length;index++) {
+            array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color});
+        }
+        array.unshift({key: 0, title: thistitle, color: 'white'});
+
         setGroupItem(array);
         setTitleAdd(num);
     }
@@ -204,10 +218,18 @@ const KanbanPage = ({menubar}) => {
         var changetitle = e.target.value;
         setGroupName(data[num1].title);
         var array = data[num1].items;
-        array[num2] = changetitle;
+        array.splice(num2, 1, {key: array[num2].key, title: changetitle, color: array[num2].color});
         setGroupItem(array);
         setChangeTitle(num1);
     }
+
+    const handleLabelcolor = (label, num1, num2) => {
+        var array = data[num1].items;
+        array.splice(num2,1, {key: array[num2].key, title: array[num2].title, color: label});
+        setGroupItem(array);
+        setLabelChange(num1);
+    }
+
 
     let  backLeft = menubar? "250px" : "60px";
     let size = menubar ? "1270px" : "1470px";
@@ -215,7 +237,8 @@ const KanbanPage = ({menubar}) => {
     return(
         <div style={{left: backLeft, width: size}} className={cx('kanbanpage-back')}>
             <DragNDrop 
-                data={data} 
+                data={data}
+                groupList={groupList}
                 handleDragStart={handleDragStart}
                 handleDragEnter={handleDragEnter}
                 dragging={dragging}
@@ -227,6 +250,7 @@ const KanbanPage = ({menubar}) => {
                 handleRightClick={handleRightClick}
                 handleChangeTitle={handleChangeTitle}
                 handleSettingDelete={handleSettingDelete}
+                handleLabelcolor={handleLabelcolor}
             >
             </DragNDrop>
             {  rightClick === true &&

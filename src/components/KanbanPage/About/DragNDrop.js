@@ -8,6 +8,7 @@ const cx = classNames.bind(styles);
 
 const DragNDrop = ({
         data, 
+        groupList,
         handleDragStart, 
         handleDragEnter, 
         dragging, getStyles, 
@@ -17,9 +18,9 @@ const DragNDrop = ({
         handleAddTitle, 
         handleGroupChange, 
         handleRightClick, 
-        handleChangeTitle
+        handleChangeTitle,
+        handleLabelcolor
     }) => {
-
 
     const [list, setList] = useState([]),
           [addItemGroup, setAddItemGroup] = useState(-1),
@@ -29,16 +30,12 @@ const DragNDrop = ({
           [viewSchedule, setViewSchedule] = useState([false, -1, -1]),
           [scheduleTitle, setScheduleTitle] = useState(''),
           [height, setHeight] = useState('20px'),
-          labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'],
-          [thisLabel, setThisLabel] = useState(''),
-          [labelArray, setLabelArray] = useState([]);
-
+          labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'];
 
     useEffect(() => {
         setList(data);
- 
 
-    }, [data, deleteClick]);
+    }, [data]);
 
     const handleAddItem = (num) => {
         setAddItemGroup(num);
@@ -51,29 +48,48 @@ const DragNDrop = ({
         setHeight(sTextarea.style.height);
     }
 
-    const handleLabelcolor = (label, num1, num2) => {
-        if(label === thisLabel) {
-            setThisLabel('');
-            for(var index = 0; index < labelArray.length; index++) {
-                if(labelArray[index].first === num1 && labelArray[index].second === num2) {
-                    labelArray.splice(index, 1);
-                }
-            }
-        } else {
-            setThisLabel(label);
-            labelArray.push({first: num1, second: num2, color: label});
+    const settingCancel = () => {
+        setViewSchedule([false]);
+    }
 
-            for(var index = 0; index < labelArray.length; index++) {
-                if(labelArray[index].first === num1 && labelArray[index].second === num2 && labelArray[index].color !== label) {
-                    labelArray.splice(index, 1);
-                } 
+    const onGroupTitle = (e) => {
+        if(e.keyCode === 13) {
+            if(e.target.value === '') {
+                alert("다시 한 번 확인해주세요.");
+            } else {
+                setNewTitleCreate(false);
+                handleAddGroup(e.target.value);
             }
         }
     }
 
-    const settingCancel = () => {
-        setViewSchedule([]);
-        setThisLabel('');
+    const onGroupChange = (e, num) => {
+        if(e.keyCode === 13) {
+            if(e.target.value === '') {
+                alert("다시 한 번 확인해주세요.")
+            } else {
+                setTitleChange(-1);
+                handleGroupChange(e, num);
+            }
+        }
+    }
+
+    const onItemTitle = (num) => {
+        var title = document.getElementById('text_content').value;
+        
+        if(title === ''){
+            alert("다시 한 번 확인해주세요.")
+        } else {
+            handleAddTitle(num);
+            setAddItemGroup(-1);
+        }
+    }
+
+    const itemClick = (num1, num2, num3, color) => {
+        if(viewSchedule[0] === false) {
+            setViewSchedule([true, num1, num2, color]);
+            setScheduleTitle(num3)
+        }
     }
 
     return (
@@ -87,7 +103,7 @@ const DragNDrop = ({
                     >
                         <div className={cx('group-title')}>
                             { titleChange === grpI ?
-                                <input onKeyDown={(e) =>{if(e.keyCode === 13){setTitleChange(-1);handleGroupChange(e, grpI);}}} className={cx('title-input')}/>
+                                <input onKeyDown={(e) => onGroupChange(e, grpI)} className={cx('title-input')}/>
                                 :
                                 <div className={cx('title')} onClick={(e) => {e.preventDefault();setTitleChange(grpI);}}>{grp.title}</div>
                             }
@@ -111,7 +127,7 @@ const DragNDrop = ({
                                         placeholder="제목을 입력해주세요"
                                     />
                                     <div className={cx('addItem-button')}>
-                                        <button className={cx('addItem-add')} onClick={() => {handleAddTitle(grpI);setAddItemGroup(-1);}}>만들기</button>
+                                        <button className={cx('addItem-add')} onClick={() => onItemTitle(grpI)}>만들기</button>
                                         <button className={cx('addItem-cancel')} onClick={() => {setAddItemGroup(-1); setHeight('20px;')}}>취소</button>
                                     </div>
                                 </div>
@@ -125,14 +141,16 @@ const DragNDrop = ({
                                         key={item} 
                                         className={cx('dnd-item')}
                                         style={getStyles({grpI, itemI})}
-                                        onClick={() => {setViewSchedule([true, grpI, itemI]);setScheduleTitle(item)}}
+                                        onClick={() => itemClick(grpI, itemI, item.title, item.color)}
                                         onContextMenu={(e) => handleRightClick(e, grpI, itemI)}
                                     >
-                                        { labelArray.map((labelColor) => (
+                                        {/* { labelArray.map((labelColor) => (
                                             (labelColor.first === grpI && labelColor.second === itemI) &&
                                             <div style={{color: labelColor.color, backgroundColor: labelColor.color}} className={cx('label-color')}>.</div>
-                                         ))}
-                                        <div className={cx('dnd-item-text')}>{item}</div>
+                                         ))} */}
+                                        <div style={{color: item.color, backgroundColor: item.color}} className={cx('label-color')}>.</div>
+
+                                        <div className={cx('dnd-item-text')}>{item.title}</div>
                                     </div>
                                 </div>
                             ))}
@@ -145,7 +163,7 @@ const DragNDrop = ({
                         :
                         <input 
                             className={cx('new-title-input')} 
-                            onKeyDown={(e) => {if(e.keyCode === 13){setNewTitleCreate(false);handleAddGroup(e.target.value);}}}
+                            onKeyDown={(e) => onGroupTitle(e)}
                             placeholder="그룹 이름을 지정해주세요"
                         />
                     }
@@ -159,12 +177,13 @@ const DragNDrop = ({
                         handleChangeTitle={handleChangeTitle} 
                         groupN={viewSchedule[1]} 
                         itemN={viewSchedule[2]} 
+                        thisLabel={viewSchedule[3]}
                         handleSettingDelete={handleSettingDelete}
-                        noneVisibleSchedule={() => setViewSchedule([])}
+                        noneVisibleSchedule={() => setViewSchedule([false])}
                         settingCancel={(changed) => {settingCancel(changed)}}
                         labels={labels}
-                        thisLabel={thisLabel}
                         handleLabelcolor={handleLabelcolor}
+                        grpList={groupList}
                     ></SettingSchedule>
                 </div>
             }
