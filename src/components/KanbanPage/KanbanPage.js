@@ -13,6 +13,10 @@ const KanbanPage = ({menubar}) => {
           [groupItem, setGroupItem] = useState([]),
           [groupList, setGroupList] = useState([]),
           [titleAdd, setTitleAdd] = useState(-1),
+          [itemList, setItemList] = useState([]),
+          [itemTitle, setItemTitle] = useState(''),
+          [preItemTitle, setPreItemTitle] = useState(''),
+          [itemInGroup, setItemInGroup] = useState([]),
           [groupChange, setGroupChange] = useState(''),
           [groupChangeNum, setGroupChangeNum] = useState(-1),
           [newGroup, setNewGroup] = useState(''),
@@ -25,10 +29,23 @@ const KanbanPage = ({menubar}) => {
           [deleteTitle, setDeleteTitle] = useState(-1),
           [changeTitle, setChangeTitle] = useState(-1),
           [labelChange, setLabelChange] = useState(-1),
+          [preItem, setPreItem] = useState([]),
+          [nextItem, setNextItem] = useState([]),
+          [preGroup, setPreGroup] = useState(-1),
+          [nextGroup, setNextGroup] = useState(-1),
           dragItem = useRef(),
           dragNode = useRef();
 
     useEffect(() => {
+
+        if(preGroup !== -1) {
+            data.splice(preGroup, 1, {key: preGroup+1, title: data[preGroup].title, items: preItem});
+            data.splice(nextGroup, 1, {key: newGroup+1, title: data[nextGroup].title, items: nextItem});
+            setPreItem([]);
+            setNextItem([]);
+            setPreGroup(-1);
+            setNextGroup(-1);
+        }
 
         if(labelChange !== -1) {
             data.splice(labelChange, 1, {key: labelChange+1, title: data[labelChange].title, items: groupItem});
@@ -37,6 +54,15 @@ const KanbanPage = ({menubar}) => {
 
         if(changeTitle !== -1) {
             data.splice(changeTitle, 1, {key: changeTitle+1, title: groupName, items: groupItem});
+            for(var index=0;index<itemList.length;index++) {
+                if(itemList[index] === preItemTitle) {
+                    itemList.splice(index, 1, itemTitle);
+                }
+            }
+            console.log(itemList);
+
+            setItemTitle('');
+            setPreItemTitle('');
             setChangeTitle(-1);
         }
 
@@ -47,6 +73,14 @@ const KanbanPage = ({menubar}) => {
 
         if(deleteTitle !== -1) {
             data.splice(deleteTitle, 1, {key: deleteTitle+1, title: groupName, items: groupItem});
+            for(var index=0;index<itemList.length;index++) {
+                if(itemTitle === itemList[index]) {
+                    itemList.splice(index, 1);
+                }
+            }
+            console.log(itemList);
+
+            setItemTitle('');
             setDeleteTitle(-1);
         }
 
@@ -58,6 +92,9 @@ const KanbanPage = ({menubar}) => {
 
         if(titleAdd !== -1) {
             data.splice(titleAdd, 1, {key: titleAdd+1, title: groupName, items: groupItem});
+            itemList.push(groupItem[0].title);
+            console.log(itemList);
+
             setTitleAdd(-1);
             setGroupName('');
             setGroupItem([]);
@@ -77,6 +114,7 @@ const KanbanPage = ({menubar}) => {
                 {key: 2, title: 'Group 2', items: [{key: 1, title: '3', color: 'white'}, {key: 2, title: '4', color: 'white'}]},
             ]);
             setGroupList(['Group 1', 'Group 2']);
+            setItemList(['1','2','3','4']);
 
             setGroupDelete(-2);
         } else if(groupDelete === -2){
@@ -84,15 +122,26 @@ const KanbanPage = ({menubar}) => {
         } else {
             data.splice(groupDelete, 1);
             groupList.splice(groupDelete, 1);
+           
+            for(var index2=0;index2<itemInGroup.length;index2++) {
+                for(var index=0;index<itemList.length; index++) {
+                    if(itemList[index] === itemInGroup[index2].title) {
+                        itemList.splice(index, 1);
+                    }
+                }
+            }
+            
+            setItemInGroup([]);
             setGroupDelete(-2);
             return ;
         }
 
 
-    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move, changeTitle, labelChange]);
+    }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move, changeTitle, labelChange, preGroup]);
 
     const handleDeleteGroup = (num) => {
         setGroupDelete(num);
+        setItemInGroup(data[num].items);
     }
 
     const handleAddGroup = (value) => {
@@ -156,6 +205,7 @@ const KanbanPage = ({menubar}) => {
 
     const handleSettingDelete = (num1, num2) => {
         setGroupName(data[num1].title);
+        setItemTitle(data[num1].items[num2].title);
         var array = data[num1].items;
         array.splice(num2, 1);
         setGroupItem(array);
@@ -165,6 +215,7 @@ const KanbanPage = ({menubar}) => {
 
     const handleDeleteTitle = () => {
         setGroupName(data[grpI].title);
+        setItemTitle(data[grpI].items[itemI].title);
         var array = data[grpI].items;
         array.splice(itemI, 1);
         setGroupItem(array);
@@ -216,6 +267,8 @@ const KanbanPage = ({menubar}) => {
 
     const handleChangeTitle = (e, num1, num2) => {
         var changetitle = e.target.value;
+        setPreItemTitle(data[num1].items[num2].title);
+        setItemTitle(changetitle);
         setGroupName(data[num1].title);
         var array = data[num1].items;
         array.splice(num2, 1, {key: array[num2].key, title: changetitle, color: array[num2].color});
@@ -230,6 +283,25 @@ const KanbanPage = ({menubar}) => {
         setLabelChange(num1);
     }
 
+    const handleTaskClick = (num1, num2, num3) => {
+        var array = data[num3-1].items;
+        console.log(array);
+        for(var index=0;index<array.length;index++) {
+            array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color});
+        }
+        array.unshift({key:1, title: data[num1].items[num2].title, color: data[num1].items[num2].color});
+
+        var array2 = data[num1].items;
+        array2.splice(num2, 1);
+        for(var index=0;index<array2.length;index++) {
+            array2.splice(index, 1, {key: index+1, title: array2[index].title, color: array2[index].color});
+        }
+
+        setPreItem(array2);
+        setNextItem(array);
+        setPreGroup(num1);
+        setNextGroup(num3-1);
+    }
 
     let  backLeft = menubar? "250px" : "60px";
     let size = menubar ? "1270px" : "1470px";
@@ -239,6 +311,7 @@ const KanbanPage = ({menubar}) => {
             <DragNDrop 
                 data={data}
                 groupList={groupList}
+                itemList={itemList}
                 handleDragStart={handleDragStart}
                 handleDragEnter={handleDragEnter}
                 dragging={dragging}
@@ -251,6 +324,7 @@ const KanbanPage = ({menubar}) => {
                 handleChangeTitle={handleChangeTitle}
                 handleSettingDelete={handleSettingDelete}
                 handleLabelcolor={handleLabelcolor}
+                handleTaskClick={handleTaskClick}
             >
             </DragNDrop>
             {  rightClick === true &&

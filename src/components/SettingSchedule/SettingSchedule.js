@@ -17,7 +17,8 @@ const SettingSchedule = ({
     handleLabelcolor, 
     handleSettingDelete, 
     noneVisibleSchedule,
-    grpList
+    grpList,
+    handleTaskClick
   }) => {
     
   const [title, setTitle] = useState(textTitle),
@@ -162,7 +163,7 @@ const SettingSchedule = ({
           className={cx('settingschedule-list-ID')} 
           style={{textDecoration: decoration, color: color}} 
           id={task.key} 
-          onClick={(e) => {setTaskTarget([e.target.id, e.target.innerText]);}}
+          onClick={(e) => {setTaskTarget([e.target.id, e.target.innerText]);handleTaskClick(groupN, itemN, e.target.id);noneVisibleSchedule();}}
         >
           {task.name}
         </div>

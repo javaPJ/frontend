@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 const DragNDrop = ({
         data, 
         groupList,
+        itemList,
         handleDragStart, 
         handleDragEnter, 
         dragging, getStyles, 
@@ -19,7 +20,8 @@ const DragNDrop = ({
         handleGroupChange, 
         handleRightClick, 
         handleChangeTitle,
-        handleLabelcolor
+        handleLabelcolor,
+        handleTaskClick
     }) => {
 
     const [list, setList] = useState([]),
@@ -41,11 +43,15 @@ const DragNDrop = ({
         setAddItemGroup(num);
     }
 
-    const ySize = () => {
+    const ySize = (e, grpI) => {
         var sTextarea = document.getElementById("text_content");
         sTextarea.style.height = "1px";
         sTextarea.style.height = sTextarea.scrollHeight + "px";
         setHeight(sTextarea.style.height);
+
+        if(e.keyCode === 13) {
+            onItemTitle(grpI);
+        }
     }
 
     const settingCancel = () => {
@@ -56,9 +62,23 @@ const DragNDrop = ({
         if(e.keyCode === 13) {
             if(e.target.value === '') {
                 alert("다시 한 번 확인해주세요.");
-            } else {
                 setNewTitleCreate(false);
-                handleAddGroup(e.target.value);
+            } else {
+                var check = false;
+            
+                for(var index=0;index<groupList.length;index++) {
+                    if(groupList[index] === e.target.value) {
+                        check = true;
+                    }
+                }
+
+                if(check === true) {
+                    alert("입력하신 그룹명은 이미 있습니다.");
+                    setNewTitleCreate(false);
+                } else {
+                    setNewTitleCreate(false);
+                    handleAddGroup(e.target.value);
+                }
             }
         }
     }
@@ -66,10 +86,23 @@ const DragNDrop = ({
     const onGroupChange = (e, num) => {
         if(e.keyCode === 13) {
             if(e.target.value === '') {
-                alert("다시 한 번 확인해주세요.")
-            } else {
+                alert("다시 한 번 확인해주세요.");
                 setTitleChange(-1);
-                handleGroupChange(e, num);
+            } else {
+                var check = false;
+            
+                for(var index=0;index<groupList.length;index++) {
+                    if(groupList[index] === e.target.value) {
+                        check = true;
+                    }
+                }
+                if(check === true) {
+                    alert("입력하신 그룹명은 이미 있습니다.");
+                    setTitleChange(-1);
+                } else {
+                    setTitleChange(-1);
+                    handleGroupChange(e, num);
+                }
             }
         }
     }
@@ -78,14 +111,31 @@ const DragNDrop = ({
         var title = document.getElementById('text_content').value;
         
         if(title === ''){
-            alert("다시 한 번 확인해주세요.")
-        } else {
-            handleAddTitle(num);
+            alert("다시 한 번 확인해주세요.");
             setAddItemGroup(-1);
+        } else {
+            var check = false;
+
+            for(var index=0;index<itemList.length;index++) {
+                if(itemList[index] === title) {
+                    check = true;
+                }
+            }
+            if(check === true) {
+                alert("입력하신 작업명은 이미 있습니다.");
+                setAddItemGroup(-1);
+            } else {
+                handleAddTitle(num);
+                setAddItemGroup(-1);
+            }
         }
+
+        setHeight('20px');
     }
 
     const itemClick = (num1, num2, num3, color) => {
+        setTitleChange(-1);
+
         if(viewSchedule[0] === false) {
             setViewSchedule([true, num1, num2, color]);
             setScheduleTitle(num3)
@@ -103,9 +153,9 @@ const DragNDrop = ({
                     >
                         <div className={cx('group-title')}>
                             { titleChange === grpI ?
-                                <input onKeyDown={(e) => onGroupChange(e, grpI)} className={cx('title-input')}/>
+                                <input onKeyDown={(e) => {onGroupChange(e, grpI);}} className={cx('title-input')}/>
                                 :
-                                <div className={cx('title')} onClick={(e) => {e.preventDefault();setTitleChange(grpI);}}>{grp.title}</div>
+                                <div className={cx('title')} onClick={(e) => {e.preventDefault();setViewSchedule([false]);setTitleChange(grpI);}}>{grp.title}</div>
                             }
                             <div className={cx('plus')} onClick={(e) => {handleAddItem(grpI)}}><AiOutlinePlus></AiOutlinePlus></div>
                             <div 
@@ -122,8 +172,8 @@ const DragNDrop = ({
                                         className={cx('addItem-textarea')} 
                                         id="text_content" 
                                         style={{height: height}} 
-                                        onKeyDown={() => ySize()} 
-                                        onKeyUp={() => ySize()} 
+                                        onKeyDown={(e) => ySize(e, grpI)} 
+                                        onKeyUp={(e) => ySize(e, grpI)} 
                                         placeholder="제목을 입력해주세요"
                                     />
                                     <div className={cx('addItem-button')}>
@@ -136,8 +186,8 @@ const DragNDrop = ({
                                 <div style={{height: "80px"}}>
                                     <div 
                                         draggable 
-                                        onDragStart={(e) => {handleDragStart(e, {grpI, itemI})}} 
-                                        onDragEnter={dragging ?(e) => {handleDragEnter(e, {grpI, itemI})} : null}
+                                        onDragStart={(e) => {setViewSchedule([false]);handleDragStart(e, {grpI, itemI})}} 
+                                        onDragEnter={dragging ?(e) => {setViewSchedule([false]);handleDragEnter(e, {grpI, itemI})} : null}
                                         key={item} 
                                         className={cx('dnd-item')}
                                         style={getStyles({grpI, itemI})}
@@ -184,6 +234,7 @@ const DragNDrop = ({
                         labels={labels}
                         handleLabelcolor={handleLabelcolor}
                         grpList={groupList}
+                        handleTaskClick={handleTaskClick}
                     ></SettingSchedule>
                 </div>
             }

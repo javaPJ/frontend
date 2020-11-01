@@ -84,6 +84,9 @@
                     float: left;
                     width: 250px;
                     cursor: pointer;
+                    overflow:hidden; 
+                    text-overflow:ellipsis; 
+                    white-space:nowrap;
                 }
 
                 .plus, .minus {
@@ -187,6 +190,10 @@
                         position: absolute;
                         left: 25px;
                         top: 20px;
+                        width: 250px;
+                        overflow:hidden; 
+                        text-overflow:ellipsis; 
+                        white-space:nowrap;
                     }
                 }
             }
