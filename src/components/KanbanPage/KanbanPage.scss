@@ -3,11 +3,21 @@
     left: 0px;
     top: 80px;
 
+    .dnd-item-delete-hidden {
+        position: absolute;
+        top:-10px;
+        left: 0px;
+        height: 90vh;
+        width: 100%;
+        background-color: red;
+        opacity: 0;
+    }
+
     .dnd-item-delete {
         position: absolute;
         list-style: none;
-        width: 139px;
-        height: 129px;
+        width: 140px;
+        height: 96px;
         background-color: white;
         color: #343742;
         border: 1px solid #343742;

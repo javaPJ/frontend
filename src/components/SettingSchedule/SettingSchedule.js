@@ -163,7 +163,11 @@ const SettingSchedule = ({
           className={cx('settingschedule-list-ID')} 
           style={{textDecoration: decoration, color: color}} 
           id={task.key} 
-          onClick={(e) => {setTaskTarget([e.target.id, e.target.innerText]);handleTaskClick(groupN, itemN, e.target.id);noneVisibleSchedule();}}
+          onClick={(e) => {
+            setTaskTarget([e.target.id, e.target.innerText]);
+            handleTaskClick(groupN, itemN, e.target.id);
+            noneVisibleSchedule();
+          }}
         >
           {task.name}
         </div>
@@ -175,7 +179,9 @@ const SettingSchedule = ({
 
   const labelCircle = labels.map(
     label => {
-      let borderColor = (labelSelect === '') ? ((thisLabel === label) ? "#43454D" : label) : (labelSelect === label) ? "#43454D" : label;
+      let borderColor = (labelSelect === '')  
+      ? ((thisLabel === label) ? "#43454D" : label) 
+      : (labelSelect === label) ? "#43454D" : label;
       return(
         <div 
           className={cx('settingschedule-labelCircle')} 
@@ -191,12 +197,17 @@ const SettingSchedule = ({
   const handleThisTitle = (e) => {
     if(e.keyCode === 13) {
       if(e.target.value === ''){
-        alert("다시 한 번 확인해주세요.")
+        alert("다시 한 번 확인해주세요.");
+        setTitleChange(false);
       } else {
         handleChangeTitle(e, groupN, itemN);
         setTitle(e.target.value);
         setTitleChange(false);
       }
+    }
+
+    if(e.keyCode === 27) {
+      setTitleChange(false);
     }
   }
 
@@ -204,13 +215,20 @@ const SettingSchedule = ({
     <div className={cx('settingschedule-back')}>
       <div className={cx('settingschedule-header')}>
         <div className={cx('settingschedule-icon')}>
-          <div className={cx('settingschedule-deleteIcon')}><AiOutlineDelete onClick={() => {handleSettingDelete(groupN, itemN);noneVisibleSchedule()}} size="25"></AiOutlineDelete></div>
-          <div className={cx('settingschedule-closeIcon')}><AiOutlineClose onClick={() => settingCancel()} size="25"></AiOutlineClose></div>
+          <div className={cx('settingschedule-deleteIcon')}>
+            <AiOutlineDelete 
+              size="25"
+              onClick={() => {handleSettingDelete(groupN, itemN);noneVisibleSchedule()}} 
+            ></AiOutlineDelete>
+          </div>
+          <div className={cx('settingschedule-closeIcon')}>
+            <AiOutlineClose onClick={() => settingCancel()} size="25"></AiOutlineClose>
+          </div>
         </div>
         { titleChange === false ?
           <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)}>{title}</div>
           :
-          <input className={cx('settingschedule-title-input')} onKeyDown={(e) => handleThisTitle(e)}/>
+          <input className={cx('settingschedule-title-input')} onKeyDown={(e) => handleThisTitle(e)} autoFocus/>
         }
         <div className={cx('settingschedule-writer-impormation')}>
           <div className={cx('settingschedule-writer')}>작성자 {writer}</div>
@@ -248,7 +266,11 @@ const SettingSchedule = ({
           { memberCheck === true ?
             <div className={cx('settingSchedule-MemberList')}>
               <div>
-                <AiOutlineMinus size="15" className={cx('settingschedule-plusIcon')} onClick={() => setMemberCheck(false)}></AiOutlineMinus>
+                <AiOutlineMinus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => setMemberCheck(false)}
+                ></AiOutlineMinus>
               </div>
               <div className={cx('settingshedule-listBox')}>
                 <div className={cx('settingschedule-list')}>{memberList}</div>
@@ -258,7 +280,11 @@ const SettingSchedule = ({
             :
             <div className={cx('settingSchedule-MemberList')}>
               <div>
-                <AiOutlinePlus size="15" className={cx('settingschedule-plusIcon')} onClick={() => {setMemberCheck(true);setTaskCheck(false);}}></AiOutlinePlus>
+                <AiOutlinePlus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => {setMemberCheck(true);setTaskCheck(false);}}
+                ></AiOutlinePlus>
               </div>
               <div className={cx('settingschedule-thisList')}>{thisMemerList}</div>
             </div>
@@ -270,7 +296,11 @@ const SettingSchedule = ({
           { taskCheck === true ?
             <div className={cx('settingSchedule-TaskList')}>
               <div>
-                <AiOutlineMinus size="15" className={cx('settingschedule-plusIcon')} onClick={() => setTaskCheck(false)}></AiOutlineMinus>
+                <AiOutlineMinus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => setTaskCheck(false)}
+                ></AiOutlineMinus>
               </div>
               <div className={cx('settingshedule-listBox')}>
                 <div className={cx('settingschedule-list')}>{taskList}</div>
@@ -280,7 +310,11 @@ const SettingSchedule = ({
             :
             <div className={cx('settingSchedule-TaskList')}>
               <div>
-                <AiOutlinePlus size="15" className={cx('settingschedule-plusIcon')} onClick={() => {setTaskCheck(true); setMemberCheck(false);}}></AiOutlinePlus>
+                <AiOutlinePlus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => {setTaskCheck(true); setMemberCheck(false);}}
+                ></AiOutlinePlus>
               </div>
               <div className={cx('settingschedule-thisList')}>{thistask}</div>
             </div>

@@ -52,10 +52,10 @@ const DragNDrop = ({
         if(e.keyCode === 13) {
             onItemTitle(grpI);
         }
-    }
-
-    const settingCancel = () => {
-        setViewSchedule([false]);
+        if(e.keyCode === 27) {
+            setAddItemGroup(-1);
+            setHeight('20px;');
+        }
     }
 
     const onGroupTitle = (e) => {
@@ -81,6 +81,10 @@ const DragNDrop = ({
                 }
             }
         }
+
+        if(e.keyCode === 27) {
+            setNewTitleCreate(false);
+        }
     }
 
     const onGroupChange = (e, num) => {
@@ -104,6 +108,10 @@ const DragNDrop = ({
                     handleGroupChange(e, num);
                 }
             }
+        }
+
+        if(e.keyCode === 27) {
+            setTitleChange(-1);
         }
     }
 
@@ -135,6 +143,8 @@ const DragNDrop = ({
 
     const itemClick = (num1, num2, num3, color) => {
         setTitleChange(-1);
+        setAddItemGroup(-1); 
+        setNewTitleCreate(false);
 
         if(viewSchedule[0] === false) {
             setViewSchedule([true, num1, num2, color]);
@@ -153,11 +163,11 @@ const DragNDrop = ({
                     >
                         <div className={cx('group-title')}>
                             { titleChange === grpI ?
-                                <input onKeyDown={(e) => {onGroupChange(e, grpI);}} className={cx('title-input')}/>
+                                <input onKeyDown={(e) => {onGroupChange(e, grpI);}} className={cx('title-input')} placeholder="그룹명을 입력해주세요." autoFocus/>
                                 :
                                 <div className={cx('title')} onClick={(e) => {e.preventDefault();setViewSchedule([false]);setTitleChange(grpI);}}>{grp.title}</div>
                             }
-                            <div className={cx('plus')} onClick={(e) => {handleAddItem(grpI)}}><AiOutlinePlus></AiOutlinePlus></div>
+                            <div className={cx('plus')} onClick={(e) => {handleAddItem(grpI);setViewSchedule([false])}}><AiOutlinePlus></AiOutlinePlus></div>
                             <div 
                                 className={cx('minus')} 
                                 onClick={(e) => {handleDeleteGroup(grpI); setDeleteClick(true); setAddItemGroup(-1);}}
@@ -175,10 +185,11 @@ const DragNDrop = ({
                                         onKeyDown={(e) => ySize(e, grpI)} 
                                         onKeyUp={(e) => ySize(e, grpI)} 
                                         placeholder="제목을 입력해주세요"
+                                        autoFocus
                                     />
                                     <div className={cx('addItem-button')}>
                                         <button className={cx('addItem-add')} onClick={() => onItemTitle(grpI)}>만들기</button>
-                                        <button className={cx('addItem-cancel')} onClick={() => {setAddItemGroup(-1); setHeight('20px;')}}>취소</button>
+                                        <button className={cx('addItem-cancel')} onClick={() => {setAddItemGroup(-1);setHeight('20px;');}}>취소</button>
                                     </div>
                                 </div>
                             }
@@ -192,7 +203,7 @@ const DragNDrop = ({
                                         className={cx('dnd-item')}
                                         style={getStyles({grpI, itemI})}
                                         onClick={() => itemClick(grpI, itemI, item.title, item.color)}
-                                        onContextMenu={(e) => handleRightClick(e, grpI, itemI)}
+                                        onContextMenu={(e) => {handleRightClick(e, grpI, itemI);setViewSchedule([false]);setTitleChange(-1);setNewTitleCreate(false);}}
                                     >
                                         {/* { labelArray.map((labelColor) => (
                                             (labelColor.first === grpI && labelColor.second === itemI) &&
@@ -209,12 +220,13 @@ const DragNDrop = ({
                 ))}
                 <div className={cx('new-group')}>
                     { newTitleCreate === false ?
-                        <div className={cx('new-title')} onClick={() => setNewTitleCreate(true)}>새 리스트</div>
+                        <div className={cx('new-title')} onClick={() => {setNewTitleCreate(true);setViewSchedule([false])}}>새 리스트</div>
                         :
                         <input 
                             className={cx('new-title-input')} 
                             onKeyDown={(e) => onGroupTitle(e)}
                             placeholder="그룹 이름을 지정해주세요"
+                            autoFocus
                         />
                     }
                     <div className={cx('newItem-group')}></div>
@@ -230,7 +242,7 @@ const DragNDrop = ({
                         thisLabel={viewSchedule[3]}
                         handleSettingDelete={handleSettingDelete}
                         noneVisibleSchedule={() => setViewSchedule([false])}
-                        settingCancel={(changed) => {settingCancel(changed)}}
+                        settingCancel={() => setViewSchedule([false])}
                         labels={labels}
                         handleLabelcolor={handleLabelcolor}
                         grpList={groupList}

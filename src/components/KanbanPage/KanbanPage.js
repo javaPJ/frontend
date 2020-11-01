@@ -328,11 +328,13 @@ const KanbanPage = ({menubar}) => {
             >
             </DragNDrop>
             {  rightClick === true &&
-                <div style={{top: positionY, left: positionX}} className={cx('dnd-item-delete')}>
-                    <li onClick={() => {handleUpMove()}}>맨 위로 이동</li>
-                    <li onClick={() => handleDownMove()}>맨 아래로 이동</li>
-                    <li onClick={(e) => {handleDeleteTitle()}}>삭제</li>
-                    <li onClick={() => setRightClick(false)}>취소</li>
+                <div>
+                    <div className={cx('dnd-item-delete-hidden')} onClick={() => setRightClick(false)}></div>
+                    <div style={{top: positionY, left: positionX}} className={cx('dnd-item-delete')}>
+                        <li onClick={() => {handleUpMove()}}>맨 위로 이동</li>
+                        <li onClick={() => handleDownMove()}>맨 아래로 이동</li>
+                        <li onClick={(e) => {handleDeleteTitle()}}>삭제</li>
+                    </div>
                 </div>
             }
         </div>
