@@ -5,7 +5,7 @@ import styles2 from './CalendarItem.scss';
 import classNames from 'classnames/bind';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import MoreSchedule from './../MoreSchedule/MoreSchedule.js';
-import SettingSchedule from './../../SettingSchedule/SettingSchedule.js';
+import SettingSchedule from './../../SettingSchedule/Calendar/SettingSchedule.js';
 
 const cx = classNames.bind(styles);
 const cx2 = classNames.bind(styles2);
@@ -31,20 +31,49 @@ const Calendar = ({menubar}) => {
         [positionX, setPositionX] = useState(''),
         [positionY, setPositionY] = useState(''),
         [deleteSchedule, setDeleteSchedule] = useState(-1),
-        [moerDelete, setMoreDelete] = useState([]);
+        [moreDelete, setMoreDelete] = useState([]),
+        labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'],
+        [thisLabel, setThisLabel] = useState(''),
+        [labelChange, setLabelChange] = useState(-1),
+        [scheduleItem, setScheduleItem] = useState([]),
+        [dateN, setDateN] = useState(-1),
+        [scheduleN, setScheduleN] = useState(-1),
+        [settingDelete, setSettingDelete] = useState(-1);
 
   useEffect(() => {
       var week = new Date(year, month-1).getDay();
       var nextWeek = new Date(year, month).getDay();
 
-      if(moerDelete.length > 1) {
-        scheduleList.splice(moerDelete[1]-1, 1, {key: moerDelete[1], schedule: scheduleList[moerDelete[1]-1].schedule.splice(moerDelete[0],1)});
+      if(settingDelete !== -1) {
+        scheduleList.splice(settingDelete, 1, {key: scheduleList[settingDelete].key, schedule: scheduleItem});
+        for(var index=0;index<scheduleList[settingDelete].schedule.length;index++) {
+          scheduleList[settingDelete].schedule.splice(index,1, {key: index+1, title: scheduleList[settingDelete].schedule[index].title, color: scheduleList[settingDelete].schedule[index].color});
+        }
+        setSettingDelete(-1);
+        setScheduleItem([]);
+      }
+
+      if(labelChange !== -1) {
+        scheduleList.splice(labelChange, 1, {key: scheduleList[labelChange].key, schedule: scheduleItem});
+        setLabelChange(-1);
+        setScheduleItem([]);
+      }
+
+      if(moreDelete.length > 1) {
+        scheduleList.splice(moreDelete[1]-1, 1, {key: moreDelete[1], schedule: scheduleList[moreDelete[1]-1].schedule.splice(moreDelete[0],1)});
+        for(var index=0;index<scheduleList[moreDelete[1]-1].schedule.length;index++) {
+          scheduleList[moreDelete[1]-1].schedule.splice(index,1, {key: index+1, title: scheduleList[moreDelete[1]-1].schedule[index].title, color: scheduleList[moreDelete[1]-1].schedule[index].color});
+        }
         setMoreDelete([]);
       }
 
       if(deleteSchedule !== -1) {
         scheduleList[deleteSchedule-1].schedule.splice(0,1)
         scheduleList.splice(deleteSchedule-1, 1, {key: deleteSchedule, schedule: scheduleList[deleteSchedule-1].schedule.splice(0,1)});
+
+        for(var index=0;index<scheduleList[deleteSchedule-1].schedule.length;index++) {
+          scheduleList[deleteSchedule-1].schedule.splice(index,1, {key: index+1, title: scheduleList[deleteSchedule-1].schedule[index].title, color: scheduleList[deleteSchedule-1].schedule[index].color});
+        }
         setDeleteSchedule(-1);
       }
 
@@ -142,10 +171,12 @@ const Calendar = ({menubar}) => {
         setLists(array);
         setLoad(-2);
       } else {
+        console.log(scheduleList);
+
         return;
       }
 
-  },[year, month, load, deleteSchedule, more ]);
+  },[year, month, load, deleteSchedule, more, labelChange, settingDelete]);
 
 
   function dayCount(year, month){
@@ -195,7 +226,8 @@ const Calendar = ({menubar}) => {
   // }
 
   const thisDayClick = (e, num) => {
-    moerDelete.push(num);
+    moreDelete.push(num);
+
     setMore(true);
     setScheduleVisible(false);
     setThisYear(parseInt((e.target.id).split(',')[0]))
@@ -209,11 +241,11 @@ const Calendar = ({menubar}) => {
     }
   }
 
-  const scheduleView = (e) => {
-    setMore(false);
-    setScheduleVisible(true);
-    setTitle(e.target.innerText);
-  }
+  // const scheduleView = (e) => {
+  //   setMore(false);
+  //   setScheduleVisible(true);
+  //   setTitle(e.target.innerText);
+  // }
   
 
   const handleRightClick = (e, num) => {
@@ -221,8 +253,8 @@ const Calendar = ({menubar}) => {
 
     if(e.button == 2) {
       setMore(false);
+      setMoreDelete([]);
 
-      console.log(num);
       setPositionX(e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + 20);
       setPositionY(e.clientY + document.body.scrollTop + document.documentElement.scrollTop+ 5);
       setRightClick(num);
@@ -235,9 +267,32 @@ const Calendar = ({menubar}) => {
   }
 
   const handleTitleDelete = (num) => {
-    moerDelete.unshift(num);
+    moreDelete.unshift(num);
     setMore(false);
   }
+
+  const handleSettingDelete = (num1, num2) => {
+    var array = scheduleList[num1-1].schedule;
+    array.splice(num2-1, 1);
+    setScheduleItem(array);
+    setSettingDelete(num1-1);
+  }
+
+  const handleScheduleClick = (num, object) => {
+    setTitle(object.title);
+    setDateN(num);
+    setScheduleN(object.key);
+    setThisLabel(object.color)
+    setScheduleVisible(true);
+  }
+
+  const handleLabelcolor = (label, num1, num2) => {
+    var array = scheduleList[num1-1].schedule;
+    array.splice(num2-1, 1, {key: array[num2-1].key, title: array[num2-1].title, color: label});
+    setScheduleItem(array);
+    setLabelChange(num1-1);
+  }
+
 
   let size = menubar ? "120px" : "0px";
 
@@ -274,6 +329,7 @@ const Calendar = ({menubar}) => {
                     className={cx2('calendar-schedule0')} 
                     style={{backgroundColor: scheduleList[list.key-1].schedule[0].color}} 
                     onContextMenu={(e) => handleRightClick(e, list.key)}
+                    onClick={() => handleScheduleClick(list.key, scheduleList[list.key-1].schedule[0])}
                   >
                     {scheduleList[list.key-1].schedule[0].title}
                   </div>
@@ -299,13 +355,25 @@ const Calendar = ({menubar}) => {
           year={thisYear} 
           month={thisMonth} 
           day={thisDay} 
-          moreCancel={() => setMore(false)}
+          moreCancel={() => {setMore(false);setMoreDelete([]);}}
           thisSchedule={thisSchedule}
           handleTitleDelete={handleTitleDelete}
         />
       }
       { scheduleVisible === true &&
-        <SettingSchedule textTitle={title} settingCancel={() => setScheduleVisible(false)}></SettingSchedule>
+        <SettingSchedule 
+          textTitle={title} 
+          settingCancel={() => setScheduleVisible(false)}
+          noneVisibleSchedule={() => setScheduleVisible(false)}
+          labels={labels}
+          thisLabel={thisLabel}
+          handleLabelcolor={handleLabelcolor}
+          dateN={dateN}
+          scheduleN={scheduleN}
+          handleSettingDelete={handleSettingDelete}
+          handleChangeTitle
+        >
+        </SettingSchedule>
       }
     </div>
 
