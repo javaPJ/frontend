@@ -13,33 +13,14 @@
   }
 
   .calendar-schedule0 {
-    margin: 2px -1px;
-    width: 132px;
     height: 20px;
     padding: 5px 10px;
     background-color: #ff9c9a;
     color: white;
     font-size: 15px;
-  }
-
-  .calendar-clickDelete {
-    width: 100px;
-    background-color: white;
-    color:#343742;
-    position: relative;
-    top: -15px;
-    left: 15px;
-    padding: 10px 5px;
-    border: 1px solid #707070;
-    border-radius: 5px;
-    box-shadow: 2px 2px 4px gray;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #EF233C;
-      border-color: #EF233C;
-      color: white;
-    }
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+    white-space:nowrap;
   }
 
   .calendar-more {
@@ -48,3 +29,39 @@
     font-size: 13px;
   }
 }
+
+.calendar-clickDelete {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+
+  .calendar-clickDelete-back {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: blue;
+    opacity: 0;
+  }
+  
+  .calendar-clickDelete-text {
+    position: absolute;
+    top: 500px;
+    left: 400px;
+    width: 100px;
+    height: 20px;
+    background-color: white;
+    color:#343742;
+    padding: 10px 5px;
+    border: 1px solid #707070;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px gray;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #EF233C;
+      border-color: #EF233C;
+      color: white;
+    }
+  }
+}
+

@@ -6,36 +6,40 @@ import { AiOutlineClose, AiOutlineDelete, AiOutlinePlus, AiOutlineMinus } from "
 
 const cx = classNames.bind(styles);
 
-const SettingSchedule = ({textTitle, settingCancel}) => {
+const SettingSchedule = ({
+    textTitle, 
+    settingCancel, 
+    handleChangeTitle, 
+    groupN, 
+    itemN, 
+    labels, 
+    thisLabel, 
+    handleLabelcolor, 
+    handleSettingDelete, 
+    noneVisibleSchedule,
+    grpList,
+    handleTaskClick
+  }) => {
+    
   const [title, setTitle] = useState(textTitle),
-        [writer, setWriter] = useState('nickname');
-
-  var today = new Date();
-
-  const [year, setYear] = useState(today.getFullYear()),
-        [month, setMonth] = useState(today.getMonth()+1),
-        [day, setDay] = useState(today.getDate());
-
-  const [content, setContent] = useState(''),
+        [writer, setWriter] = useState('nickname'),
+        [content, setContent] = useState(''),
+        [year, setYear] = useState('2020'),
+        [month, setMonth] = useState('10'),
+        [day, setDay] = useState('9'),
         [startDay, setStartDay] = useState(''),
-        [endDay, setEndDay] = useState('');
-
-  const [members, setMembers] = useState([]),
+        [endDay, setEndDay] = useState(''),
+        [members, setMembers] = useState([]),
         [memberTarget, setMemberTarget] = useState([]),
         [memberCheck, setMemberCheck] = useState(false),
-        [thisMember, setThisMember] = useState([]);
-
-  const [tasks, setTasks] = useState([]),
+        [thisMember, setThisMember] = useState([]),
+        [tasks, setTasks] = useState([]),
         [taskTarget, setTaskTarget] = useState([]),
         [taskCheck, setTaskCheck] = useState(false),
-        [thisTask, setThisTask] = useState([]);
-
-  const [labels, setLabels] = useState(['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D']),
-        [thisLabel, setThisLabel] = useState('');
-
-  const [height, setHeight] = useState('20px');
-
-  const [titleChange, setTitleChange] = useState(false);
+        [thisTask, setThisTask] = useState(grpList[groupN]),
+        [height, setHeight] = useState('20px'),
+        [labelSelect, setLabelSelect] = useState(''),
+        [titleChange, setTitleChange] = useState(false);
 
   useEffect(() => {
     setMembers([]);
@@ -96,55 +100,32 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
     }
 
     if(taskCheck === true) {
+
       const taskId = taskTarget[0];
 
       if(taskId === undefined) {
-        setTasks([
-          {key: 1, name: '해야할 일', check: false},
-          {key: 2, name: '하는 중', check: false},
-          {key: 3, name: '끝난 일', check: false},
-        ]);
+        var array = [];
+
+        for(var index=0;index<grpList.length;index++) {
+          array.push({key: index+1, name: grpList[index]});
+        }
+        setTasks(array);
+
         return;
       } else {
-        setTasks([
-          {key: 1, name: '해야할 일', check: false},
-          {key: 2, name: '하는 중', check: false},
-          {key: 3, name: '끝난 일', check: false},
-        ]);
+        var array = [];
 
-        if(thisTask.length > 0) {
-          for(var i = 0; i < tasks.length; i++) {
-            for(var j = 0; j< thisTask.length; j++){
-              if(tasks[i]['name'] === thisTask[j]['name']){
-                tasks.splice(i, 1, {key: i, name: thisTask[j]['name'], check: true});
-              }
-            }
-          }
+        for(var index=0;index<grpList.length;index++) {
+          array.push({key: index+1, name: grpList[index]});
         }
+        setTasks(array);
 
-        const taskName = taskTarget[1];
-
-        const thisCheck = tasks[(parseInt(taskId))-1].check;
-
-        if(thisCheck === false) {
-          tasks.splice(parseInt(taskId)-1, 1, {key: parseInt(taskId), name: taskName, check: !thisCheck});
-
-          thisTask.push({key: parseInt(taskId), name: taskName});
-        } else {
-          tasks.splice(parseInt(taskId)-1, 1, {key: parseInt(taskId), name: taskName, check: !thisCheck});
-
-          for(i = 0; i < thisTask.length; i++) {
-            if(thisTask[i]['name'] === taskName) {
-              thisTask.splice(i, 1);
-            }
-          }
-        }
+        setThisTask(taskTarget[1]);
       }
 
       setTaskTarget([]);
-
-    }
-
+      setTaskCheck(false);
+    } 
     
   }, [title, memberTarget, thisMember, memberCheck, taskTarget, thisTask, taskCheck])
 
@@ -178,42 +159,76 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
       let decoration = task.check ? "line-through" : "none";
       let color = task.check ? "red" : "black";
       return (
-        <div className={cx('settingschedule-list-ID')} style={{textDecoration: decoration, color: color}} id={task.key} onClick={(e) => setTaskTarget([e.target.id, e.target.innerText])}>{task.name}</div>
+        <div 
+          className={cx('settingschedule-list-ID')} 
+          style={{textDecoration: decoration, color: color}} 
+          id={task.key} 
+          onClick={(e) => {
+            setTaskTarget([e.target.id, e.target.innerText]);
+            handleTaskClick(groupN, itemN, e.target.id);
+            noneVisibleSchedule();
+          }}
+        >
+          {task.name}
+        </div>
       )
     }
   )
 
-  const thisTaskList = thisTask.map(
-    task => {
-      return(
-        <div className={cx('settingschedule-thisList-ID')}>{task.name}</div>
-      )
-    }
-  )
+  const thistask = (thisTask !== '') && <div className={cx('settingschedule-thisList-ID')}>{thisTask}</div>
 
   const labelCircle = labels.map(
     label => {
-      let borderColor = (thisLabel === label) ? "#43454D" : label;
+      let borderColor = (labelSelect === '')  
+      ? ((thisLabel === label) ? "#43454D" : label) 
+      : (labelSelect === label) ? "#43454D" : label;
       return(
         <div 
-        className={cx('settingschedule-labelCircle')} 
-        style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
-        onClick={(e) => {if(thisLabel === label){setThisLabel('')}else{setThisLabel(label)}}}>#</div>  
+          className={cx('settingschedule-labelCircle')} 
+          style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
+          onClick={(e) => {handleLabelcolor(label, groupN, itemN);setLabelSelect(label)}}
+        >
+          .
+        </div>  
       )
     }
   )
+
+  const handleThisTitle = (e) => {
+    if(e.keyCode === 13) {
+      if(e.target.value === ''){
+        alert("다시 한 번 확인해주세요.");
+        setTitleChange(false);
+      } else {
+        handleChangeTitle(e, groupN, itemN);
+        setTitle(e.target.value);
+        setTitleChange(false);
+      }
+    }
+
+    if(e.keyCode === 27) {
+      setTitleChange(false);
+    }
+  }
 
   return (
     <div className={cx('settingschedule-back')}>
       <div className={cx('settingschedule-header')}>
         <div className={cx('settingschedule-icon')}>
-          <div className={cx('settingschedule-deleteIcon')}><AiOutlineDelete size="25"></AiOutlineDelete></div>
-          <div className={cx('settingschedule-closeIcon')}><AiOutlineClose onClick={settingCancel} size="25"></AiOutlineClose></div>
+          <div className={cx('settingschedule-deleteIcon')}>
+            <AiOutlineDelete 
+              size="25"
+              onClick={() => {handleSettingDelete(groupN, itemN);noneVisibleSchedule()}} 
+            ></AiOutlineDelete>
+          </div>
+          <div className={cx('settingschedule-closeIcon')}>
+            <AiOutlineClose onClick={() => settingCancel()} size="25"></AiOutlineClose>
+          </div>
         </div>
         { titleChange === false ?
           <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)}>{title}</div>
           :
-          <input className={cx('settingschedule-title-input')} onKeyDown={(e) => {if(e.keyCode === 13){setTitle(e.target.value); setTitleChange(false);}}}/>
+          <input className={cx('settingschedule-title-input')} onKeyDown={(e) => handleThisTitle(e)} autoFocus/>
         }
         <div className={cx('settingschedule-writer-impormation')}>
           <div className={cx('settingschedule-writer')}>작성자 {writer}</div>
@@ -223,7 +238,15 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
       <div className={cx('settingschedule-content')}>
         <div className={cx('settingschedule-textDiv')}>
           <div className={cx('settingschedule-textTitle')}>내용</div>
-          <textarea className={cx('settingschedule-textInput')} style={{height: height}} id="text_content" onKeyDown={() => ySize()} onKeyUp={() => ySize()} onChange={(e) => setContent(e.target.value)} placeHolder="내용을 입력해주세요."></textarea>
+          <textarea 
+          className={cx('settingschedule-textInput')} 
+          style={{height: height}} 
+          id="text_content" 
+          onKeyDown={() => ySize()} 
+          onKeyUp={() => ySize()} 
+          onChange={(e) => setContent(e.target.value)} 
+          placeHolder="내용을 입력해주세요."
+          ></textarea>
         </div>
 
         <div className={cx('settingschedule-dayDiv')}>
@@ -243,7 +266,11 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
           { memberCheck === true ?
             <div className={cx('settingSchedule-MemberList')}>
               <div>
-                <AiOutlineMinus size="15" className={cx('settingschedule-plusIcon')} onClick={() => setMemberCheck(false)}></AiOutlineMinus>
+                <AiOutlineMinus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => setMemberCheck(false)}
+                ></AiOutlineMinus>
               </div>
               <div className={cx('settingshedule-listBox')}>
                 <div className={cx('settingschedule-list')}>{memberList}</div>
@@ -253,7 +280,11 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
             :
             <div className={cx('settingSchedule-MemberList')}>
               <div>
-                <AiOutlinePlus size="15" className={cx('settingschedule-plusIcon')} onClick={() => {setMemberCheck(true);setTaskCheck(false);}}></AiOutlinePlus>
+                <AiOutlinePlus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => {setMemberCheck(true);setTaskCheck(false);}}
+                ></AiOutlinePlus>
               </div>
               <div className={cx('settingschedule-thisList')}>{thisMemerList}</div>
             </div>
@@ -265,19 +296,27 @@ const SettingSchedule = ({textTitle, settingCancel}) => {
           { taskCheck === true ?
             <div className={cx('settingSchedule-TaskList')}>
               <div>
-                <AiOutlineMinus size="15" className={cx('settingschedule-plusIcon')} onClick={() => setTaskCheck(false)}></AiOutlineMinus>
+                <AiOutlineMinus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => setTaskCheck(false)}
+                ></AiOutlineMinus>
               </div>
               <div className={cx('settingshedule-listBox')}>
                 <div className={cx('settingschedule-list')}>{taskList}</div>
               </div>
-              <div className={cx('settingschedule-thisList')}>{thisTaskList}</div>
+              <div className={cx('settingschedule-thisList')}>{thistask}</div>
             </div>
             :
             <div className={cx('settingSchedule-TaskList')}>
               <div>
-                <AiOutlinePlus size="15" className={cx('settingschedule-plusIcon')} onClick={() => {setTaskCheck(true); setMemberCheck(false);}}></AiOutlinePlus>
+                <AiOutlinePlus 
+                  size="15" 
+                  className={cx('settingschedule-plusIcon')} 
+                  onClick={() => {setTaskCheck(true); setMemberCheck(false);}}
+                ></AiOutlinePlus>
               </div>
-              <div className={cx('settingschedule-thisList')}>{thisTaskList}</div>
+              <div className={cx('settingschedule-thisList')}>{thistask}</div>
             </div>
           }
         </div>

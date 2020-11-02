@@ -1,32 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import styles from './MoreSchedule.scss';
 import classNames from 'classnames/bind';
-import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineClose, AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
 
-const MoreSchedule = ({check, year, month, day, moreCancel, scheduleView}) => {
-  const [sche, setSche] = useState([]);
-
-  const moreSchedule = sche.map(
-    sch => (
-      <div className={cx('moreschedule-text')} onClick={scheduleView}>{sch.content}</div>
-    )
-  )
-
+const MoreSchedule = ({year, month, day, moreCancel, thisSchedule, handleTitleDelete}) => {
+  const [schedules, setSchedules] = useState([]);
+  
   useEffect(() => {
-    setSche([]);
-    if (check.length === 0) {
-      return 0;
+    setSchedules([]);
+
+
+    if (thisSchedule.length === 0) {
+      setSchedules([]);
+      return;
     } else {
-      for (var i = 0; i < check.length; i++) {
-        let id = i+1;
-        let content = check[i].text;
-        setSche(sche =>  [...sche, {id: id, content: content}]);
-      }
+      setSchedules(thisSchedule);
     }
-  },[check])
+  },[])
 
   return (
     <div className={cx('moreschedule-back')}>
@@ -38,7 +31,14 @@ const MoreSchedule = ({check, year, month, day, moreCancel, scheduleView}) => {
         <div className={cx('moreschedule-content-header')}>내용</div>
         <div className={cx('moreschedule-plus')}><AiOutlinePlus color="#343742" size="25"></AiOutlinePlus></div>
         <div className={cx('moreschedule-schedule')}>
-            { check.length !== 0 && moreSchedule }
+            {thisSchedule.length !== 0 && 
+              schedules.map(
+              schedule => (
+                <div className={cx('moreschedule-text-box')} style={{backgroundColor: schedule.color}}>
+                  <div className={cx('moreschedule-text')}>{schedule.title}</div>
+                  <div className={cx('moreschedule-text-delete')} onClick={() => handleTitleDelete(schedule.key)}><AiOutlineDelete></AiOutlineDelete></div>
+                </div>
+            ))}
         </div>
       </div>
     </div>

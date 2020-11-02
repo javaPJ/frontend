@@ -50,13 +50,28 @@
   }
 }
 
-.moreschedule-text {
+.moreschedule-text-box {
   font-size: 18px;
   padding: 5px 10px;
   width: 340px;
+  height: 27px;
   color: white;
   border-radius: 5px;
   background-color: #ff9c9a;
   margin-bottom: 20px;
   cursor: pointer;
+
+  .moreschedule-text {
+    float: left;
+    width: 300px;
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+    white-space:nowrap;
+  }
+
+  .moreschedule-text-delete {
+    margin-top: 4px;
+    margin-right: 10px;
+    float: right;
+  }
 }
