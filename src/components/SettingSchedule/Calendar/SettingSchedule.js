@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './SettingSchedule.scss';
 import classNames from 'classnames/bind';
 
-import { AiOutlineClose, AiOutlineDelete, AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineDelete, AiOutlinePlus, AiOutlineMinus, AiOutlineSave } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +17,7 @@ const SettingSchedule = ({
     handleLabelcolor, 
     handleSettingDelete, 
     noneVisibleSchedule,
+    handleSaveSchedule
   }) => {
     
   const [title, setTitle] = useState(textTitle),
@@ -34,7 +35,8 @@ const SettingSchedule = ({
         [taskCheck, setTaskCheck] = useState(false),
         [height, setHeight] = useState('20px'),
         [labelSelect, setLabelSelect] = useState(''),
-        [titleChange, setTitleChange] = useState(false);
+        [titleChange, setTitleChange] = useState(false),
+        [titleInput, setTitleInput] = useState('');
 
   useEffect(() => {
     setMembers([]);
@@ -127,37 +129,62 @@ const SettingSchedule = ({
       ? ((thisLabel === label) ? "#43454D" : label) 
       : (labelSelect === label) ? "#43454D" : label;
       return(
-        <div 
-          className={cx('settingschedule-labelCircle')} 
-          style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
-          onClick={(e) => {handleLabelcolor(label, dateN, scheduleN);setLabelSelect(label)}}
-        >
-          .
-        </div>  
+        <div>
+        { scheduleN !== -1 ?
+          <div 
+            className={cx('settingschedule-labelCircle')} 
+            style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
+            onClick={(e) => {handleLabelcolor(label, dateN, scheduleN);setLabelSelect(label)}}
+          >
+            .
+          </div> 
+          :  
+          <div 
+            className={cx('settingschedule-labelCircle')} 
+            style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
+            onClick={(e) => {setLabelSelect(label)}}
+          >
+            .
+          </div> 
+        }
+        </div>
       )
     }
   )
 
-  // const handleThisTitle = (e) => {
-  //   if(e.keyCode === 13) {
-  //     if(e.target.value === ''){
-  //       alert("다시 한 번 확인해주세요.");
-  //       setTitleChange(false);
-  //     } else {
-  //       handleChangeTitle(e, groupN, itemN);
-  //       setTitle(e.target.value);
-  //       setTitleChange(false);
-  //     }
-  //   }
+  const handleThisTitle = (e) => {
+    if(e.keyCode === 13) {
+      if(e.target.value === ''){
+        alert("다시 한 번 확인해주세요.");
+        setTitleChange(false);
+      } else {
+        handleChangeTitle(e, dateN, scheduleN);
+        setTitle(e.target.value);
+        setTitleChange(false);
+      }
+    }
 
-  //   if(e.keyCode === 27) {
-  //     setTitleChange(false);
-  //   }
-  // }
+    if(e.keyCode === 27) {
+      setTitleChange(false);
+    }
+  }
 
   return (
     <div className={cx('settingschedule-back')}>
       <div className={cx('settingschedule-header')}>
+        { scheduleN === -1 ?
+        <div className={cx('settingschedule-icon')}>
+          <div className={cx('settingschedule-deleteIcon')}>
+            <AiOutlineSave 
+              size="25"
+              onClick={() => {console.log("setting : "+dateN);;handleSaveSchedule(dateN, titleInput, labelSelect);setLabelSelect('');}}
+            ></AiOutlineSave>
+          </div>
+          <div className={cx('settingschedule-closeIcon')}>
+            <AiOutlineClose onClick={() => {settingCancel();setLabelSelect('')}} size="25"></AiOutlineClose>
+          </div>
+        </div>
+        :
         <div className={cx('settingschedule-icon')}>
           <div className={cx('settingschedule-deleteIcon')}>
             <AiOutlineDelete 
@@ -169,11 +196,20 @@ const SettingSchedule = ({
             <AiOutlineClose onClick={() => {settingCancel();setLabelSelect('')}} size="25"></AiOutlineClose>
           </div>
         </div>
-        { titleChange === false ?
+        }
+        { scheduleN === -1 ?
+          titleChange === false ?
+          <input className={cx('settingschedule-title-input')} 
+            onKeyDown={(e) => {if(e.keyCode===13){setTitleInput(e.target.value);setTitleChange(true)}}} 
+            autoFocus
+          />
+          :
+          <div className={cx('settingschedule-title')}>{titleInput}</div>
+          :
+         titleChange === false ?
           <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)}>{title}</div>
           :
-          // <input className={cx('settingschedule-title-input')} onKeyDown={(e) => handleThisTitle(e)} autoFocus/>
-          <input className={cx('settingschedule-title-input')} autoFocus/>
+          <input className={cx('settingschedule-title-input')} onKeyDown={(e) => handleThisTitle(e)} autoFocus/>
         }
         <div className={cx('settingschedule-writer-impormation')}>
           <div className={cx('settingschedule-writer')}>작성자 {writer}</div>
@@ -228,6 +264,7 @@ const SettingSchedule = ({
                 <AiOutlinePlus 
                   size="15" 
                   className={cx('settingschedule-plusIcon')} 
+                  onClick={() => setMemberCheck(true)}
                 ></AiOutlinePlus>
               </div>
               <div className={cx('settingschedule-thisList')}>{thisMemerList}</div>
