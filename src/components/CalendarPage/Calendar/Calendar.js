@@ -17,11 +17,19 @@ const Calendar = ({menubar}) => {
   const [load, setLoad] = useState(-1),
         [year, setYear] = useState(today.getFullYear()),
         [month, setMonth] = useState(today.getMonth()+1),
+        [schedule, setSchedule] = useState([]),
         [lists, setLists] = useState([]),
+        [scheduleChangeN, setScheduleChangeN] = useState(-1),
         [scheduleList, setScheduleList] = useState([]),
         [thisYear, setThisYear] = useState(''),
         [thisMonth, setThisMonth] = useState(''),
         [thisDay, setThisDay] = useState(''),
+        [startYear, setStartYear] = useState(''),
+        [startMonth, setStartMonth] = useState(''),
+        [startDay, setStartDay] = useState(''),
+        [endYear, setEndYear] = useState(''),
+        [endMonth, setEndMonth] = useState(''),
+        [endDay, setEndDay] = useState(''),
         [more, setMore] = useState(false),
         [scheduleVisible, setScheduleVisible] = useState(false),
         [title, setTitle] = useState(''),
@@ -43,13 +51,13 @@ const Calendar = ({menubar}) => {
         [saveSchedule, setSaveSchedule] = useState(-1),
         [changeTitleN, setChangeTitleN] = useState(-1);
 
+
   useEffect(() => {
       var week = new Date(year, month-1).getDay();
       var nextWeek = new Date(year, month).getDay();
 
 
-      if(changeTitleN === -1) {
-        scheduleList.splice(changeTitleN-1, 1, {key: changeTitleN, schedule: scheduleItem});
+      if(changeTitleN !== -1) {
         setScheduleItem([]);
         setChangeTitleN(-1);
       }
@@ -189,11 +197,22 @@ const Calendar = ({menubar}) => {
 
         setLists(array);
         setLoad(-2);
-      } else {
-        return;
+      }
+        
+      if(scheduleChangeN !== -1){
+        var settingArray = [];
+        
+        for(var index=0;index<42;index++) {
+          var listArray = scheduleList[index].schedule;
+          for(var index2=0;index2<listArray.length;index2++) {
+            settingArray[settingArray.length] = listArray[index2].title;
+          }
+        }
+        setSchedule(settingArray);
+        setScheduleChangeN(-1);
       }
 
-  },[year, month, load, deleteSchedule, moreDeleteN, labelChange, settingDelete, saveSchedule, changeTitleN]);
+  },[year, month, load, deleteSchedule, moreDeleteN, labelChange, settingDelete, saveSchedule, changeTitleN, scheduleChangeN]);
 
 
   function dayCount(year, month){
@@ -246,6 +265,13 @@ const Calendar = ({menubar}) => {
     setThisMonth(parseInt((e.target.id).split(',')[1]));
     setThisDay(parseInt((e.target.id).split(',')[2]));
 
+    setStartYear('');
+    setStartMonth('');
+    setStartDay('');
+    setEndYear('');
+    setEndMonth('');
+    setEndDay('');
+
     for(var index=0;index<42;index++) {
       if(parseInt((e.target.id).split(',')[3]) === scheduleList[index].key) {
         setThisSchedule(scheduleList[index].schedule);
@@ -263,6 +289,7 @@ const Calendar = ({menubar}) => {
       setPositionX(e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + 20);
       setPositionY(e.clientY + document.body.scrollTop + document.documentElement.scrollTop+ 5);
       setRightClick(num);
+      setScheduleChangeN(num);
     }
   }
 
@@ -272,6 +299,7 @@ const Calendar = ({menubar}) => {
     setScheduleItem(array);
     setDeleteSchedule(rightClick);    
     setRightClick(-1);
+    setScheduleChangeN(0);
   }
 
   const handleTitleDelete = (num) => {
@@ -281,6 +309,7 @@ const Calendar = ({menubar}) => {
     array.splice(num-1, 1);
     setScheduleItem(array);
     setMore(false);
+    setScheduleChangeN(num);
   }
 
   const handleSettingDelete = (num1, num2) => {
@@ -288,13 +317,49 @@ const Calendar = ({menubar}) => {
     array.splice(num2-1, 1);
     setScheduleItem(array);
     setSettingDelete(num1-1);
+    setScheduleChangeN(num1);
   }
 
   const handleScheduleClick = (num, object) => {
-    setTitle(object.title);
+    setTitle(object[0].title);
     setDateN(num);
-    setScheduleN(object.key);
-    setThisLabel(object.color)
+    setScheduleN(object[0].key);
+
+    for(var index=0;index<scheduleList.length;index++) {
+      var check = false;
+      for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+        if(scheduleList[index].schedule[index2] !== undefined) {
+          if(object[0].title === scheduleList[index].schedule[index2].title) {
+            setStartYear(lists[index].year);
+            setStartMonth(lists[index].month);
+            setStartDay(lists[index].day);
+            check = true;
+            break;
+          }
+          if(check === true) break;
+        }
+        if(check === true) break;
+      }
+      if(check === true) break;
+    }
+
+    for(var index=0;index<scheduleList.length;index++) {
+      for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+        if(scheduleList[index].schedule[index2] !== undefined) {
+          if(object[0].title === scheduleList[index].schedule[index2].title) {
+            setEndYear(lists[index].year);
+            setEndMonth(lists[index].month);
+            setEndDay(lists[index].day);
+          } else {
+            setEndYear(lists[num-1].year);
+            setEndMonth(lists[num-1].month);
+            setEndDay(lists[num-1].day);
+          }
+        }
+      }
+    }
+
+    setThisLabel(object[0].color)
     setScheduleVisible(true);
   }
 
@@ -305,25 +370,68 @@ const Calendar = ({menubar}) => {
     setLabelChange(num1-1);
   }
 
-  const handleMoreScheduleClick = (object) => {
-    setTitle(object.title);
+  const handleMoreScheduleClick = (object, num) => {
+    setTitle(object[num-1].title);
     setDateN(moreDelete[0]);
-    setScheduleN(object.key);
-    setThisLabel(object.color);
+    setScheduleN(object[num-1].key);
+    setThisLabel(object[num-1].color);
+
+    for(var index=0;index<scheduleList.length;index++) {
+      var check = false;
+      for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+        if(scheduleList[index].schedule[index2] !== undefined) {
+          if(object[num-1].title === scheduleList[index].schedule[index2].title) {
+            setStartYear(lists[index].year);
+            setStartMonth(lists[index].month);
+            setStartDay(lists[index].day);
+            check = true;
+            break;
+          }
+          if(check === true) break;
+        }
+        if(check === true) break;
+      }
+      if(check === true) break;
+    }
+
+    for(var index=0;index<scheduleList.length;index++) {
+      for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+        if(scheduleList[index].schedule[index2] !== undefined) {
+          if(object[0].title === scheduleList[index].schedule[index2].title) {
+            setEndYear(lists[index].year);
+            setEndMonth(lists[index].month);
+            setEndDay(lists[index].day);
+          } else {
+            setEndYear(lists[moreDelete[0]-1].year);
+            setEndMonth(lists[moreDelete[0]-1].month);
+            setEndDay(lists[moreDelete[0]-1].day);
+          }
+        }
+      }
+    }
     setMore(false);
     setScheduleVisible(true);
   }
 
   const handleAddSchedule = () => {
+
     setTitle(' ');
     setDateN(moreDelete[0]);
     setScheduleN(-1);
     setThisLabel('white');
+    setStartYear('');
+    setStartMonth('');
+    setStartDay('');
+    setEndYear('');
+    setEndMonth('');
+    setEndDay('');
     setMore(false);
     setScheduleVisible(true);
+    setScheduleChangeN(0);
   }
 
   const handleSaveSchedule = (num, input, label) => {
+
     setScheduleVisible(false);
     var array = scheduleList[num-1].schedule;
     for(var index=0;index<array.length;index++) {
@@ -336,15 +444,67 @@ const Calendar = ({menubar}) => {
     setScheduleItem(array);
     setSaveSchedule(num-1);
     setDateN(-1);
+    setScheduleChangeN(num);
   }
 
   const handleChangeTitle = (e, num1, num2) => {
+
     setScheduleVisible(false);
     var array = scheduleList[num1-1].schedule;
     array.splice(num2-1, 1, {key: num2, title: e.target.value, color: array[num2-1].color});
     setScheduleItem(array);
     setChangeTitleN(num1);
+    setScheduleChangeN(num1);
   }
+
+  const handleStartDateChange = (year, month, day, title, endDate, e) => {
+    var startnum = 0;
+
+    var label = '';
+
+    for(var index=0;index<42;index++) {
+      var listsArray = scheduleList[index].schedule
+      for(var index2=0;index2<listsArray.length;index2++) {
+        if(listsArray[index2].title === title) {
+          label = scheduleList[index].schedule[index2].color;
+          scheduleList[index].schedule.splice(index2, 1);
+        }
+      }
+    }
+
+    var SYear = e.target.value.substring(0,4);
+    var SMonth = e.target.value.substring(5,7);
+    var SDay = e.target.value.substring(8,10);
+
+
+    for(var index=0;index<42;index++) {
+      if(lists[index].year === parseInt(SYear) && lists[index].month === parseInt(SMonth) && lists[index].day === parseInt(SDay)) {
+        startnum = index;
+      }
+    }
+
+    var EYear = endDate.substring(0,4);
+    var EMonth = endDate.substring(5,7);
+    var EDay = endDate.substring(8,10);
+
+    var date1 = new Date(SYear, SMonth, SDay);
+    var date2 = new Date(EYear, EMonth, EDay);
+    var elapsedMSec = date2.getTime() - date1.getTime(); 
+    const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
+
+    for(var index=startnum;index<elapsedDay+startnum+1;index++) {
+      var array = scheduleList[index].schedule;
+      if(array.length !== 0) {
+        for(var index2=0;index2<array.length;index2++) {
+          array.splice(index2, 1, {key: index2+2, title: array[index2].title, color: array[index2].color});
+        }
+      }
+      scheduleList[index].schedule.unshift({key: 1, title: title, color: label});
+    }
+
+    setScheduleVisible(false);
+  }
+
 
   let size = menubar ? "120px" : "0px";
 
@@ -381,7 +541,7 @@ const Calendar = ({menubar}) => {
                     className={cx2('calendar-schedule0')} 
                     style={{backgroundColor: scheduleList[list.key-1].schedule[0].color}} 
                     onContextMenu={(e) => handleRightClick(e, list.key)}
-                    onClick={() => handleScheduleClick(list.key, scheduleList[list.key-1].schedule[0])}
+                    onClick={() => handleScheduleClick(list.key, scheduleList[list.key-1].schedule)}
                   >
                     {scheduleList[list.key-1].schedule[0].title}
                   </div>
@@ -439,6 +599,14 @@ const Calendar = ({menubar}) => {
           handleSettingDelete={handleSettingDelete}
           handleChangeTitle={handleChangeTitle}
           handleSaveSchedule={handleSaveSchedule}
+          changeCheckList = {schedule}
+          startYear={startYear}
+          startMonth={startMonth}
+          startDay={startDay}
+          endYear={endYear}
+          endMonth={endMonth}
+          endDay={endDay}
+          handleStartDateChange={handleStartDateChange}
         >
         </SettingSchedule>
       }

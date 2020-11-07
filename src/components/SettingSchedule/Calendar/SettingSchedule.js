@@ -17,7 +17,15 @@ const SettingSchedule = ({
     handleLabelcolor, 
     handleSettingDelete, 
     noneVisibleSchedule,
-    handleSaveSchedule
+    handleSaveSchedule,
+    changeCheckList, 
+    startYear,
+    startMonth,
+    startDay,
+    endYear,
+    endMonth,
+    endDay,
+    handleStartDateChange
   }) => {
     
   const [title, setTitle] = useState(textTitle),
@@ -26,8 +34,8 @@ const SettingSchedule = ({
         [year, setYear] = useState('2020'),
         [month, setMonth] = useState('10'),
         [day, setDay] = useState('9'),
-        [startDay, setStartDay] = useState(''),
-        [endDay, setEndDay] = useState(''),
+        [startDate, setStartDate] = useState(''),
+        [endDate, setEndDate] = useState(''),
         [members, setMembers] = useState([]),
         [memberTarget, setMemberTarget] = useState([]),
         [memberCheck, setMemberCheck] = useState(false),
@@ -95,6 +103,22 @@ const SettingSchedule = ({
 
     }
 
+    if(startDay < 10) {
+      startDay = '0' + startDay;
+    }
+
+    if(endDay < 10) {
+      endDay = '0' + endDay;
+    }
+
+    if(scheduleN === -1) {
+      setStartDate(startYear+'-'+startMonth+'-'+startDay);
+      setEndDate(endYear+'-'+endMonth+'-'+endDay);
+    } else {
+      setStartDate(startYear+'-'+startMonth+'-'+startDay);
+      setEndDate(endYear+'-'+endMonth+'-'+endDay);
+    }
+
     
   }, [title, memberTarget, thisMember, memberCheck])
 
@@ -158,15 +182,63 @@ const SettingSchedule = ({
         alert("다시 한 번 확인해주세요.");
         setTitleChange(false);
       } else {
-        handleChangeTitle(e, dateN, scheduleN);
-        setTitle(e.target.value);
-        setTitleChange(false);
+        var check = false;
+        for(var index=0;index<changeCheckList.length;index++) {
+          if(e.target.value === changeCheckList[index]) {
+            check = true;
+          }
+        }
+        if(check === false) {
+          handleChangeTitle(e, dateN, scheduleN);
+          setTitle(e.target.value);
+          setTitleChange(false);
+        } else {
+          alert("중복된 제목이 있습니다. 다시 한 번 확인해주세요.");
+          setTitleChange(false);
+        }
       }
     }
 
     if(e.keyCode === 27) {
       setTitleChange(false);
     }
+  }
+
+  const handleCreateTitle = (e) => {
+    if(e.keyCode===13){
+      if(e.target.value === '') {
+        alert("다시 한 번 확인해주세요.");
+      } else {
+        var check = false;
+        for(var index=0;index<changeCheckList.length;index++) {
+          if(e.target.value === changeCheckList[index]) {
+            check = true;
+          }
+        }
+        if(check === false) {
+          setTitleInput(e.target.value);
+          setTitleChange(true)
+        } else {
+          alert("중복된 제목이 있습니다. 다시 한 번 확인해주세요.");
+          e.target.value = '';
+        }
+        
+      }
+    }
+  }
+
+  const handleSave = () => {
+    if(titleInput === '') {
+      alert("제목을 확인해주세요.");
+    } else {
+      handleSaveSchedule(dateN, titleInput, labelSelect);
+      setLabelSelect('');
+    }
+  }
+
+  const handleSetStartDate = (e) => {
+    setStartDate(e.target.value);
+    handleStartDateChange(startYear, startMonth, startDay, textTitle, endDate, e);
   }
 
   return (
@@ -177,7 +249,7 @@ const SettingSchedule = ({
           <div className={cx('settingschedule-deleteIcon')}>
             <AiOutlineSave 
               size="25"
-              onClick={() => {console.log("setting : "+dateN);;handleSaveSchedule(dateN, titleInput, labelSelect);setLabelSelect('');}}
+              onClick={() => handleSave()}
             ></AiOutlineSave>
           </div>
           <div className={cx('settingschedule-closeIcon')}>
@@ -200,7 +272,7 @@ const SettingSchedule = ({
         { scheduleN === -1 ?
           titleChange === false ?
           <input className={cx('settingschedule-title-input')} 
-            onKeyDown={(e) => {if(e.keyCode===13){setTitleInput(e.target.value);setTitleChange(true)}}} 
+            onKeyDown={(e) => handleCreateTitle(e)} 
             autoFocus
           />
           :
@@ -234,11 +306,22 @@ const SettingSchedule = ({
           <div className={cx('settingschedule-dayTitle')}>일정</div>
           <div className={cx('settingschedule-dayContent')}>
             <div className={cx('settingschedule-StartDay')}>시작일</div>
-            <input type="date" className={cx('settingschedule-dayInput')} onChange={(e) => setStartDay(e.target.value)}/>
+            <input 
+              type="date" 
+              id="startDateInput"
+              className={cx('settingschedule-dayInput')} 
+              onChange={(e) => handleSetStartDate(e)} 
+              value={startDate}
+            />
           </div>
           <div className={cx('settingschedule-dayContent')}>
             <div className={cx('settingschedule-EndDay')}>마감일</div>
-            <input type="date" className={cx('settingschedule-dayInput')} onChange={(e) => setEndDay(e.target.value)}/>
+            <input 
+              type="date" 
+              className={cx('settingschedule-dayInput')} 
+              onChange={(e) => setEndDate(e.target.value)} 
+              value={endDate}
+            />
           </div>
         </div>
 

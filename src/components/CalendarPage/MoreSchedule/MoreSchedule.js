@@ -20,8 +20,6 @@ const MoreSchedule = ({
   
   useEffect(() => {
     setSchedules([]);
-
-
     if (thisSchedule.length === 0) {
       setSchedules([]);
       return;
@@ -44,7 +42,7 @@ const MoreSchedule = ({
               schedules.map(
               schedule => (
                 <div className={cx('moreschedule-text-box')} style={{backgroundColor: schedule.color}}>
-                  <div className={cx('moreschedule-text')} onClick={() => handleMoreScheduleClick(schedule)}>{schedule.title}</div>
+                  <div className={cx('moreschedule-text')} onClick={() => handleMoreScheduleClick(thisSchedule, schedule.key)}>{schedule.title}</div>
                   <div className={cx('moreschedule-text-delete')} onClick={() => handleTitleDelete(schedule.key)}><AiOutlineDelete></AiOutlineDelete></div>
                 </div>
             ))}
