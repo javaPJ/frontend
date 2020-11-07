@@ -38,28 +38,34 @@ const Calendar = ({menubar}) => {
         [thisSchedule, setThisSchedule] = useState([]),
         [positionX, setPositionX] = useState(''),
         [positionY, setPositionY] = useState(''),
-        [deleteSchedule, setDeleteSchedule] = useState(-1),
-        [moreDeleteN, setMoreDeleteN] = useState(-1),
+        [deleteSchedule, setDeleteSchedule] = useState(''),
+        [moreDeleteN, setMoreDeleteN] = useState(''),
         [moreDelete, setMoreDelete] = useState([]),
         labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'],
         [thisLabel, setThisLabel] = useState(''),
-        [labelChange, setLabelChange] = useState(-1),
+        [labelChange, setLabelChange] = useState(['','']),
         [scheduleItem, setScheduleItem] = useState([]),
         [dateN, setDateN] = useState(-1),
         [scheduleN, setScheduleN] = useState(-1),
-        [settingDelete, setSettingDelete] = useState(-1),
+        [settingDelete, setSettingDelete] = useState(''),
         [saveSchedule, setSaveSchedule] = useState(-1),
-        [changeTitleN, setChangeTitleN] = useState(-1);
+        [changeTitleN, setChangeTitleN] = useState(['','']);
 
 
   useEffect(() => {
       var week = new Date(year, month-1).getDay();
       var nextWeek = new Date(year, month).getDay();
 
-
-      if(changeTitleN !== -1) {
+      if(changeTitleN[0] !== '') {
+        for(var index=0;index<scheduleList.length;index++) {
+          for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+            if(scheduleList[index].schedule[index2].title === changeTitleN[0]) {
+              scheduleList[index].schedule.splice(index2,1,{key: scheduleList[index].schedule[index2].key, title: changeTitleN[1], color: scheduleList[index].schedule[index2].color});
+            }
+          }
+        }
         setScheduleItem([]);
-        setChangeTitleN(-1);
+        setChangeTitleN(['','']);
       }
 
       if(saveSchedule !== -1) {
@@ -69,39 +75,53 @@ const Calendar = ({menubar}) => {
         setMoreDelete([]);
       }
 
-      if(settingDelete !== -1) {
-        scheduleList.splice(settingDelete, 1, {key: settingDelete+1, schedule: scheduleItem});
-        for(var index=0;index<scheduleList[settingDelete].schedule.length;index++) {
-          scheduleList[settingDelete].schedule.splice(index,1, {key: index+1, title: scheduleList[settingDelete].schedule[index].title, color: scheduleList[settingDelete].schedule[index].color});
+      if(settingDelete !== '') {
+        for(var index=0;index<scheduleList.length;index++) {
+          for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+            if(scheduleList[index].schedule[index2].title === settingDelete) {
+              scheduleList[index].schedule.splice(index2,1);
+            }
+          }
         }
-        setSettingDelete(-1);
+        setSettingDelete('');
         setScheduleItem([]);
       }
 
-      if(labelChange !== -1) {
-        scheduleList.splice(labelChange, 1, {key: scheduleList[labelChange].key, schedule: scheduleItem});
-        setLabelChange(-1);
-        setScheduleItem([]);
+      if(labelChange[0] !== '') {
+        for(var index=0;index<scheduleList.length;index++) {
+          for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+            if(scheduleList[index].schedule[index2].title === labelChange[0]) {
+              scheduleList[index].schedule.splice(index2,1,{key: scheduleList[index].schedule[index2].key, title: scheduleList[index].schedule[index2].title, color: labelChange[1]});
+            }
+          }
+        }
+
+        setLabelChange(['','']);
       }
 
-      if(moreDeleteN !== -1) {
-        scheduleList.splice(moreDelete[1]-1, 1, {key: moreDelete[1], schedule: scheduleItem});
-        for(var index=0;index<scheduleList[moreDelete[1]-1].schedule.length;index++) {
-          scheduleList[moreDelete[1]-1].schedule.splice(index,1, {key: index+1, title: scheduleList[moreDelete[1]-1].schedule[index].title, color: scheduleList[moreDelete[1]-1].schedule[index].color});
+      if(moreDeleteN !== '') {
+        for(var index=0;index<scheduleList.length;index++) {
+          for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+            if(scheduleList[index].schedule[index2].title === moreDeleteN) {
+              scheduleList[index].schedule.splice(index2, 1);
+            }
+          }
         }
-        setScheduleItem([])
+        
         setMoreDelete([]);
-        setMoreDeleteN(-1);
+        setMoreDeleteN('');
       }
 
-      if(deleteSchedule !== -1) {
-        scheduleList.splice(deleteSchedule-1, 1, {key: deleteSchedule, schedule: scheduleItem});
-
-        for(var index=0;index<scheduleList[deleteSchedule-1].schedule.length;index++) {
-          scheduleList[deleteSchedule-1].schedule.splice(index,1, {key: index+1, title: scheduleList[deleteSchedule-1].schedule[index].title, color: scheduleList[deleteSchedule-1].schedule[index].color});
+      if(deleteSchedule !== '') {
+        for(var index=0;index<scheduleList.length;index++) {
+          for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
+            if(scheduleList[index].schedule[index2].title === deleteSchedule) {
+              scheduleList[index].schedule.splice(index2, 1);
+            }
+          }
         }
-        setDeleteSchedule(-1);
-        setScheduleItem([]);
+
+        setDeleteSchedule('');
       }
 
       if(load === -1){
@@ -293,29 +313,25 @@ const Calendar = ({menubar}) => {
   }
 
   const handleDeleteSchedule = () => {
-    var array = scheduleList[rightClick-1].schedule;
-    array.splice(0,1)
-    setScheduleItem(array);
-    setDeleteSchedule(rightClick);    
+    var title = scheduleList[rightClick-1].schedule[0].title;
+
+    setDeleteSchedule(title);    
     setRightClick(-1);
     setScheduleChangeN(0);
   }
 
   const handleTitleDelete = (num) => {
-    setMoreDeleteN(num);
     moreDelete.unshift(num);
-    var array = scheduleList[moreDelete[1]-1].schedule;
-    array.splice(num-1, 1);
-    setScheduleItem(array);
+    var title = scheduleList[moreDelete[1]-1].schedule[num-1].title;
+    setMoreDeleteN(title);
+
     setMore(false);
     setScheduleChangeN(num);
   }
 
   const handleSettingDelete = (num1, num2) => {
-    var array = scheduleList[num1-1].schedule;
-    array.splice(num2-1, 1);
-    setScheduleItem(array);
-    setSettingDelete(num1-1);
+    var title = scheduleList[num1-1].schedule[num2-1].title;
+    setSettingDelete(title);
     setScheduleChangeN(num1);
   }
 
@@ -364,10 +380,8 @@ const Calendar = ({menubar}) => {
   }
 
   const handleLabelcolor = (label, num1, num2) => {
-    var array = scheduleList[num1-1].schedule;
-    array.splice(num2-1, 1, {key: array[num2-1].key, title: array[num2-1].title, color: label});
-    setScheduleItem(array);
-    setLabelChange(num1-1);
+    var title = scheduleList[num1-1].schedule[num2-1].title;
+    setLabelChange([title, label]);
   }
 
   const handleMoreScheduleClick = (object, num) => {
@@ -402,9 +416,9 @@ const Calendar = ({menubar}) => {
             setEndMonth(lists[index].month);
             setEndDay(lists[index].day);
           } else {
-            setEndYear(lists[moreDelete[0]-1].year);
-            setEndMonth(lists[moreDelete[0]-1].month);
-            setEndDay(lists[moreDelete[0]-1].day);
+            setEndYear(lists[num-1].year);
+            setEndMonth(lists[num-1].month);
+            setEndDay(lists[num-1].day);
           }
         }
       }
@@ -448,13 +462,9 @@ const Calendar = ({menubar}) => {
   }
 
   const handleChangeTitle = (e, num1, num2) => {
-
     setScheduleVisible(false);
-    var array = scheduleList[num1-1].schedule;
-    array.splice(num2-1, 1, {key: num2, title: e.target.value, color: array[num2-1].color});
-    setScheduleItem(array);
-    setChangeTitleN(num1);
-    setScheduleChangeN(num1);
+    var title = scheduleList[num1-1].schedule[num2-1].title;
+    setChangeTitleN([title, e.target.value]);
   }
 
   const handleStartDateChange = (title, endDate, e) => {
@@ -498,10 +508,6 @@ const Calendar = ({menubar}) => {
     var date2 = new Date(EYear, EMonth-1, EDay);
     var elapsedMSec = date2.getTime() - date1.getTime(); 
     const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
-    
-    console.log("시작 배열 크기 : "+startnum);
-    console.log("차이 : "+elapsedDay);
-    console.log("elapsedDay+startnum+1 : "+(elapsedDay+startnum+1));
 
     if(startnum === 0) {
       for(var index=startnum;index<endnum+1;index++) {
