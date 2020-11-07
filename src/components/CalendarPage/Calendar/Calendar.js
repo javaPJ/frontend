@@ -214,7 +214,6 @@ const Calendar = ({menubar}) => {
 
   },[year, month, load, deleteSchedule, moreDeleteN, labelChange, settingDelete, saveSchedule, changeTitleN, scheduleChangeN]);
 
-
   function dayCount(year, month){
     switch(month) {
       case 1: case 3: case 5: case 7: case 8: case 10: case 12:
@@ -351,6 +350,7 @@ const Calendar = ({menubar}) => {
             setEndMonth(lists[index].month);
             setEndDay(lists[index].day);
           } else {
+            console.log("else");
             setEndYear(lists[num-1].year);
             setEndMonth(lists[num-1].month);
             setEndDay(lists[num-1].day);
@@ -457,8 +457,9 @@ const Calendar = ({menubar}) => {
     setScheduleChangeN(num1);
   }
 
-  const handleStartDateChange = (year, month, day, title, endDate, e) => {
+  const handleStartDateChange = (title, endDate, e) => {
     var startnum = 0;
+    var endnum = 42;
 
     var label = '';
 
@@ -487,12 +488,91 @@ const Calendar = ({menubar}) => {
     var EMonth = endDate.substring(5,7);
     var EDay = endDate.substring(8,10);
 
-    var date1 = new Date(SYear, SMonth, SDay);
-    var date2 = new Date(EYear, EMonth, EDay);
+    for(var index=0;index<42;index++) {
+      if(lists[index].year === parseInt(EYear) && lists[index].month === parseInt(EMonth) && lists[index].day === parseInt(EDay)) {
+        endnum = index;
+      }
+    }
+
+    var date1 = new Date(SYear, SMonth-1, SDay);
+    var date2 = new Date(EYear, EMonth-1, EDay);
     var elapsedMSec = date2.getTime() - date1.getTime(); 
     const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
+    
+    console.log("시작 배열 크기 : "+startnum);
+    console.log("차이 : "+elapsedDay);
+    console.log("elapsedDay+startnum+1 : "+(elapsedDay+startnum+1));
 
-    for(var index=startnum;index<elapsedDay+startnum+1;index++) {
+    if(startnum === 0) {
+      for(var index=startnum;index<endnum+1;index++) {
+        var array = scheduleList[index].schedule;
+        if(array.length !== 0) {
+          for(var index2=0;index2<array.length;index2++) {
+            array.splice(index2, 1, {key: index2+2, title: array[index2].title, color: array[index2].color});
+          }
+        }
+        scheduleList[index].schedule.unshift({key: 1, title: title, color: label});
+      }
+    } else {
+      for(var index=startnum;index<elapsedDay+startnum+1;index++) {
+        var array = scheduleList[index].schedule;
+        if(array.length !== 0) {
+          for(var index2=0;index2<array.length;index2++) {
+            array.splice(index2, 1, {key: index2+2, title: array[index2].title, color: array[index2].color});
+          }
+        }
+        scheduleList[index].schedule.unshift({key: 1, title: title, color: label});
+      }
+    }
+
+
+    setScheduleVisible(false);
+  }
+
+  const handleEndDateChange = (title, startDate, e) => {
+    var endnum = 0;
+
+    var label = '';
+
+    for(var index=0;index<42;index++) {
+      var listsArray = scheduleList[index].schedule
+      for(var index2=0;index2<listsArray.length;index2++) {
+        if(listsArray[index2].title === title) {
+          label = scheduleList[index].schedule[index2].color;
+          scheduleList[index].schedule.splice(index2, 1);
+        }
+      }
+    }
+
+    let SYear = startDate.substring(0,4);
+    let SMonth = startDate.substring(5,7);
+    let SDay = startDate.substring(8,10);
+
+
+    for(var index=0;index<42;index++) {
+      if(lists[index].year === parseInt(SYear) && lists[index].month === parseInt(SMonth) && lists[index].day === parseInt(SDay)) {
+        endnum = index;
+      }
+    }
+    console.log(e.target.value);
+    let EYear = e.target.value.substring(0,4);
+    let EMonth = e.target.value.substring(5,7);
+    let EDay = e.target.value.substring(8,10);
+    console.log(EYear);
+    console.log(EMonth);
+    console.log(EDay);
+
+    let date1 = new Date(SYear, SMonth-1, SDay);
+    let date2 = new Date(EYear, EMonth-1, EDay);
+    let elapsedMSec = date2.getTime() - date1.getTime(); 
+    const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
+    console.log(date2);
+
+    for(var index=endnum;index<elapsedDay+endnum+1;index++) {
+      if(index >= 42) {
+        setScheduleVisible(false);
+        return;
+      }
       var array = scheduleList[index].schedule;
       if(array.length !== 0) {
         for(var index2=0;index2<array.length;index2++) {
@@ -607,6 +687,7 @@ const Calendar = ({menubar}) => {
           endMonth={endMonth}
           endDay={endDay}
           handleStartDateChange={handleStartDateChange}
+          handleEndDateChange={handleEndDateChange}
         >
         </SettingSchedule>
       }

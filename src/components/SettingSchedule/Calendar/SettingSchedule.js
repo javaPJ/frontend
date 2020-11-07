@@ -25,7 +25,8 @@ const SettingSchedule = ({
     endYear,
     endMonth,
     endDay,
-    handleStartDateChange
+    handleStartDateChange,
+    handleEndDateChange
   }) => {
     
   const [title, setTitle] = useState(textTitle),
@@ -103,6 +104,15 @@ const SettingSchedule = ({
 
     }
 
+
+    if(startMonth < 10) {
+      startMonth = '0' + startMonth;
+    }
+
+    if(endMonth < 10) {
+      endMonth = '0' + endMonth;
+    }
+
     if(startDay < 10) {
       startDay = '0' + startDay;
     }
@@ -111,13 +121,10 @@ const SettingSchedule = ({
       endDay = '0' + endDay;
     }
 
-    if(scheduleN === -1) {
-      setStartDate(startYear+'-'+startMonth+'-'+startDay);
-      setEndDate(endYear+'-'+endMonth+'-'+endDay);
-    } else {
-      setStartDate(startYear+'-'+startMonth+'-'+startDay);
-      setEndDate(endYear+'-'+endMonth+'-'+endDay);
-    }
+
+
+    setStartDate(startYear+'-'+startMonth+'-'+startDay);
+    setEndDate(endYear+'-'+endMonth+'-'+endDay);
 
     
   }, [title, memberTarget, thisMember, memberCheck])
@@ -158,7 +165,7 @@ const SettingSchedule = ({
           <div 
             className={cx('settingschedule-labelCircle')} 
             style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
-            onClick={(e) => {handleLabelcolor(label, dateN, scheduleN);setLabelSelect(label)}}
+            onClick={(e) => {handleLabelcolor(label, dateN, scheduleN);setLabelSelect(label);}}
           >
             .
           </div> 
@@ -166,7 +173,7 @@ const SettingSchedule = ({
           <div 
             className={cx('settingschedule-labelCircle')} 
             style={{backgroundColor: label, color: label, border: "3px solid" + borderColor}} 
-            onClick={(e) => {setLabelSelect(label)}}
+            onClick={(e) => {setLabelSelect(label);}}
           >
             .
           </div> 
@@ -238,7 +245,13 @@ const SettingSchedule = ({
 
   const handleSetStartDate = (e) => {
     setStartDate(e.target.value);
-    handleStartDateChange(startYear, startMonth, startDay, textTitle, endDate, e);
+    handleStartDateChange(textTitle, endDate, e);
+  }
+
+  const handleSetEndDate = (e) => {
+    console.log(e.target.value);
+    setEndDate(e.target.value);
+    handleEndDateChange(textTitle, startDate, e);
   }
 
   return (
@@ -308,7 +321,6 @@ const SettingSchedule = ({
             <div className={cx('settingschedule-StartDay')}>시작일</div>
             <input 
               type="date" 
-              id="startDateInput"
               className={cx('settingschedule-dayInput')} 
               onChange={(e) => handleSetStartDate(e)} 
               value={startDate}
@@ -319,7 +331,7 @@ const SettingSchedule = ({
             <input 
               type="date" 
               className={cx('settingschedule-dayInput')} 
-              onChange={(e) => setEndDate(e.target.value)} 
+              onChange={(e) => handleSetEndDate(e)} 
               value={endDate}
             />
           </div>
