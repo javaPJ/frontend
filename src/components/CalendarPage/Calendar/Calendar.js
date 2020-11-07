@@ -365,11 +365,6 @@ const Calendar = ({menubar}) => {
             setEndYear(lists[index].year);
             setEndMonth(lists[index].month);
             setEndDay(lists[index].day);
-          } else {
-            console.log("else");
-            setEndYear(lists[num-1].year);
-            setEndMonth(lists[num-1].month);
-            setEndDay(lists[num-1].day);
           }
         }
       }
@@ -411,14 +406,10 @@ const Calendar = ({menubar}) => {
     for(var index=0;index<scheduleList.length;index++) {
       for(var index2=0;index2<scheduleList[index].schedule.length;index2++) {
         if(scheduleList[index].schedule[index2] !== undefined) {
-          if(object[0].title === scheduleList[index].schedule[index2].title) {
+          if(object[num-1].title === scheduleList[index].schedule[index2].title) {
             setEndYear(lists[index].year);
             setEndMonth(lists[index].month);
             setEndDay(lists[index].day);
-          } else {
-            setEndYear(lists[num-1].year);
-            setEndMonth(lists[num-1].month);
-            setEndDay(lists[num-1].day);
           }
         }
       }
