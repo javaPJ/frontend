@@ -1,0 +1,111 @@
+.roadmap-back {
+  position: absolute;
+  left: 190px;
+  top: 80px;
+  background-color: white;
+  width: 1200px;
+
+  .roadmap-header {
+
+    .roadmap-title-back {
+      background-color: #343742;
+      width: 250px;
+      padding: 20px;
+      height: 40px;
+      border-right: 1.2px solid #707070;
+
+      float: left;
+
+      .roadmap-title {
+        font-size: 30px;
+        color: white;
+        float: left;
+      }
+
+      .roadmap-plusButton {
+        float: right;
+        margin-right: 10px;
+        margin-top: 5px;
+      }
+    }
+
+    .roadmap-calendar-back {
+      float: left;
+      height: 80px;
+      width: 908.8px;
+      overflow: scroll;
+
+
+      .roadmap-calendar {
+        width: 7000px;
+  
+        .roadmap-month {
+          float: left;
+  
+          .roadmap-N-month {
+            background-color: #343742;
+            color: white;
+            padding: 10px;
+            border-bottom: 1.2px solid #707070;
+            border-right: 1.2px solid #707070;
+
+            &:first-child {
+              border-left: 1.2px solid #707070;
+            }
+          }
+  
+          .roadmap-days {
+  
+            .roadmap-day {
+              float: left;
+              background-color: #343742;
+              color: white;
+              width: 16px;
+              text-align: center;
+              padding: 8px;
+              border-right: 1.2px solid #707070;
+
+
+              &:first-child {
+                border-left: 1.2px solid #707070;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .roadmap-main {
+
+    .roadmap-text-list {
+      float: left;
+      width: 250px;
+      padding: 0px 20px;
+      border-right: 1.2px solid #707070;
+
+      .roadmap-text {
+
+      }
+    }
+
+    .roadmap-schedule-back {
+      float: left;
+      border-left: 1.2px solid #707070;
+
+      .roadmap-schedule-list {
+        .roadmap-schedule {
+
+          .roadmap-schedule-label {
+  
+          }
+        }
+      }
+    }
+  }
+}
+  
+::-webkit-scrollbar {
+  display: none;
+}
