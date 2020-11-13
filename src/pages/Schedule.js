@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header/Header';
 import ServerBar from '../components/ServerBarPage/ServerBar/ServerBar';
 import MenuBar from '../components/MenuBarPage/MenuBar/MenuBar';
@@ -6,6 +6,8 @@ import Calendar from '../components/CalendarPage/Calendar/Calendar';
 import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/MainCreate';
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
+import ProjectExit from '../components/MenuBarPage/ProjectExit/ProjectExit';
+
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +23,8 @@ function Schedule() {
       { id: 2, title: "test2", color: "#FF9696", online: false},
     ]
   );
+  const [exit, setExit] = useState(false);
+  const [exitTrue, setExitTrue] = useState(-1);
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
@@ -47,16 +51,46 @@ function Schedule() {
     }
   }
 
+  const handleProjectExit = () => {
+    for(var i=0;i<lists.length;i++) {
+      if(lists[i].online === true) {
+        setExitTrue(i);
+      }
+    }
+
+    setExit(false);
+  }
+
+  useEffect(() => {
+    if(exitTrue !== -1) {
+      lists.splice(exitTrue, 1);
+
+      for(var i=0;i<lists.length;i++) {
+        lists.splice(i,1,{id: i+1, title: lists[i].title, color: lists[i].color, online: false })
+      }
+      
+      lists.splice(0, 1, {id: lists[0].id, title: lists[0].title, color: lists[0].color, online: true});
+
+      setExitTrue(-1);
+    }
+  }, [exitTrue])
+
   return (
     <div>
       <Calendar menubar={menubar}></Calendar>
-      <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)}></MenuBar>
+      <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)}></MenuBar>
       <Header title={title[0]}></Header>
       <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
       { create === true &&
         <div>
           <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
           <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
+        </div>
+      }
+      { exit === true &&
+        <div>
+          <div className={cx('backOpacity')}></div>
+          <ProjectExit handleProjectExit={handleProjectExit}></ProjectExit>
         </div>
       }
     </div>
