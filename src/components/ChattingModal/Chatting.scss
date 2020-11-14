@@ -1,0 +1,102 @@
+.chat-icon {
+    width: 20px;
+    height: 20px;
+    background-color: #343742;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.chat-main {
+    background-color: white;
+    width: 340px;
+    height: 400px;
+    margin-right: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border: 1px solid #343742;
+    box-shadow: 2px 2px 10px 2px gray;
+
+    .chat-header {
+        width: 300px;
+        height: 34px;
+        background-color: #343742;
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        padding: 5px 20px;
+
+        .chat-title {
+            float: left;
+            font-size: 25px;
+            color: white;
+        }
+
+        .chat-close {
+            margin-top: 3px;
+            float: right;
+        }
+    }
+
+    .chat-contents {
+        padding: 20px;
+        height: 316px;
+        width: 300px;
+
+        .chat-lists {
+            padding: 10px;
+            width: 280px;
+            height: auto;
+            border: 1px solid #343742;
+            border-radius: 10px;
+            overflow: scroll;
+
+            .chat-item {
+                width: 100%;
+                margin-bottom: 15px;
+
+                .chat-item-header {
+                    margin-bottom: 7px;
+                    
+                    .chat-username {
+                        font-weight: bold;
+                    }
+
+                    .chat-date {
+                        float: right;
+                        margin-top: -17px;
+                        font-size: 12px;
+                    }
+                }
+
+                .chat-item-text {
+                    width: 280px;
+                    word-break: keep-all;
+                    word-wrap: break-word;
+                }
+            }
+        }
+
+        .chat-input {
+            margin-top: 20px;
+            padding: 10px;
+            width: 280px;
+            height: auto;
+            border: 1px solid #343742;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            resize: none;
+        }
+    }
+}
+
+::-webkit-scrollbar {
+    display: none;
+}

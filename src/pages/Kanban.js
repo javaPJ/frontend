@@ -7,6 +7,7 @@ import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/Main
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
 import ProjectExit from '../components/MenuBarPage/ProjectExit/ProjectExit';
+import Chatting from './../components/ChattingModal/Chatting';
 
 const cx = classNames.bind(styles);
 
@@ -24,6 +25,9 @@ function Kanban() {
   );
   const [exit, setExit] = useState(false);
   const [exitTrue, setExitTrue] = useState(-1);
+  const [mouseMove, setMouseMove] = useState(false);
+  const [chatOnline, setChatOnline] = useState(false);
+  const [positionY, setPositionY] = useState(0);
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
@@ -74,12 +78,31 @@ function Kanban() {
     }
   }, [exitTrue])
 
+  const handleMousePosition = (e) => {
+    e.preventDefault();
+
+    if(chatOnline === false) {
+      if(e.clientX > 1514) {
+        setMouseMove(true);
+        setPositionY(e.clientY)
+      }else {
+        setMouseMove(false);
+      }
+    }
+  }
+
   return (
-    <div>
+    <div onMouseMove={(e) => handleMousePosition(e)}>
       <KanbanPage menubar={menubar}></KanbanPage>
       <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)}></MenuBar>
       <Header title={title[0]}></Header>
       <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
+      <Chatting 
+        positionY={positionY}
+        mouseMove={mouseMove} 
+        handleChattingOn={() => setChatOnline(true)} 
+        handleChattingOff={() => {setChatOnline(false);setMouseMove(false);}}
+      />
       { create === true &&
         <div>
           <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
