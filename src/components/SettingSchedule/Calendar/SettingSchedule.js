@@ -141,7 +141,14 @@ const SettingSchedule = ({
       let decoration = member.check ? "line-through" : "none";
       let color = member.check ? "red" : "black";
       return (
-        <div className={cx('settingschedule-list-ID')} style={{textDecoration: decoration, color: color}} id={member.key} onClick={(e) => setMemberTarget([e.target.id, e.target.innerText])}>{member.name}</div>
+        <div 
+          className={cx('settingschedule-list-ID')} 
+          style={{textDecoration: decoration, color: color}} 
+          id={member.key} 
+          onClick={(e) => setMemberTarget([e.target.id, e.target.innerText])}
+        >
+          {member.name}
+        </div>
       )
     }
   )
@@ -238,20 +245,27 @@ const SettingSchedule = ({
     if(titleInput === '') {
       alert("제목을 확인해주세요.");
     } else {
-      handleSaveSchedule(dateN, titleInput, labelSelect);
+      handleSaveSchedule(titleInput, labelSelect, startDate, endDate);
       setLabelSelect('');
     }
   }
 
   const handleSetStartDate = (e) => {
-    setStartDate(e.target.value);
-    handleStartDateChange(textTitle, endDate, e);
+    if(scheduleN === -1) {
+      setStartDate(e.target.value);
+    } else {
+      setStartDate(e.target.value);
+      handleStartDateChange(textTitle, endDate, e);
+    }
   }
 
   const handleSetEndDate = (e) => {
-    console.log(e.target.value);
-    setEndDate(e.target.value);
-    handleEndDateChange(textTitle, startDate, e);
+    if(scheduleN === -1) {
+      setEndDate(e.target.value);
+    } else {
+      setEndDate(e.target.value);
+      handleEndDateChange(textTitle, startDate, e);
+    }
   }
 
   return (
@@ -289,10 +303,10 @@ const SettingSchedule = ({
             autoFocus
           />
           :
-          <div className={cx('settingschedule-title')}>{titleInput}</div>
+          <div className={cx('settingschedule-title')} title={titleInput}>{titleInput}</div>
           :
          titleChange === false ?
-          <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)}>{title}</div>
+          <div className={cx('settingschedule-title')} onClick={() => setTitleChange(true)} title={title}>{title}</div>
           :
           <input className={cx('settingschedule-title-input')} onKeyDown={(e) => handleThisTitle(e)} autoFocus/>
         }
@@ -369,6 +383,23 @@ const SettingSchedule = ({
 
         <div className={cx('settingschedule-taskDiv')}>
           <div className={cx('settingschedule-taskTitle')}>업무상태</div>
+          { taskCheck === true ?
+            <div className={cx('settingSchedule-TaskList')}>
+              <AiOutlineMinus 
+                size="15" 
+                className={cx('settingschedule-plusIcon')}
+                onClick={() => setTaskCheck(false)}
+              ></AiOutlineMinus>
+            </div>
+            :
+            <div className={cx('settingSchedule-TaskList')}>
+              <AiOutlinePlus 
+                size="15" 
+                className={cx('settingschedule-plusIcon')}
+                onClick={() => setTaskCheck(true)}
+              ></AiOutlinePlus>
+            </div>
+          }
         </div>
 
         <div className={cx('settingschedule-labelDiv')}>

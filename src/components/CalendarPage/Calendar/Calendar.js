@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Calendar.scss';
 import styles2 from './CalendarItem.scss';
-
 import classNames from 'classnames/bind';
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import MoreSchedule from './../MoreSchedule/MoreSchedule.js';
@@ -12,6 +11,7 @@ const cx2 = classNames.bind(styles2);
 
 
 const Calendar = ({menubar}) => {
+  let ThisToday = new Date();
   var today = new Date();
 
   const [load, setLoad] = useState(-1),
@@ -49,6 +49,10 @@ const Calendar = ({menubar}) => {
         [scheduleN, setScheduleN] = useState(-1),
         [settingDelete, setSettingDelete] = useState(''),
         [saveSchedule, setSaveSchedule] = useState(-1),
+        [saveTitle, setSaveTitle] = useState(''),
+        [saveColor, setSaveColor] = useState(''),
+        [saveStart, setSaveStart] = useState(''),
+        [saveEnd, setSaveEnd] = useState(''),
         [changeTitleN, setChangeTitleN] = useState(['','']);
 
 
@@ -66,13 +70,6 @@ const Calendar = ({menubar}) => {
         }
         setScheduleItem([]);
         setChangeTitleN(['','']);
-      }
-
-      if(saveSchedule !== -1) {
-        scheduleList.splice(saveSchedule,1, {key: scheduleList[saveSchedule].key, schedule: scheduleItem});
-        setSaveSchedule(-1);
-        setScheduleItem([]);
-        setMoreDelete([]);
       }
 
       if(settingDelete !== '') {
@@ -284,12 +281,12 @@ const Calendar = ({menubar}) => {
     setThisMonth(parseInt((e.target.id).split(',')[1]));
     setThisDay(parseInt((e.target.id).split(',')[2]));
 
-    setStartYear('');
-    setStartMonth('');
-    setStartDay('');
-    setEndYear('');
-    setEndMonth('');
-    setEndDay('');
+    setStartYear(thisYear);
+    setStartMonth(thisMonth);
+    setStartDay(thisDay);
+    setEndYear(thisYear);
+    setEndMonth(thisMonth);
+    setEndDay(thisDay);
 
     for(var index=0;index<42;index++) {
       if(parseInt((e.target.id).split(',')[3]) === scheduleList[index].key) {
@@ -419,38 +416,73 @@ const Calendar = ({menubar}) => {
   }
 
   const handleAddSchedule = () => {
-
     setTitle(' ');
     setDateN(moreDelete[0]);
     setScheduleN(-1);
     setThisLabel('white');
-    setStartYear('');
-    setStartMonth('');
-    setStartDay('');
-    setEndYear('');
-    setEndMonth('');
-    setEndDay('');
+    setStartYear(thisYear.toString());
+    setStartMonth(thisMonth.toString());
+    setStartDay(thisDay.toString());
+    setEndYear(thisYear.toString());
+    setEndMonth(thisMonth.toString());
+    setEndDay(thisDay.toString());
     setMore(false);
     setScheduleVisible(true);
     setScheduleChangeN(0);
   }
 
-  const handleSaveSchedule = (num, input, label) => {
-
+  const handleSaveSchedule = (input, label, start, end) => {
     setScheduleVisible(false);
-    var array = scheduleList[num-1].schedule;
-    for(var index=0;index<array.length;index++) {
-      array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color});
-    }
+    setSaveTitle(input);
     if(label === '') {
-      label = "#C0C0C0";
+      setSaveColor("#A8A9Ac");
+    } else {
+      setSaveColor(label);
     }
-    array.unshift({key:1, title: input, color: label});
-    setScheduleItem(array);
-    setSaveSchedule(num-1);
-    setDateN(-1);
-    setScheduleChangeN(num);
+    setSaveStart(start);
+    setSaveEnd(end);
+    setSaveSchedule(0);
   }
+
+  useEffect(() => {
+    if(saveSchedule !== -1) {
+
+      var SYear = saveStart.substring(0,4);
+      var SMonth = saveStart.substring(5,7);
+      var SDay = saveStart.substring(8,10);
+
+      var EYear = saveEnd.substring(0,4);
+      var EMonth = saveEnd.substring(5,7);
+      var EDay = saveEnd.substring(8,10);
+
+      var startValue, endValue;
+
+      for(var index=0;index<lists.length;index++) {
+        if(parseInt(SYear) === lists[index].year && parseInt(SMonth) === lists[index].month && parseInt(SDay) === lists[index].day){
+            startValue = index
+        }
+        if(parseInt(EYear) === lists[index].year && parseInt(EMonth) === lists[index].month && parseInt(EDay) === lists[index].day){
+            endValue = index;
+        }
+      }
+
+      for(var index=startValue;index<endValue+1;index++) {
+        var array = scheduleList[index].schedule;
+
+        for(var index2=0;index2<array.length;index2++) {
+          array.splice(index2, 1, {key: index2+2, title: array[index2].title, color: array[index2].color})
+        }
+
+        array.unshift({key: 1, title: saveTitle, color: saveColor});
+        
+      }
+
+      setSaveSchedule(-1);
+    }
+    console.log(lists);
+    console.log(scheduleList);
+  }, [saveSchedule])
+
 
   const handleChangeTitle = (e, num1, num2) => {
     setScheduleVisible(false);
@@ -582,12 +614,11 @@ const Calendar = ({menubar}) => {
     setScheduleVisible(false);
   }
 
-
-  let size = menubar ? "120px" : "0px";
+  let size = menubar ? "310px" : "190px";
 
   return(
-    <div>
-      <div style={{marginLeft: size}} className={cx('calendar-back')}>
+    <div style={{width: "100%", height: "100%", position:"absolute"}}>
+      <div style={{left: size}} className={cx('calendar-back')}>
         <div className={cx('calendar-header')}>
           <AiFillCaretLeft color="#343742" className={cx('calendar-icons')} size="30" onClick={back}/>
           <div className={cx('calendar-date')}>{year}년 {month}월</div>
@@ -604,13 +635,24 @@ const Calendar = ({menubar}) => {
           { lists.map(
             list => (
           <div className={cx2('calendarItem-back')}>
-            <div 
-              className={cx2('calendarItem-day')} 
-              id={[list.year, list.month, list.day, list.key]} 
-              onClick={(e) => thisDayClick(e, list.key)}
-            >
-              {list.day}
-            </div>
+            { ((list.year === ThisToday.getFullYear()) && (list.month === ThisToday.getMonth()+1) && (list.day === ThisToday.getDate())) ?
+              <div 
+                className={cx2('calendarItem-day')} 
+                id={[list.year, list.month, list.day, list.key]} 
+                onClick={(e) => thisDayClick(e, list.key)}
+                style={{backgroundColor : "#343742", color: "white"}}
+              >
+                {list.day}
+              </div>
+              :
+              <div 
+                className={cx2('calendarItem-day')} 
+                id={[list.year, list.month, list.day, list.key]} 
+                onClick={(e) => thisDayClick(e, list.key)}
+              >
+                {list.day}
+              </div>
+            }
             { list.key === scheduleList[list.key-1].key &&
               <div>
                 { scheduleList[list.key-1].schedule.length !== 0 &&
@@ -619,6 +661,7 @@ const Calendar = ({menubar}) => {
                     style={{backgroundColor: scheduleList[list.key-1].schedule[0].color}} 
                     onContextMenu={(e) => handleRightClick(e, list.key)}
                     onClick={() => handleScheduleClick(list.key, scheduleList[list.key-1].schedule)}
+                    title={scheduleList[list.key-1].schedule[0].title}
                   >
                     {scheduleList[list.key-1].schedule[0].title}
                   </div>
@@ -661,7 +704,8 @@ const Calendar = ({menubar}) => {
           handleTitleDelete={handleTitleDelete}
           handleMoreScheduleClick={handleMoreScheduleClick}
           handleAddSchedule={handleAddSchedule}
-        />
+        >
+        </MoreSchedule>
       }
       { scheduleVisible === true &&
         <SettingSchedule 
