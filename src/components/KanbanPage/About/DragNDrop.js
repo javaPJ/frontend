@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import styles from './../KanbanPage.scss';
-import SettingSchedule from '../../SettingSchedule/SettingSchedule';
+import SettingSchedule from '../../SettingSchedule/Kanban/SettingSchedule';
 import classNames from 'classnames/bind';
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
@@ -205,12 +205,7 @@ const DragNDrop = ({
                                         onClick={() => itemClick(grpI, itemI, item.title, item.color)}
                                         onContextMenu={(e) => {handleRightClick(e, grpI, itemI);setViewSchedule([false]);setTitleChange(-1);setNewTitleCreate(false);}}
                                     >
-                                        {/* { labelArray.map((labelColor) => (
-                                            (labelColor.first === grpI && labelColor.second === itemI) &&
-                                            <div style={{color: labelColor.color, backgroundColor: labelColor.color}} className={cx('label-color')}>.</div>
-                                         ))} */}
                                         <div style={{color: item.color, backgroundColor: item.color}} className={cx('label-color')}>.</div>
-
                                         <div className={cx('dnd-item-text')}>{item.title}</div>
                                     </div>
                                 </div>

@@ -1,0 +1,216 @@
+.settingschedule-back {
+  position: absolute;
+  background-color: #E4E4E4;
+  width: 400px;
+  height: 90vh;
+  top: 70px;
+  left: 100%;
+  transform: translateX(-100%);
+  box-shadow: 0px 0px 10px 0px gray;
+
+  .settingschedule-header {
+    background-color: white;
+    height: 10vh;
+    width: 90%;
+    padding: 10px 20px;
+
+    .settingschedule-icon {
+      width: 70px;
+      float: right;
+
+      .settingschedule-deleteIcon {
+        margin-right: 20px;
+        float: left;
+      }
+    }
+
+    .settingschedule-title {
+      width: 280px;
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 10px;
+      overflow:hidden; 
+      text-overflow:ellipsis; 
+      white-space:nowrap;
+    }
+
+    .settingschedule-title-input {
+      width: 260px;
+      padding: 0px 5px;
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 10px;
+      outline: none;
+      border: 1.2px solid #CFCFCF;
+    }
+
+    .settingschedule-writer-impormation {
+      margin-top: 5px;
+      font-size: 13px;
+      width: 300px;
+
+      .settingschedule-writer {
+        float: left;
+        margin-right: 20px;
+      }
+    }
+  }
+
+  .settingschedule-content {
+    margin-top: 5px;
+    height: 70vh;
+    width: 90%;
+    padding: 20px;
+    overflow-y: scroll;
+
+    .settingschedule-textDiv {
+      // background-color: red;
+      padding: 10px;
+      margin-bottom: 10px;
+
+      .settingschedule-textTitle {
+        font-size: 20px;
+      }
+
+      .settingschedule-textInput {
+        margin: 10px;
+        width: 300px;
+        height: auto;
+        outline: none;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #CFCFCF;
+        border: none;
+        border-radius: 5px;
+        resize: none;
+        overflow:hidden;
+      }
+    }
+
+    .settingschedule-dayDiv {
+      height: 80px;
+    }
+
+    .settingschedule-dayDiv, .settingschedule-memberDiv, .settingschedule-taskDiv, .settingschedule-labelDiv {
+      // background-color: red;
+      margin-bottom: 20px;
+      padding: 10px;
+
+      .settingschedule-dayTitle, .settingschedule-memberTitle, .settingschedule-taskTitle, .settingschedule-labelTitle {
+        font-size: 20px;
+      }
+
+      .settingschedule-dayContent {
+        margin: 7px;
+        float: left;
+
+        .settingschedule-StartDay, .settingschedule-EndDay {
+          font-size: 15px;
+        }
+
+        .settingschedule-dayInput {
+          margin-top: 5px;
+          padding: 5px;
+          background-color: #CFCFCF;
+          border: none;
+          border-radius: 5px;
+          width: 145px;
+        }
+      }
+
+      .settingschedule-memberTitle, .settingschedule-taskTitle {
+        float: left;
+        margin-right: 20px;
+      }
+
+      .settingSchedule-MemberList, .settingSchedule-TaskList {
+        position: relative;
+
+        .settingschedule-plusIcon {
+          background-color: #CFCFCF;
+          margin-top: 2px;
+          width: 20px;
+          height: 20px;
+          border-radius: 2px;
+        }
+  
+        .settingshedule-listBox {
+          margin-left: 170px;
+          background-color: #CFCFCF;
+          border-radius: 10px;
+          width: 150px;
+          height: 100px;
+          padding: 10px;
+          position: absolute;
+          top: 0px;
+          z-index: 1;
+
+          .settingschedule-list {
+            overflow: scroll;
+            width: 150px;
+            height: 100px;
+
+            .settingschedule-list-ID {
+              margin: 2px;
+              width: 130px;
+              word-break: break-all;
+              padding: 5px;
+              cursor: pointer;
+              overflow:hidden; 
+              text-overflow:ellipsis; 
+              white-space:nowrap;
+          
+              &:hover {
+                background-color: #7D7D7D;
+                color: white;
+                border-radius: 5px;
+              }
+          
+              &:visited{
+                color: red;
+                border-radius: 5px;
+              }
+            } 
+          }
+        }
+  
+        .settingschedule-thisList {
+          position: relative;
+  
+          .settingschedule-thisList-ID {
+            width: 150px;
+            background-color: #7D7D7D;
+            color: white;
+            margin-top: 20px;
+            padding: 5px 20px;
+            border-radius: 45px;
+            overflow:hidden; 
+            text-overflow:ellipsis; 
+            white-space:nowrap;
+          }
+        }
+      }
+
+      .settingschedule-labelPosition {
+        margin-top: 10px;
+
+        .settingschedule-labelCircle {
+          width: 32px;
+          height: 32px;
+          margin-right: 10px;
+          float: left;
+          border-radius: 45px;
+          text-align: center;
+          cursor: pointer;
+          margin-top: 10px;
+        }
+      }
+     
+    }
+  }
+
+  ::-webkit-scrollbar{
+    display: none;
+  }
+}
+
