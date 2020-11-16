@@ -6,7 +6,7 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const MenuBar = ({ title, id, menubar, onClick }) => {
+const MenuBar = ({ title, id, menubar, onClick, handleExit, serverlists }) => {
   const [bar, setBar] = useState(),
         [lists,setLists] = useState([]),
         [onLine, setOnLine] = useState(-1),
@@ -34,14 +34,12 @@ const MenuBar = ({ title, id, menubar, onClick }) => {
       setOnLine(0);
     }
 
-
     if (id === 0) {
       return;
     } else {
       lists.splice(id-1, 1, {id: id, title: title, now: true});
     }
 
-    console.log(lists);
   }, [owner, menubar]);
 
 
@@ -52,9 +50,9 @@ const MenuBar = ({ title, id, menubar, onClick }) => {
       {bar === true ?
         <div className={cx('menubar-next')}>
           <div className={cx('menubar-left')} onClick={onClick}><AiFillCaretLeft size="27px" color="gray"/></div>
-          <MenuList lists={lists}/>
+          <MenuList lists={lists} Serverlists={serverlists}/>
           { owner === false &&
-            <div className={cx('menubar-exit')}>프로젝트 나가기</div>
+            <div className={cx('menubar-exit')} onClick={() => handleExit()}>프로젝트 나가기</div>
           }
         </div>
         :

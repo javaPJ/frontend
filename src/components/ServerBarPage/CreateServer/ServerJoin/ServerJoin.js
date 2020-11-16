@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styles from './ServerJoin.scss';
 import classNames from 'classnames/bind';
-import { AiOutlineDoubleLeft, AiOutlineClose } from "react-icons/ai";
-import { SwatchesPicker } from 'react-color';
+import { AiOutlineDoubleLeft } from "react-icons/ai";
 import joinImg2 from './../../../../images/join_img2.jpg';
 
 const cx = classNames.bind(styles);
