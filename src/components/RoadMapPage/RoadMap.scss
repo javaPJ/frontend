@@ -1,0 +1,177 @@
+.roadmap-back {
+  position: absolute;
+  left: 190px;
+  top: 80px;
+  background-color: white;
+  width: 1200px;
+
+  .roadmap-header {
+
+    .roadmap-title-back {
+      background-color: #343742;
+      width: 250px;
+      padding: 20px;
+      height: 40px;
+      border-right: 1.2px solid #707070;
+      float: left;
+
+      .roadmap-title {
+        font-size: 25px;
+        color: white;
+        float: left;
+      }
+
+      .roadmap-plusButton {
+        float: right;
+        margin-right: 10px;
+        margin-top: 5px;
+      }
+    }
+
+    .roadmap-calendar-back {
+      float: left;
+      height: 80px;
+      width: 908.8px;
+      overflow: scroll;
+
+      .roadmap-calendar {
+        width: 5984.4px;
+  
+        .roadmap-month {
+          float: left;
+  
+          .roadmap-N-month {
+            background-color: #343742;
+            color: white;
+            padding: 10px;
+            border-bottom: 1.2px solid #707070;
+            border-right: 1.2px solid #707070;
+
+            &:first-child {
+              border-left: 1.2px solid #707070;
+            }
+          }
+  
+          .roadmap-days {
+  
+            .roadmap-day {
+              float: left;
+              background-color: #343742;
+              color: white;
+              width: 16px;
+              text-align: center;
+              padding: 8px;
+              border-right: 1.2px solid #707070;
+
+              &:first-child {
+                border-left: 1.2px solid #707070;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .roadmap-main {
+    border-bottom: 1.2px solid #707070;
+
+    .roadmap-text-list {
+      float: left;
+      width: 290px;
+      max-height: 540px;
+      overflow: scroll;
+
+      .roadmap-text {
+        padding: 7px 20px;
+        border-right: 1.2px solid #707070 ;
+        border-left: 1.2px solid #707070;
+        border-bottom: 1.2px solid #707070;
+        width: 250px;
+        overflow:hidden; 
+        text-overflow:ellipsis; 
+        white-space:nowrap;
+
+        &:nth-child(2n) {
+          background-color: #E4E4E4;
+        }
+      }
+    }
+
+    .roadmap-schedule-back {
+      float: left;
+      border-left: 1.2px solid #707070;
+      border-right: 1.2px solid #707070;
+      width: 907.61px;
+      overflow: scroll;
+
+      .roadmap-schedule-list {
+        width: 5976px;
+        max-height: 540px;
+        
+        .roadmap-schedule {
+          border-bottom: 1.2px solid #707070;
+          padding: 2.8px 0px;
+          color: white;
+
+          &:nth-child(2n) {
+            background-color: #E4E4E4;
+            color: #E4E4E4;
+          }
+
+          .roadmap-schedule-label {
+            border-radius: 3px;
+            box-shadow: 2px 1px 10px 2px gray;
+            width: 500px;
+            height: 30px;
+            background-color: #707070;
+            color: #707070;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.roadmap-clickDelete {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+
+  .roadmap-clickDelete-back {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: blue;
+    opacity: 0;
+  }
+  
+  .roadmap-clickDelete-text {
+    position: absolute;
+    top: 500px;
+    left: 400px;
+    width: 100px;
+    height: 20px;
+    background-color: white;
+    color:#343742;
+    padding: 10px 5px;
+    border: 1px solid #707070;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px gray;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #EF233C;
+      border-color: #EF233C;
+      color: white;
+    }
+  }
+}
+
+
+  
+::-webkit-scrollbar {
+  display: none;
+}
