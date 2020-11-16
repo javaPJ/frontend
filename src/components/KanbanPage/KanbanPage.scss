@@ -1,0 +1,262 @@
+.kanbanpage-back {
+    position: absolute;
+    left: 0px;
+    top: 80px;
+
+    .dnd-item-delete-hidden {
+        position: absolute;
+        top:-10px;
+        left: 0px;
+        height: 90vh;
+        width: 100%;
+        background-color: red;
+        opacity: 0;
+    }
+
+    .dnd-item-delete {
+        position: absolute;
+        list-style: none;
+        width: 140px;
+        height: 96px;
+        background-color: white;
+        color: #343742;
+        border: 1px solid #343742;
+        border-radius: 7px;
+        box-shadow: 0px 0px 10px 0px #8D99AE;
+
+        li{
+            padding: 5px 10px;
+            cursor: pointer;
+
+            &:first-child {
+                border-radius: 7px 7px 0px 0px;
+            }
+            &:last-child {
+                border-radius: 0px 0px 7px 7px;
+            }
+            &:not(:last-of-type) {
+                border-bottom: 1px solid #343742;
+            }
+            &:hover:nth-child(-n+3){
+                background-color: #8D99AE;
+                color: white;
+            }
+            &:hover:nth-child(n+3):nth-child(-n+4) {
+                background-color: #EF233C;
+                color: white;
+            }
+        }
+    }
+
+    .drag-n-group {
+        height: 630px;
+        overflow: scroll;
+        display: flex;
+        padding: 0px 50px;
+
+        &::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+
+        .dnd-group {
+            background-color: #E4E4E4;
+            margin: 10px;
+            border-radius: 5px;
+            width: 300px;
+            padding: 10px;
+            float: left;
+
+            .group-title {
+                text-align: left;
+                margin-bottom: 10px;
+                font-size: 20px;
+                background-color: #343742;
+                height: 35px;
+                align-items: center;
+                display: flex;
+                padding: 10px;
+                border-radius: 5px;
+                color: white;
+
+                .title-input {
+                    float: left;
+                    width: 216px;
+                    background-color: white;
+                    border: none;
+                    outline: none;
+                    height: 30px;
+                    font-size: 18px;
+                    border-radius: 5px;
+                }
+
+                .title {
+                    float: left;
+                    width: 250px;
+                    cursor: pointer;
+                    overflow:hidden; 
+                    text-overflow:ellipsis; 
+                    white-space:nowrap;
+                }
+
+                .plus, .minus {
+                    margin: 0px 5px;
+                    cursor: pointer;
+                }
+            }
+
+            .item-group {
+                width:300px;
+                max-height: 520px;
+                overflow: scroll;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .addItem-back {
+                    border-radius: 5px;
+                    width: 290px;
+                    height: auto;
+                    background-color: white;
+                    padding: 5px;
+                    margin-bottom: 10px;
+                    
+                    .addItem-textarea {
+                        resize: none;
+                        padding: 5px;
+                        width: 95%;
+                        min-height: 20px;
+                        outline: none;
+                        border: none;
+                        font-size: 20px;
+
+                        &::-webkit-scrollbar {
+                            display: none;
+                        }
+                    }
+
+                    .addItem-button {
+                        padding: 5px;
+                        height: 27px;
+                        display: end;
+
+                        .addItem-cancel {
+                            padding: 5px 12px;
+                            float: right;  
+                            margin-right: 10px;
+                            background-color: #EF233C;
+                            border: none;
+                            border-radius: 5px;
+                            color: white;
+                            outline: none;
+                        }
+
+                        .addItem-add {
+                            padding: 5px 12px;
+                            float: right;
+                            background-color: #8D99AE;
+                            border: none;
+                            border-radius: 5px;
+                            color: white;
+                            outline: none;
+                        }
+                    }
+                }
+
+               
+
+                .dnd-item {
+                    width: 298px;
+                    // display: inline-block;
+                    // align-items: center;
+                    background-color: white;
+                    color: black;
+                    border-radius: 5px;
+                    overflow:hidden; 
+                    text-overflow:ellipsis; 
+                    white-space:nowrap;
+                    height: 69px;
+                    position: relative;
+    
+                    &:not(:last-of-type) {
+                        margin-bottom: .5rem;
+                    }
+    
+                    * {
+                        margin: 0;
+                        font-size: 1.2rem;
+                    }
+
+                    .label-color {
+                        width: 10px;
+                        font-size: 1px;
+                        height: 70px;
+                        border-radius: 5px 0px 0px 5px;
+                        float: left;
+                    }
+
+                    .dnd-item-text {
+                        position: absolute;
+                        left: 25px;
+                        top: 20px;
+                        width: 250px;
+                        overflow:hidden; 
+                        text-overflow:ellipsis; 
+                        white-space:nowrap;
+                    }
+                }
+            }
+        }
+
+        .new-group {
+            background-color: #E4E4E4;
+            margin: 10px;
+            border-radius: 5px;
+            width: 300px;
+            padding: 10px;
+            float: left;
+
+            .new-title {
+                text-align: left;
+                margin-bottom: 10px;
+                font-size: 20px;
+                background-color: #8D99AE;
+                height: 35px;
+                align-items: center;
+                display: flex;
+                padding: 10px;
+                border-radius: 5px;
+                color: white;
+                cursor: pointer;
+                width: 300px;
+            }
+
+            .new-title-input {
+                text-align: left;
+                margin-bottom: 10px;
+                font-size: 20px;
+                background-color: #6C63FF;
+                height: 35px;
+                align-items: center;
+                display: flex;
+                padding: 10px;
+                border-radius: 5px;
+                color: white;
+                outline: none;
+                border: none;
+                width: 300px;
+                cursor: text;
+
+                &::placeholder {
+                    color: white;
+                }
+            }
+
+            .newItem-group {
+                width:300px;
+                max-height: 520px;
+            }
+        }
+    }
+}

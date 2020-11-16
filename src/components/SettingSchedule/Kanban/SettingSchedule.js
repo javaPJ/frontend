@@ -18,7 +18,14 @@ const SettingSchedule = ({
     handleSettingDelete, 
     noneVisibleSchedule,
     grpList,
-    handleTaskClick
+    handleTaskClick,
+    startYear,
+    startMonth,
+    startDay,
+    endYear,
+    endMonth,
+    endDay,
+    handleDateChange
   }) => {
     
   const [title, setTitle] = useState(textTitle),
@@ -37,7 +44,9 @@ const SettingSchedule = ({
         [thisTask, setThisTask] = useState(grpList[groupN]),
         [height, setHeight] = useState('20px'),
         [labelSelect, setLabelSelect] = useState(''),
-        [titleChange, setTitleChange] = useState(false);
+        [titleChange, setTitleChange] = useState(false),
+        [startDate, setStartDate] = useState(''),
+        [endDate, setEndDate] = useState(''); 
 
   useEffect(() => {
     setMembers([]);
@@ -209,8 +218,35 @@ const SettingSchedule = ({
     }
   }
 
-  const handleDayChange = () => {
-    alert("해당 페이지에서는 날짜를 지정할 수 없습니다.");
+  useEffect(() => {
+    if(startMonth < 10) {
+      startMonth = '0' + startMonth;
+    }
+
+    if(endMonth < 10) {
+      endMonth = '0' + endMonth;
+    }
+
+    if(startDay < 10) {
+      startDay = '0' + startDay;
+    }
+
+    if(endDay < 10) {
+      endDay = '0' + endDay;
+    }
+
+    setStartDate(startYear+'-'+startMonth+'-'+startDay);
+    setEndDate(endYear+'-'+endMonth+'-'+endDay);
+  }, [])
+
+  const handleStartDayChange = (e) => {
+    setStartDate(e.target.value);
+    handleDateChange(groupN, itemN, e.target.value, endDate);
+  }
+
+  const handleEndDayChange = (e) => {
+    setEndDate(e.target.value);
+    handleDateChange(groupN, itemN, startDate, e.target.value);
   }
 
   return (
@@ -255,11 +291,11 @@ const SettingSchedule = ({
           <div className={cx('settingschedule-dayTitle')}>일정</div>
           <div className={cx('settingschedule-dayContent')}>
             <div className={cx('settingschedule-StartDay')}>시작일</div>
-            <input type="date" className={cx('settingschedule-dayInput')} onChange={() => handleDayChange()} value=""/>
+            <input type="date" className={cx('settingschedule-dayInput')} onChange={(e) => handleStartDayChange(e)} value={startDate}/>
           </div>
           <div className={cx('settingschedule-dayContent')}>
             <div className={cx('settingschedule-EndDay')}>마감일</div>
-            <input type="date" className={cx('settingschedule-dayInput')} onChange={() => handleDayChange()} value=""/>
+            <input type="date" className={cx('settingschedule-dayInput')} onChange={(e) => handleEndDayChange(e)} value={endDate}/>
           </div>
         </div>
 
