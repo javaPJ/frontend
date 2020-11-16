@@ -1,0 +1,77 @@
+.moreschedule-back {
+  position: absolute;
+  background-color: #E4E4E4;
+  width: 400px;
+  height: 90vh;
+  top: 70px;
+  left: 100%;
+  transform: translateX(-100%);
+  box-shadow: 0px 0px 10px 0px gray;
+
+  .moreschedule-header {
+    background-color: white;
+    height: 10vh;
+    width: 90%;
+    padding: 10px 20px;
+
+    .moreschedule-cancel {
+      float: right;
+
+    }
+
+    .moreschedule-day {
+      font-size: 25px;
+      font-weight: bold;
+      color: #343742;
+      margin-top: 25px;
+    }
+  }
+
+  .moreschedule-content {
+    height: 60vh;
+    width: 90%;
+    padding: 20px;
+
+    .moreschedule-content-header {
+      font-size: 20px;
+      float: left;
+      color: #343742;
+    }
+
+    .moreschedule-plus {
+      margin-left: 335px;
+    }
+
+    .moreschedule-schedule {
+      margin-top: 10px;
+      height: 450px;
+      padding: 20px 0px;
+    }
+  }
+}
+
+.moreschedule-text-box {
+  font-size: 18px;
+  padding: 5px 10px;
+  width: 340px;
+  height: 27px;
+  color: white;
+  border-radius: 5px;
+  background-color: #ff9c9a;
+  margin-bottom: 20px;
+  cursor: pointer;
+
+  .moreschedule-text {
+    float: left;
+    width: 300px;
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+    white-space:nowrap;
+  }
+
+  .moreschedule-text-delete {
+    margin-top: 4px;
+    margin-right: 10px;
+    float: right;
+  }
+}

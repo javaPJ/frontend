@@ -1,0 +1,67 @@
+.calendarItem-back {
+  width: 150px;
+  height:80px;
+  border: 1px solid #707070;
+  padding: 1px;
+  float: left;
+
+  .calendarItem-day {
+    border-radius: 45px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+  }
+
+  .calendar-schedule0 {
+    height: 20px;
+    padding: 5px 10px;
+    background-color: white;
+    color: white;
+    font-size: 15px;
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+    white-space:nowrap;
+  }
+
+  .calendar-more {
+    margin-top: 5px;
+    margin-left: 10px;
+    font-size: 13px;
+  }
+}
+
+.calendar-clickDelete {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+
+  .calendar-clickDelete-back {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: blue;
+    opacity: 0;
+  }
+  
+  .calendar-clickDelete-text {
+    position: absolute;
+    top: 500px;
+    left: 400px;
+    width: 100px;
+    height: 20px;
+    background-color: white;
+    color:#343742;
+    padding: 10px 5px;
+    border: 1px solid #707070;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px gray;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #EF233C;
+      border-color: #EF233C;
+      color: white;
+    }
+  }
+}
+
