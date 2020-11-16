@@ -1,0 +1,42 @@
+.menubar-back {
+  height: 100vh;
+  background-color: white;
+  margin-left: 35px;
+  position: absolute;
+
+
+  .menubar-next {
+    padding-top: 90px;
+
+    .menubar-left {
+      cursor: pointer;
+    }
+
+    .menubar-exit {
+      width: 190px;
+      height: 48px;
+      background-color: #E4E4E4;
+      padding-left: 10px;
+      padding-top: 10px;
+      color: #8D99AE;
+      font-size: 25px;
+      margin-left: 15px;
+      margin-top: 260px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #EF233C;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .menubar-pre {
+    padding-top: 90px;
+
+    .menubar-right {
+      cursor: pointer;
+    }
+  }
+}
