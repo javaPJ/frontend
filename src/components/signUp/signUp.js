@@ -12,6 +12,7 @@ const join= () => {
             <input className = "id-Join" placeholder = "  Email"></input>
             <button className = "send-Join">send</button>
             <input className = "Auth-Join" placeholder = "  Authentication"></input>
+            <button className = "confrim-Join">Confrim</button>
             <input className = "Nick-Join" placeholder = "  NickName"></input> 
             <input type = "password" className = "password-Join" placeholder = "  Password"/>
             <input type = "password" className = "checkpassword-Join" placeholder = "  Confrim Password"/>

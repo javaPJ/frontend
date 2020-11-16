@@ -1,3 +1,9 @@
+button{
+    outline : none;
+}
+input{
+    outline : none;
+}
 .Background-Join{
     background-image: url('../../images/join.jpg');   
     left : 0px;
@@ -78,7 +84,7 @@ input::placeholder{
     color: #FFEFEF;
     top : 40%;
     left : 2.5%;
-    width: 544px;
+    width: 350px;
     height: 70px;
     border: 1px solid #FFFFFF;
     border-radius: 10px;
@@ -158,8 +164,23 @@ input::placeholder{
 
 .send-Join{
     top: 30%; 
-    left: 25.5%;
+    right: 69%;
     width: 111px;
+    height: 70px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #343742;
+    border-radius: 10px;
+    opacity: 1;
+    text-align: center;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #343742;
+    position: absolute;
+}
+.confrim-Join{
+    top: 40%; 
+    right: 69%;
+    width: 150px;
     height: 70px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     border: 1px solid #343742;

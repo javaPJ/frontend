@@ -6,7 +6,6 @@ const App = () => {
     return(
         <div>
             <Route path="/Join" component={signUp} />
-            
         </div>
     )
 };
