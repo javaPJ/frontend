@@ -6,7 +6,6 @@ const App = () => {
     return(
         <div>
             <Route path = '/profile' component = {Profile}/>
-            
         </div>
     )
 };

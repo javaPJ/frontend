@@ -16,7 +16,7 @@ const Profile = () => {
                     <div className = "text-profile">Confrim Password <input className = "input-profile"/></div>
                     <br/><br/>
                     <Link to = "/profile"><button className = "cancel-profile">Cancel</button></Link>
-                    <Link to = "/main"><button className = "save-profile">Save</button></Link>
+                    <Link to = "/"><button className = "save-profile">Save</button></Link>
                     
                 </div>
             </div>
