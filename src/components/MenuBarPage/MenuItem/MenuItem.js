@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const MenuItem = ({ id, title, now }) => {
+const MenuItem = ({ id, title, now, lists }) => {
   let history = useHistory();
 
   const handleMenuSelect = () => {
@@ -13,39 +13,48 @@ const MenuItem = ({ id, title, now }) => {
       case 1:
         history.push({
           pathname: '/schedule',
+          state: {
+            serverLists: lists
+          }
         })
         break;
       case 2:
         history.push({
           pathname: '/kanban',
+          state: {
+            serverLists: lists
+          }
         })
         break;
       case 3:
         history.push({
           pathname: '/roadmap',
+          state: {
+            serverLists: lists
+          }
         })
         break;
       case 4:
         history.push({
           pathname: '/setting',
+          state: {
+            serverLists: lists
+          }
         })
         break;
       default:
         return;
     }
   }
+  
+  let fontColor = now ? "#EF233C" : "#8D99AE";
+  let fontBold = now ? "bold" : "none";
 
   return(
     <div className={cx('menuitem-back')} onClick={handleMenuSelect}>
-      {now === true ?
         <div className={cx('menuitem-contents')}>
-          <div className={cx('menuitem-title')} style={{color: "#EF233C", fontWeight: "bold"}}>{title}</div>
+          <div className={cx('menuitem-title')} style={{color: fontColor, fontWeight: fontBold}}>{title}</div>
         </div>
-        :
-        <div className={cx('menuitem-contents')}>
-          <div className={cx('menuitem-title')} style={{color: "#8D99AE"}}>{title}</div>
-        </div>
-      }
     </div>
   )
 }

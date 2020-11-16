@@ -479,8 +479,6 @@ const Calendar = ({menubar}) => {
 
       setSaveSchedule(-1);
     }
-    console.log(lists);
-    console.log(scheduleList);
   }, [saveSchedule])
 
 
@@ -583,19 +581,14 @@ const Calendar = ({menubar}) => {
         endnum = index;
       }
     }
-    console.log(e.target.value);
     let EYear = e.target.value.substring(0,4);
     let EMonth = e.target.value.substring(5,7);
     let EDay = e.target.value.substring(8,10);
-    console.log(EYear);
-    console.log(EMonth);
-    console.log(EDay);
 
     let date1 = new Date(SYear, SMonth-1, SDay);
     let date2 = new Date(EYear, EMonth-1, EDay);
     let elapsedMSec = date2.getTime() - date1.getTime(); 
     const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
-    console.log(date2);
 
     for(var index=endnum;index<elapsedDay+endnum+1;index++) {
       if(index >= 42) {

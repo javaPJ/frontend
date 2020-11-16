@@ -9,13 +9,14 @@ const ServerBar = ({lists, createServer, onClickServer}) => {
   const [bar, setBar] = useState(false);
 
   let size = bar ? "100px" : "35px"
+  let plusTop = lists.length>0 ? "0px" : "20px" ; 
 
   return(
     <div style={{width:size}} className={cx('serverbar-back')} onClick={() => setBar(!bar)}>
       {bar === true ?
         <div className={cx('serverbar-next')}>
           <ServerList lists={lists} bar={bar} onClickServer={onClickServer}/>
-          <button className={cx('plus-server')} onClick={createServer}>+</button>
+          <button style={{marginTop: plusTop}} className={cx('plus-server')} onClick={createServer}>+</button>
         </div>
         :
         <div className={cx('serverbar-pre')}>
