@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { SwatchesPicker } from 'react-color';
 import './SetProject.scss'
 import TeamTable from './table'
 import { Link } from "react-router-dom"
@@ -9,39 +10,15 @@ const SetProject = () => {
     const [team, setTeam] = useState([
         {
             id : 1,
-            name : '김두한',
-            email : 'kimduhan1972@gmail.com',
-            date : '1972-11-21'
+            name : '1번',
+            email : 'number1@gmail.com',
+            date : '2020-01-01'
         },
         {
             id : 2,
-            name : '심영',
-            email : 'SimYoung@gmail.com',
-            date : '1972-00-00'
-        },
-        {
-            id : 3,
-            name : '김두한',
-            email : 'kimduhan1972@gmail.com',
-            date : '1972-11-21'
-        },
-        {
-            id : 4,
-            name : '심영',
-            email : 'SimYoung@gmail.com',
-            date : '1972-00-00'
-        },
-        {
-            id : 5,
-            name : '김두한',
-            email : 'kimduhan1972@gmail.com',
-            date : '1972-11-21'
-        },
-        {
-            id : 6,
-            name : '심영',
-            email : 'SimYoung@gmail.com',
-            date : '1972-00-00'
+            name : '2번',
+            email : 'number2@gmail.com',
+            date : '2020-02-02'
         }
     ])
     const onRemove = useCallback(

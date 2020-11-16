@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
-import {Main, signUp, Forgot, Profile, setProject} from './../pages/index'
+import {setProject} from './../pages/index'
 
 const App = () => {
     return(
