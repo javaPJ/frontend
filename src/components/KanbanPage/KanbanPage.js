@@ -59,7 +59,6 @@ const KanbanPage = ({menubar}) => {
                     itemList.splice(index, 1, itemTitle);
                 }
             }
-            console.log(itemList);
 
             setItemTitle('');
             setPreItemTitle('');
@@ -78,7 +77,6 @@ const KanbanPage = ({menubar}) => {
                     itemList.splice(index, 1);
                 }
             }
-            console.log(itemList);
 
             setItemTitle('');
             setDeleteTitle(-1);
@@ -86,14 +84,13 @@ const KanbanPage = ({menubar}) => {
 
         if(newGroup !== '') {
             data.push({key: data.length+1, title: newGroup, items: []});
-            groupList.push(newGroup);
+            groupList.push(newGroup)
             setNewGroup('');
         }
 
         if(titleAdd !== -1) {
             data.splice(titleAdd, 1, {key: titleAdd+1, title: groupName, items: groupItem});
             itemList.push(groupItem[0].title);
-            console.log(itemList);
 
             setTitleAdd(-1);
             setGroupName('');
@@ -109,33 +106,34 @@ const KanbanPage = ({menubar}) => {
         }
 
         if(groupDelete === -1) {
-            setData([
-                {key: 1, title: 'Group 1', items: [{key: 1, title: '1', color: 'white'}, {key: 2, title: '2', color: 'white'}]},
-                {key: 2, title: 'Group 2', items: [{key: 1, title: '3', color: 'white'}, {key: 2, title: '4', color: 'white'}]},
-            ]);
-            setGroupList(['Group 1', 'Group 2']);
-            setItemList(['1','2','3','4']);
+            setData([{key: 0, title: '미지정 그룹', items: []},]);
+            setGroupList(['미지정 그룹']);
+            setItemList([]);
 
             setGroupDelete(-2);
         } else if(groupDelete === -2){
             return ;
         } else {
-            data.splice(groupDelete, 1);
-            groupList.splice(groupDelete, 1);
-           
-            for(var index2=0;index2<itemInGroup.length;index2++) {
-                for(var index=0;index<itemList.length; index++) {
-                    if(itemList[index] === itemInGroup[index2].title) {
-                        itemList.splice(index, 1);
+
+            if(groupDelete === 0) {
+                setItemInGroup([]);
+                setGroupDelete(-2);
+            } else {
+                data.splice(groupDelete, 1);
+                groupList.splice(groupDelete, 1);
+               
+                for(var index2=0;index2<itemInGroup.length;index2++) {
+                    for(var index=0;index<itemList.length; index++) {
+                        if(itemList[index] === itemInGroup[index2].title) {
+                            itemList.splice(index, 1);
+                        }
                     }
                 }
+                setItemInGroup([]);
+                setGroupDelete(-2);
             }
             
-            setItemInGroup([]);
-            setGroupDelete(-2);
-            return ;
         }
-
 
     }, [groupDelete, titleAdd, groupChangeNum, newGroup, deleteTitle, move, changeTitle, labelChange, preGroup]);
 
@@ -159,12 +157,14 @@ const KanbanPage = ({menubar}) => {
         setGroupName(data[num].title);
         var array = data[num].items;
         for(var index=0;index<array.length;index++) {
-            array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color});
+            array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color, start: array[index].start, end: array[index].end});
         }
-        array.unshift({key: 0, title: thistitle, color: 'white'});
+        array.unshift({key: 0, title: thistitle, color: 'white', start: '', end: ''});
 
         setGroupItem(array);
         setTitleAdd(num);
+
+        console.log(data);
     }
 
     const handleRightClick = (e, num1, num2) => {
@@ -271,30 +271,29 @@ const KanbanPage = ({menubar}) => {
         setItemTitle(changetitle);
         setGroupName(data[num1].title);
         var array = data[num1].items;
-        array.splice(num2, 1, {key: array[num2].key, title: changetitle, color: array[num2].color});
+        array.splice(num2, 1, {key: array[num2].key, title: changetitle, color: array[num2].color, start: array[num2].start, end: array[num2].end});
         setGroupItem(array);
         setChangeTitle(num1);
     }
 
     const handleLabelcolor = (label, num1, num2) => {
         var array = data[num1].items;
-        array.splice(num2,1, {key: array[num2].key, title: array[num2].title, color: label});
+        array.splice(num2,1, {key: array[num2].key, title: array[num2].title, color: label, start: array[num2].start, end: array[num2].end});
         setGroupItem(array);
         setLabelChange(num1);
     }
 
     const handleTaskClick = (num1, num2, num3) => {
         var array = data[num3-1].items;
-        console.log(array);
         for(var index=0;index<array.length;index++) {
-            array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color});
+            array.splice(index, 1, {key: index+2, title: array[index].title, color: array[index].color, start: array[index].start, end: array[index].end});
         }
-        array.unshift({key:1, title: data[num1].items[num2].title, color: data[num1].items[num2].color});
+        array.unshift({key:1, title: data[num1].items[num2].title, color: data[num1].items[num2].color, start: data[num1].items[num2].start, end: data[num1].items[num2].end});
 
         var array2 = data[num1].items;
         array2.splice(num2, 1);
         for(var index=0;index<array2.length;index++) {
-            array2.splice(index, 1, {key: index+1, title: array2[index].title, color: array2[index].color});
+            array2.splice(index, 1, {key: index+1, title: array2[index].title, color: array2[index].color, start: array2[index].start, end: array2[index].end});
         }
 
         setPreItem(array2);
@@ -302,6 +301,34 @@ const KanbanPage = ({menubar}) => {
         setPreGroup(num1);
         setNextGroup(num3-1);
     }
+
+    const [dateChangeN, setDateChangeN] = useState(-1)
+
+    const handleDateChange = (num, num2, start, end) => {
+        var array = data[num].items;
+
+        console.log(num2);
+
+        var SYear = start.substring(0,4);
+        var SMonth = start.substring(5,7);
+        var SDay = start.substring(8,10);
+
+        var EYear = end.substring(0,4);
+        var EMonth = end.substring(5,7);
+        var EDay = end.substring(8,10);
+
+        array.splice(num2, 1, {key: array[num2].key, title: array[num2].title, color: array[num2].color, start: new Date(SYear, SMonth-1, SDay), end: new Date(EYear, EMonth-1, EDay)})
+        setDateChangeN(num);
+        setGroupItem(array)
+    }
+
+    useEffect(() => {
+        if(dateChangeN !== -1) {
+            data.splice(dateChangeN, {key: data[dateChangeN].key, title: data[dateChangeN].title, items: groupItem});
+            setDateChangeN(-1)
+            setGroupItem([])
+        }
+    }, [dateChangeN])
 
     let  backLeft = menubar? "250px" : "60px";
     let size = menubar ? "1270px" : "1470px";
@@ -325,6 +352,7 @@ const KanbanPage = ({menubar}) => {
                 handleSettingDelete={handleSettingDelete}
                 handleLabelcolor={handleLabelcolor}
                 handleTaskClick={handleTaskClick}
+                handleDateChange={handleDateChange}
             >
             </DragNDrop>
             {  rightClick === true &&

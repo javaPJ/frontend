@@ -21,7 +21,8 @@ const DragNDrop = ({
         handleRightClick, 
         handleChangeTitle,
         handleLabelcolor,
-        handleTaskClick
+        handleTaskClick,
+        handleDateChange
     }) => {
 
     const [list, setList] = useState([]),
@@ -32,7 +33,15 @@ const DragNDrop = ({
           [viewSchedule, setViewSchedule] = useState([false, -1, -1]),
           [scheduleTitle, setScheduleTitle] = useState(''),
           [height, setHeight] = useState('20px'),
-          labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'];
+          labels = ['#FF8080', '#FFD080', '#FFFB80', '#A2FF80', '#80FFE1', '#8880FF', '#EE80FF', '#7D7D7D'],
+
+          [startYear, setStartYear] = useState(''), //시작년도
+          [startMonth, setStartMonth] = useState(''), //시작월
+          [startDay, setStartDay] = useState(''), //시작일
+
+          [endYear, setEndYear] = useState(''), //마감년도
+          [endMonth, setEndMonth] = useState(''), //마감월
+          [endDay, setEndDay] = useState(''); //마감일
 
     useEffect(() => {
         setList(data);
@@ -65,12 +74,13 @@ const DragNDrop = ({
                 setNewTitleCreate(false);
             } else {
                 var check = false;
-            
+                
                 for(var index=0;index<groupList.length;index++) {
                     if(groupList[index] === e.target.value) {
                         check = true;
                     }
                 }
+                
 
                 if(check === true) {
                     alert("입력하신 그룹명은 이미 있습니다.");
@@ -141,10 +151,29 @@ const DragNDrop = ({
         setHeight('20px');
     }
 
-    const itemClick = (num1, num2, num3, color) => {
+    const itemClick = (num1, num2, num3, color, start, end) => {
         setTitleChange(-1);
         setAddItemGroup(-1); 
         setNewTitleCreate(false);
+
+        setStartYear('');
+        setStartMonth('');
+        setStartDay('');
+        setEndYear('');
+        setEndMonth('');
+        setEndDay('');
+
+        if(start !== '') {
+            setStartYear(start.getFullYear());
+            setStartMonth(start.getMonth()+1);
+            setStartDay(start.getDate());
+        }
+
+        if(end !== '') {
+            setEndYear(end.getFullYear());
+            setEndMonth(end.getMonth()+1);
+            setEndDay(end.getDate());
+        }
 
         if(viewSchedule[0] === false) {
             setViewSchedule([true, num1, num2, color]);
@@ -202,7 +231,7 @@ const DragNDrop = ({
                                         key={item} 
                                         className={cx('dnd-item')}
                                         style={getStyles({grpI, itemI})}
-                                        onClick={() => itemClick(grpI, itemI, item.title, item.color)}
+                                        onClick={() => itemClick(grpI, itemI, item.title, item.color, item.start, item.end)}
                                         onContextMenu={(e) => {handleRightClick(e, grpI, itemI);setViewSchedule([false]);setTitleChange(-1);setNewTitleCreate(false);}}
                                     >
                                         <div style={{color: item.color, backgroundColor: item.color}} className={cx('label-color')}>.</div>
@@ -242,6 +271,13 @@ const DragNDrop = ({
                         handleLabelcolor={handleLabelcolor}
                         grpList={groupList}
                         handleTaskClick={handleTaskClick}
+                        handleDateChange={handleDateChange}
+                        startYear={startYear}
+                        startMonth={startMonth}
+                        startDay={startDay}
+                        endYear={endYear}
+                        endMonth={endMonth}
+                        endDay={endDay}
                     ></SettingSchedule>
                 </div>
             }
