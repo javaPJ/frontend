@@ -7,3 +7,4 @@ export { default as Setting } from './Setting';
 export { default as Profile } from './Profile';
 
 export {default as Profile} from './Profile';
+export {default as setProject} from './setProject';

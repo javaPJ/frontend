@@ -1,0 +1,143 @@
+button{
+    outline : none;
+}
+.background-setProject{
+    background: #E4E4E4;
+    background-position: center;
+    padding: padding-box;
+    opacity: 1;
+    width: 100%;
+    height : 200%;
+    position: absolute;
+}
+
+.form-setProject{
+    top : 146px;
+    left : 24.1%;
+    right : 16%;
+    width: 1149px;
+    position: relative;
+}
+
+.projectColor-setProject{
+    width : 230px;
+    height : 230px;
+    border-radius: 100%;
+    background: #FF7E8E 0% 0% no-repeat padding-box;
+    border: 2px solid #34374280;
+    opacity: 1;    
+    position: relative; 
+}
+
+.changeColor-setProject{
+    top : 20px;
+    left : 51px;
+    width : 128px;
+    height : 41px;
+    text-align: center;
+    font: normal normal normal 19px/26px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+    background: #343742 0% 0% no-repeat padding-box;
+    border-radius: 10px;
+    position: relative;
+}
+
+
+.header-setProject{
+    top : 53px;
+    width : 1147px;
+    height: 67px;
+    background: #343742 0% 0% no-repeat padding-box;
+    color : white;
+    border: 1px solid #707070;
+    opacity: 1;
+    position: relative;
+    margin-bottom: 53px;
+}
+
+.List-setProject{
+    position: absolute;
+    top : 12.5px;
+    margin-left : 93px;
+    margin-right: 93px;
+    position: relative;
+    text-align: center;
+    font: normal normal normal 30px/40px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+.projectNameBackground-setProject{
+    left : 452px;
+    top : -200px;
+    width: 566px;
+    height: 86px;
+    background: #343742 0% 0% no-repeat padding-box;
+    border-radius: 10px;
+    opacity: 1;
+    position: relative;
+}
+.projectName-setProject{
+    position: relative;
+    width: 489px;
+    height: 56px;
+    top : 15px;
+    left : 39px;
+    background: #FFFFFF;
+    border: 1px solid #707070;
+    text-align: center;
+    border-radius: 10px;
+    opacity: 1;
+    text-align: center  ;
+    font: normal normal normal 30px/40px Segoe UI;
+    letter-spacing: 0px;
+    color: #343742;
+    font-weight: bold;
+    line-height: 175%;
+}
+.deleteProject-setProject{
+    top : 96%;    
+    width: 1149px;
+    height: 177px;
+    background: #ffffff 0% 0% no-repeat padding-box;
+    border: 2px solid #FF0000;
+    border-radius: 10px;
+    opacity: 1;
+    position: relative;
+}   
+.deleteProjectTitle-setProject{
+    position: relative;
+    font: normal normal bold 24px/28px Segoe UI;
+    left : 5%;
+    top : 25%;
+}
+.deleteProjectContent-setProject{
+    position: relative;
+    left : 5%;
+    top : 35%;
+    color: black;
+    font: normal normal normal 16px/22px Segoe UI;
+}
+.buttonDeleteProject-setProject{
+    position: relative;
+    left : 70%;
+    top : 8px;
+    width: 300px;
+    height: 47px;
+    background: #E4E4E4 0% 0% no-repeat padding-box;
+    border-radius: 10px;
+    opacity: 1;
+    text-align: center;
+    font: normal normal normal 23px/26px Segoe UI;
+    letter-spacing: 0px;
+    color: #ff0000;
+    font-weight : bold;
+}
+
+.buttonDeleteProject-setProject:hover{
+    background: #E4E4E4;
+    color: #FF0000;
+}

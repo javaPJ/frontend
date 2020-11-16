@@ -14,8 +14,8 @@ const App = () => {
       <Route path="/roadmap" component={Roadmap}/>
       <Route path="/setting" component={Setting}/>
       <Route path="/profile" component={Profile}/>
-    </div>
-  );
-}
-
+            <Route path = "/setProject" component = {setProject}/>
+        </div>
+    )
+};
 export default App;
