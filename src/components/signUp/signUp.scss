@@ -1,0 +1,271 @@
+button{
+<<<<<<< HEAD:src/components/MainPage/MainPage.scss
+    outline : none
+}
+.Background-Main{
+    background-image: url('../../images/Main.jpg');   
+=======
+    outline : none;
+}
+input{
+    outline : none;
+}
+.Background-Join{
+    background-image: url('../../images/join.jpg');   
+>>>>>>> feature/signup:src/components/signUp/signUp.scss
+    left : 0px;
+    top: 0px;
+    max-width: 200%;
+    max-height: 200%;
+    right : 0px;
+    bottom : 0px;
+    margin : auto;
+    overflow : auto;
+    position : absolute;
+    background-repeat: no-repeat;
+    background-size : cover;
+}
+.BackgroundColor-Join{
+    background-color : #443742;
+    width: 35%;
+    height: 100%;
+    opacity: 0.9;
+}
+.Login-Join{
+    top: 31%;
+    left: 60%;
+    width: 135px;
+    height: 73px;
+    text-align: left;
+    font: normal normal normal 55px/73px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+    position: absolute;
+}
+
+
+.title-Join{
+    top: 17%;
+    left: 2.5%;
+    width: 200px;
+    height: 73px;
+    text-align: left;
+    font: normal normal normal 45px/75px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+    position: absolute;
+}
+
+.id-Join{
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    top : 30%;
+    left : 2.5%;
+    width: 400px;
+    height: 70px;
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+    background-color:  inherit;
+    opacity: 1;
+    color : white;
+    position: absolute;
+    text-align: left;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+}
+input::placeholder{
+    color: #FFEFEF;
+    opacity : 0.9;
+    font: normal normal normal 20px/33px Segoe UI;
+}
+.Auth-Join{
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    top : 40%;
+    left : 2.5%;
+    width: 350px;
+    height: 70px;
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+    opacity: 1;
+<<<<<<< HEAD:src/components/MainPage/MainPage.scss
+    position: absolute;
+    offset: none;
+=======
+    background-color: inherit;
+    position: absolute;
+    color : white;
+    text-align: left;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+>>>>>>> feature/signup:src/components/signUp/signUp.scss
+}
+.Nick-Join{
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    top : 50%;
+    left : 2.5%;
+    width: 544px;
+    height: 70px;
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+    opacity: 1;
+    background-color: inherit;
+    position: absolute;
+    color : white;
+    text-align: left;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+}
+.password-Join{
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    top : 60%;
+    left : 2.5%;
+    width: 544px;
+    height: 70px;
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+    opacity: 1;
+    background-color: inherit;
+    position: absolute;
+    color : white;
+    text-align: left;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+}
+.checkpassword-Join{
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+<<<<<<< HEAD:src/components/MainPage/MainPage.scss
+    offset: none;
+=======
+    top : 70%;
+    left : 2.5%;
+    width: 544px;
+    height: 70px;
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+    opacity: 1;
+    background-color: inherit;
+    position: absolute;
+    color : white;
+    text-align: left;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+>>>>>>> feature/signup:src/components/signUp/signUp.scss
+}
+
+.send-Join{
+    top: 30%; 
+    right: 69%;
+    width: 111px;
+    height: 70px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #343742;
+    border-radius: 10px;
+    opacity: 1;
+    text-align: center;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #343742;
+    position: absolute;
+    offset: none;
+}
+.confrim-Join{
+    top: 40%; 
+    right: 69%;
+    width: 150px;
+    height: 70px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #343742;
+    border-radius: 10px;
+    opacity: 1;
+    text-align: center;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #343742;
+    position: absolute;
+    offset: none;
+}
+.signUp-Join{
+    top: 80%;
+    left: 24%;
+    width: 154px;
+    height: 70px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #343742;
+    border-radius: 10px;
+    opacity: 1;
+    position: absolute;
+    text-align: center;
+    font: normal normal normal 25px/33px Segoe UI;
+    letter-spacing: 0px;
+    color: #343742;
+    opacity: 1;
+}
+.Logo-Join{
+    top : 1%;
+    left : 1%;
+    width: 122px;
+    height: 67px;
+    text-align: left;
+    font: normal normal normal 50px/67px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+    position: absolute;
+}
+<<<<<<< HEAD:src/components/MainPage/MainPage.scss
+.send-Main{
+    top: 60%;
+    left: 60%;
+    width: 157px;
+    height: 27px;
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+    position: absolute;
+    offset: none;
+}
+.ForgotPassword-Main{
+    top : 62.5%;
+    left : 60%;
+    width: 157px;
+    height: 27px;
+    text-align: left;
+    font: normal normal normal 20px/27px Segoe UI;
+    letter-spacing: 0px;
+    color: #FFEFEF;
+    opacity: 1;
+    position: absolute;
+}
+=======
+
+
+>>>>>>> feature/signup:src/components/signUp/signUp.scss
+/*2163 * 1283*/
