@@ -1,12 +1,11 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
-import {signUp} from './../pages/index'
+import {Main, signUp, Forgot, Profile, setProject} from './../pages/index'
 
 const App = () => {
     return(
         <div>
-            <Route path="/Join" component={signUp} />
-            
+            <Route path = "/setProject" component = {setProject}/>
         </div>
     )
 };
