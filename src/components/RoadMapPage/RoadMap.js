@@ -79,25 +79,25 @@ const RoadMap = ({menubar}) => {
             setDayLists(array);
 
             var array2 = [];
-            var date3 = today;
-            var i = 0;
-            for(i=0;i<20;i++) {
-                array2.push({key: i, title: "test"+i});
-            }
+            // var date3 = today;
+            // var i = 0;
+            // for(i=0;i<20;i++) {
+            //     array2.push({key: i, title: "test"+i});
+            // }
 
             setScheduleLists(array2);
 
             var array3 = [];
 
-            var date3 = today;
-            var i = 0;
-            for(i=0;i<20;i++) {
-                array3.push({key: i, startDay: new Date(Date.parse(date3)+i*1000*60*60*24), endDay: new Date(Date.parse(date3)+(i+10)*1000*60*60*24), color: "red"});
-            }
+            // var date3 = today;
+            // var i = 0;
+            // for(i=0;i<20;i++) {
+            //     array3.push({key: i, startDay: new Date(Date.parse(date3)+i*1000*60*60*24), endDay: new Date(Date.parse(date3)+(i+10)*1000*60*60*24), color: "red"});
+            // }
 
             setCalendarLists(array3);
 
-            setLoad(0);
+            setLoad(1);
         } else if(load === 0) {
             var array = [];
             var array2 = [];
@@ -359,7 +359,7 @@ const RoadMap = ({menubar}) => {
     let size = menubar ? "120px" : "0px";
 
     return (
-        <div>
+        <div style={{width: "100%", height: "100%", position: "absolute"}}>
             <div style={{marginLeft: size}} className={cx('roadmap-back')}>
                 <div className={cx('roadmap-header')}>
                     <div className={cx('roadmap-title-back')}>

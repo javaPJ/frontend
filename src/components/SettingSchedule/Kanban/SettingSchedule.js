@@ -27,8 +27,6 @@ const SettingSchedule = ({
         [year, setYear] = useState('2020'),
         [month, setMonth] = useState('10'),
         [day, setDay] = useState('9'),
-        [startDay, setStartDay] = useState(''),
-        [endDay, setEndDay] = useState(''),
         [members, setMembers] = useState([]),
         [memberTarget, setMemberTarget] = useState([]),
         [memberCheck, setMemberCheck] = useState(false),
@@ -211,6 +209,10 @@ const SettingSchedule = ({
     }
   }
 
+  const handleDayChange = () => {
+    alert("해당 페이지에서는 날짜를 지정할 수 없습니다.");
+  }
+
   return (
     <div className={cx('settingschedule-back')}>
       <div className={cx('settingschedule-header')}>
@@ -253,11 +255,11 @@ const SettingSchedule = ({
           <div className={cx('settingschedule-dayTitle')}>일정</div>
           <div className={cx('settingschedule-dayContent')}>
             <div className={cx('settingschedule-StartDay')}>시작일</div>
-            <input type="date" className={cx('settingschedule-dayInput')} onChange={(e) => setStartDay(e.target.value)}/>
+            <input type="date" className={cx('settingschedule-dayInput')} onChange={() => handleDayChange()} value=""/>
           </div>
           <div className={cx('settingschedule-dayContent')}>
             <div className={cx('settingschedule-EndDay')}>마감일</div>
-            <input type="date" className={cx('settingschedule-dayInput')} onChange={(e) => setEndDay(e.target.value)}/>
+            <input type="date" className={cx('settingschedule-dayInput')} onChange={() => handleDayChange()} value=""/>
           </div>
         </div>
 
