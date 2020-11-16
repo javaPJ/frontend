@@ -1,3 +1,6 @@
+button{
+    outline : none
+}
 .Background-Main{
     background-image: url('../../images/Main.jpg');   
     left : 0px;
@@ -71,8 +74,8 @@
     border-radius: 10px;
     background-color:  inherit;
     opacity: 1;
-    color : white;
     position: absolute;
+    offset: none;
 }
 
 .password-Main{
@@ -89,6 +92,7 @@
     font: normal normal normal 20px/27px Segoe UI;
     letter-spacing: 0px;
     color: #FFEFEF;
+    offset: none;
 }
 
 .LoginButton-Main{
@@ -105,6 +109,7 @@
     letter-spacing: 0px;
     color: #343742;
     position: absolute;
+    offset: none;
 }
 .signUp-Main{
     top : 1%; 
@@ -120,6 +125,7 @@
     letter-spacing: 0px;
     color: #343742;
     position: absolute;
+    offset: none;
 }
 .Logo-Main{
     top : 1%;
@@ -144,6 +150,7 @@
     color: #FFEFEF;
     opacity: 1;
     position: absolute;
+    offset: none;
 }
 .ForgotPassword-Main{
     top : 62.5%;

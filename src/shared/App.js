@@ -5,8 +5,7 @@ import {Main} from './../pages/index'
 const App = () => {
     return(
         <div>
-            <Route path="/main" component={Main} />
-            
+            <Route exact path="/" component={Main} />
         </div>
     )
 };
