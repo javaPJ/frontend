@@ -16,6 +16,12 @@ const ProjectExit = ({handleProjectExit}) => {
             setPassword('');
         }
     }
+    
+    const handleEnterKey = (e) => {
+        if(e.keyCode === 13) {
+            handleCheckPassword()
+        }
+    }
 
     return (
         <div className={cx('exit-back')}>
@@ -31,6 +37,7 @@ const ProjectExit = ({handleProjectExit}) => {
                     className={cx('exit-input')}
                     placeholder="비밀번호 입력"
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => handleEnterKey(e)}
                     value={password}
                 />
                 <button className={cx('exit-button')} onClick={() => handleCheckPassword()}>프로젝트 나가기</button>
