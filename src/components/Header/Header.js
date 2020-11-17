@@ -16,6 +16,12 @@ const Header = ({title}) => {
     })
   }
 
+  const handleLogOut = () => {
+    history.push({
+      pathname: '/'
+    })
+  }
+
   return(
     <div className={cx('header-back')} >
       <div className={cx('header-pre')}>
@@ -32,7 +38,7 @@ const Header = ({title}) => {
           </div>
           <div className={cx('next-contents')}>
             <div className={cx('profile-button')} onClick={handleProfile}>Profile</div>
-            <div className={cx('logout-button')}>Log Out</div>
+            <div className={cx('logout-button')} onClick={handleLogOut}>Log Out</div>
           </div>
         </div>
       }

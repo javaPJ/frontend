@@ -1,20 +1,21 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Schedule, Kanban, Roadmap, Setting, Profile, Main, signUp, Forgot, Profile, setProject } from './../pages';
+import { Main, Signup, Forgot, Schedule, Kanban, Roadmap, Setting, Profile, Setproject } from './../pages';
 
-const App = () => {
-    return(
-        <div>
-            <Route exact path="/" component={Main} />
-            <Route path="/Join" component={signUp} />
-            <Route path="/Forgot" component={Forgot} />
-            <Route path="/schedule" component={Schedule}/>
-            <Route path="/kanban" component={Kanban}/>
-            <Route path="/roadmap" component={Roadmap}/>
-            <Route path="/setting" component={Setting}/>
-            <Route path="/profile" component={Profile}/>
-            <Route path = "/setProject" component = {setProject}/>
-        </div>
-    )
-};
+function App() {
+  return (
+    <div>
+      <Route path="/" exact component={Main}/>
+      <Route path="/signup" component={Signup}/>
+      <Route path="/forgot" component={Forgot}/>
+      <Route path="/schedule" component={Schedule}/>
+      <Route path="/kanban" component={Kanban}/>
+      <Route path="/roadmap" component={Roadmap}/>
+      <Route path="/setting" component={Setting}/>
+      <Route path="/profile" component={Profile}/>
+      <Route path="/setproject" component={Setproject}/>
+    </div>
+  );
+}
+
 export default App;

@@ -1,42 +1,51 @@
-import React from 'react';
-import './MainPage.scss'
-import { Link } from 'react-router-dom';
-const MainPage= (/*{form, onChange, onSubmit}*/) => {
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import styles from './MainPage.scss';
+import classNames from 'classnames/bind';
+
+const cx = classNames.bind(styles);
+
+const MainPage = () => {
+    let history = useHistory();
+
+    const handleSignUp = () => {
+        history.push({
+            pathname: "/signup",
+        })
+    }
+
+    const handleForgot = () => {
+        history.push({
+            pathname: "/forgot",
+        })
+    }
+
+    const handleLogin = () => {
+        history.push({
+            pathname: "/schedule",
+        })
+    }
     
     return(
-        <div className = "Background-Main">
-            <div className = "BackgroundColor-Main"></div>
-                <Link to = "/"><div className = "Logo-Main">Bagel</div></Link>
-                <Link to = "/join"><button className = "signUp-Main">Sign Up</button></Link>
-                <div className = "javaproject-Main">java project</div>
-                <div className = "title-Main">This website is a collabration site</div>
-                <div className = "Login-Main">Login</div>
-                <input 
-                    className = "id-Main"
-                    placeholder = "아이디" 
-                    autoComplete="username"
-                    name="username"/*
-                    
-                    onChange = {onChange}
-                    value = {form.username}*/
-                />
-                <input 
-                className = "password-Main"
-                    autoComplete="new-password"
-                    name="password"
-                    placeholder="비밀번호"
-                    type="password"
-                /*
-                    
-                    onChange = {onChange}
-                    value = {form.password}
-                    */
-                />
-                <Link to = "/Forgot"><div className = "ForgotPassword-Main">Forgot Password?</div></Link>
-                <Link to = "/"><button className = "LoginButton-Main">Login</button></Link>
+        <div className={cx("main-back")}>
+            <div className={cx("main-opacity")}></div>
+            <div className={cx('main-header')}>
+                <div className={cx("main-logo")}>Bagel</div>
+                <button className={cx("main-signup")} onClick={() => handleSignUp()}>Sign up</button>
+            </div>
+            <div className={cx('main-contents')}>
+                <div className={cx("main-text1")}>Java Project</div>
+                <div className={cx("main-text2")}>This website is collabration site.</div>
+            </div>
+            <div className={cx('main-input')}>
+                <div className={cx("main-login-title")}>Login</div>
+                <input className={cx("main-email")} placeholder = "Email"/>
+                <input className={cx("main-password")} placeholder="Password" type="password"/>
+                <div className={cx("main-forgot")} onClick={() => handleForgot()}>Forgot Password?</div>
+                <button className={cx("main-login-button")} onClick={() => handleLogin()}>Login</button>
+            </div>
         </div>
     );
-    
 }
 
 export default MainPage; 
