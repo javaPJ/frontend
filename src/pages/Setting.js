@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import ServerBar from '../components/ServerBarPage/ServerBar/ServerBar';
 import MenuBar from '../components/MenuBarPage/MenuBar/MenuBar';
+import SetProject from '../components/SetProject/SetProject/SetProject';
 import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/MainCreate';
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
@@ -158,6 +159,7 @@ function Setting() {
         </div>
         :
         <div>
+          <SetProject menubar={menubar}></SetProject>
           <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
           <Header title={title[0]}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>

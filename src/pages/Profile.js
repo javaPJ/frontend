@@ -127,7 +127,7 @@ function Profile() {
   return (
     <div onMouseMove={(e) => handleMousePosition(e)}>
       <div>
-        <ProfilePage></ProfilePage>
+        <ProfilePage menubar={menubar}></ProfilePage>
         <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
         <Header title={title[0]}></Header>
         <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>

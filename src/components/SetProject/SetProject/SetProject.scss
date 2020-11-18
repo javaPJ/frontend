@@ -1,0 +1,126 @@
+.setproject-back {
+    position: absolute;
+    left:0px;
+    top: 80px;
+    width: 900px;
+    height: 88vh;
+    overflow-y: scroll;
+
+    .setproject-header {
+        width: 100%;
+        height: 250px;
+
+        .setproject-color {
+            float: left;
+            width: 150px;
+
+            .setproject-color-circle {
+                width: 150px;
+                height: 150px;
+                border-radius: 100px;
+                background-color: khaki;
+                border: 2px solid #343742;
+            }
+
+            .setproject-color-button {
+                background-color: #343742;
+                color: white;
+                font-size: 18px;
+                padding:  5px 15px;
+                border: none;
+                border-radius: 5px;
+                margin-top: 20px;
+                margin-left: 22px;
+            }
+
+            .setproject-color-view {
+                position: absolute;
+                top: 0;
+                z-index: 1;
+            }
+        }
+
+        .setproject-title {
+            position: relative;
+            left: 15%;
+            top: 18%;
+            float: left;
+            width: 400px;
+            padding: 10px 10px;
+            background-color: #343742;
+            border-radius: 5px;
+
+            .setproject-title-input {
+                width: 90%;
+                font-size: 23px;
+                padding: 3px 10px;
+                border-radius: 5px;
+                border: none;
+            }
+
+            .setproject-title-text {
+                width: 380px;
+                font-size: 23px;
+                padding: 2px 10px;
+                color: white;
+                overflow: hidden;
+                text-overflow:ellipsis; 
+                white-space:nowrap;
+            }
+        }
+    }
+
+    .setproject-list {
+        max-height: 337px;
+        margin-bottom: 450px;
+    }
+
+    .setproject-delete {
+        width: 99%;
+        height: 150px;
+        background-color: white;
+        border: 2px solid #EF233C;
+        border-radius: 10px;
+        margin-bottom: 50px;
+
+        .setproject-delete-text {
+            color: #343742;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 30px;
+
+            .setproject-delete-text1 {
+                font-weight: bold;
+                font-size: 23px;
+                margin-bottom: 10px;
+            }
+
+            .setproject-delete-text2 {
+                width: 60%;
+                font-size: 15px;
+            }
+        }
+
+        .setproject-delete-button {
+            top: 50%;
+            transform: translateY(-20%);
+            margin-left: 20px;
+            float: right;
+            border: 1px solid #343742;
+            background-color: #E4E4E4;
+            font-size: 20px;
+            padding: 15px 50px;
+            margin-right: 30px;
+            border-radius: 10px;
+            color: #EF233C;
+            font-weight: bold;
+
+            &:hover {
+                border: 1px solid #EF233C;
+                background-color: #EF233C;
+                color: white;  
+            }
+        }
+    }
+}
