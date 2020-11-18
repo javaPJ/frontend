@@ -7,31 +7,28 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 const SetProject = ({menubar}) => {
-    const [projectName, setProjectName] = useState('Project#1'), //프로젝트 이름 변수
+    const [load, setLoad] = useState(false),
+          [projectName, setProjectName] = useState('Project#1'), //프로젝트 이름 변수
           [projectNameClick, setProjectNameClick] = useState(false), //프로젝트 이름 클릭 시 boolean 값
           [projectNameChange, setProjectNameChange] = useState(''), //프로젝트 이름 변경 변수
           [picker, setPicker] = useState(false), //색상 변경 버튼 클릭 시 boolean 값
           [pickerColor, setPickerColor] = useState('#ffffff'),
-          [team, setTeam] = useState([
-              {id: 1, name: 'unknown#1', email: 'unknown#1@gmail.com', date: '2020-09-11'},
-              {id: 2, name: 'unknown#2', email: 'unknown#2@naver.com', date: '2020-09-12'},
-              {id: 3, name: 'unknown#3', email: 'unknown#3@gmail.com', date: '2020-09-13'},
-              {id: 4, name: 'unknown#4', email: 'unknown#4@naver.com', date: '2020-09-14'},
-              {id: 5, name: 'unknown#5', email: 'unknown#5@gmail.com', date: '2020-09-15'},
-              {id: 6, name: 'unknown#6', email: 'unknown#6@naver.com', date: '2020-09-16'},
-              {id: 7, name: 'unknown#7', email: 'unknown#7@gmail.com', date: '2020-09-17'},
-              {id: 8, name: 'unknown#8', email: 'unknown#8@naver.com', date: '2020-09-18'},
-              {id: 9, name: 'unknown#9', email: 'unknown#9@gmail.com', date: '2020-09-19'},
-              {id: 10, name: 'unknown#10', email: 'unknown#10@naver.com', date: '2020-09-20'},
-          ]), //팀원 리스트
+          [team, setTeam] = useState([]), //팀원 리스트
           [teamRemove, setTeamRemove] = useState(-1), //member kick 변수
-          [listMargin, setListMargin] = useState(''); //list div's bottom margin 변수 값
+          [listMargin, setListMargin] = useState('100px'); //list div's bottom margin 변수 값
     
-    // color change
-    const colorChange = (color) => {
-        setPicker(false)
-        setPickerColor(color);
-    }
+    //first load
+    useEffect(() => {
+        if(load === false) {
+            setTeam([])
+            var array = []
+            for(var i=0;i<20;i++) {
+                array.push({id: i+1, name: 'unknown#'+(i+1), email: 'unknown#'+(i+1)+'@gmail.com', date: '2020-09-11'});
+            }
+            setTeam(array)
+            setLoad(true);
+        } 
+    }, [load])
     
     //when you change project name, you put the Enter key 
     const handleKeyDown = (e) => {
@@ -60,10 +57,10 @@ const SetProject = ({menubar}) => {
 
             setTeamRemove(-1)
 
-            if(team.length > 8) {
-                setListMargin("400px");
+            if(team.length > 10) {
+                setListMargin("100px");
             } else {
-                setListMargin((team.length+1)*51+40+ "px");
+                setListMargin(team.length*10 + "px");
             }
 
         }
@@ -77,7 +74,7 @@ const SetProject = ({menubar}) => {
                 <div className={cx('setproject-header')}>
                     <div className={cx('setproject-color')}>
                         <div style={{backgroundColor: pickerColor}} className={cx('setproject-color-circle')}></div>
-                        { picker===false &&
+                        { picker === false &&
                             <button style={{marginLeft: "22px"}} className={cx('setproject-color-button')} onClick={() => setPicker(true)}>색상 변경</button>
                         }
                         { picker &&
