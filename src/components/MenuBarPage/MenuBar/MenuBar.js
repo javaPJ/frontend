@@ -10,7 +10,7 @@ const MenuBar = ({ title, id, menubar, onClick, handleExit, serverlists }) => {
   const [bar, setBar] = useState(),
         [lists,setLists] = useState([]),
         [onLine, setOnLine] = useState(-1),
-        [owner, setOwner] = useState(false);
+        [owner, setOwner] = useState(true);
 
   useEffect(() => {
     setBar(menubar);
