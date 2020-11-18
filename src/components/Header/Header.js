@@ -6,13 +6,16 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const Header = ({title}) => {
+const Header = ({title, serverlists}) => {
   let history = useHistory();
   const [user, setUser] = useState(false);
 
   const handleProfile = () => {
     history.push({
-      pathname: '/profile'
+      pathname: '/profile',
+      state: {
+        serverLists: serverlists
+      }
     })
   }
 

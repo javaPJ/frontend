@@ -6,13 +6,12 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const SetProject = ({menubar}) => {
+const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handleChangeTitle, handleRemoveProject}) => {
     const [load, setLoad] = useState(false),
-          [projectName, setProjectName] = useState('Project#1'), //프로젝트 이름 변수
+          [projectName, setProjectName] = useState(''), //프로젝트 이름 변수
           [projectNameClick, setProjectNameClick] = useState(false), //프로젝트 이름 클릭 시 boolean 값
           [projectNameChange, setProjectNameChange] = useState(''), //프로젝트 이름 변경 변수
           [picker, setPicker] = useState(false), //색상 변경 버튼 클릭 시 boolean 값
-          [pickerColor, setPickerColor] = useState('#ffffff'),
           [team, setTeam] = useState([]), //팀원 리스트
           [teamRemove, setTeamRemove] = useState(-1), //member kick 변수
           [listMargin, setListMargin] = useState('100px'); //list div's bottom margin 변수 값
@@ -20,6 +19,7 @@ const SetProject = ({menubar}) => {
     //first load
     useEffect(() => {
         if(load === false) {
+            setProjectName(title);
             setTeam([])
             var array = []
             for(var i=0;i<20;i++) {
@@ -35,6 +35,7 @@ const SetProject = ({menubar}) => {
         if(e.keyCode === 13) {
             setProjectNameClick(false);
             setProjectNameChange(e.target.value);
+            handleChangeTitle(e.target.value);
         }
     }
 
@@ -79,7 +80,7 @@ const SetProject = ({menubar}) => {
                         }
                         { picker &&
                             <div className={cx('setproject-color-view')}>
-                                <SwatchesPicker color={pickerColor} onChangeComplete={(color) => {setPicker(false);setPickerColor(color.hex)}}/>
+                                <SwatchesPicker color={pickerColor} onChangeComplete={(color) => {setPicker(false);handleOnChangeComplete(color)}}/>
                             </div>
                         }
                     </div>
@@ -104,7 +105,7 @@ const SetProject = ({menubar}) => {
                         <div className={cx('setproject-delete-text1')}>프로젝트 삭제하기</div>
                         <div className={cx('setproject-delete-text2')}>프로젝트를 삭제하면 다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?</div>
                     </div>
-                    <button className={cx('setproject-delete-button')}>프로젝트 삭제</button>
+                    <button className={cx('setproject-delete-button')} onClick={() => handleRemoveProject()}>프로젝트 삭제</button>
                 </div>
             </div>
         </div>

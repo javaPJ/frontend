@@ -5,7 +5,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const ProjectExit = ({handleProjectExit}) => {
+const ProjectExit = ({handleProjectExit, handleExitCancel}) => {
     const [password, setPassword] = useState('');
 
     const handleCheckPassword = () => {
@@ -25,7 +25,7 @@ const ProjectExit = ({handleProjectExit}) => {
 
     return (
         <div className={cx('exit-back')}>
-            <div className={cx('exit-close')}><AiOutlineClose size="27"></AiOutlineClose></div>
+            <div className={cx('exit-close')} onClick={() => handleExitCancel()}><AiOutlineClose size="27"></AiOutlineClose></div>
             <div className={cx('exit-text')}>
                 <div className={cx('exit-title')}>프로젝트 나가기</div>
                 <p className={cx('exit-text-1')}>정말로 나가시겠습니까?</p>
