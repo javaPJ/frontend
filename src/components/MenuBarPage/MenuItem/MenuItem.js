@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const MenuItem = ({ id, title, now, lists }) => {
+const MenuItem = ({ id, title, now, lists, nickname, email, token }) => {
   let history = useHistory();
 
   const handleMenuSelect = () => {
@@ -14,7 +14,10 @@ const MenuItem = ({ id, title, now, lists }) => {
         history.push({
           pathname: '/schedule',
           state: {
-            serverLists: lists
+            serverLists: lists,
+            nickname: nickname,
+            email: email,
+            token: token,
           }
         })
         break;
@@ -22,7 +25,10 @@ const MenuItem = ({ id, title, now, lists }) => {
         history.push({
           pathname: '/kanban',
           state: {
-            serverLists: lists
+            serverLists: lists,
+            nickname: nickname,
+            email: email,
+            token: token,
           }
         })
         break;
@@ -30,7 +36,10 @@ const MenuItem = ({ id, title, now, lists }) => {
         history.push({
           pathname: '/roadmap',
           state: {
-            serverLists: lists
+            serverLists: lists,
+            nickname: nickname,
+            email: email,
+            token: token,
           }
         })
         break;
@@ -38,7 +47,10 @@ const MenuItem = ({ id, title, now, lists }) => {
         history.push({
           pathname: '/setting',
           state: {
-            serverLists: lists
+            serverLists: lists,
+            nickname: nickname,
+            email: email,
+            token: token,
           }
         })
         break;

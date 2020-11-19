@@ -13,7 +13,7 @@ const Forgotpassword = () => {
 
     const handleForgotSend = () => {
         if(email !== '') {
-            axios.post(`http://localhost:5000/api/auth/findpassword`, {
+            axios.post(`http://3.35.169.186:5000/api/auth/findpassword`, {
                 email: email,
             })
             .then(res => {

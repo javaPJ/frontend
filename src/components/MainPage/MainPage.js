@@ -25,14 +25,14 @@ const MainPage = () => {
 
     const handleLogin = () => {
         if(email !== '' && password !== '') {
-            axios.post(`http://localhost:5000/api/auth/login`, {
+            axios.post(`http://3.35.169.186:5000/api/auth/login`, {
                 email : email,
                 password : password,
             })
             .then(res => {
                 console.log(res);
                 var token = res.data.token;
-                axios.get(`http://localhost:5000/api/account/profile`,{
+                axios.get(`http://3.35.169.186:5000/api/account/profile`,{
                     headers : {
                         Authentication : token
                     }

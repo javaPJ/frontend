@@ -14,7 +14,10 @@ import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 const cx = classNames.bind(styles);
 
 function Setting() {
-  const title = ["프로젝트 설정", 4]
+  const title = ["프로젝트 설정", 4];
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [token, setToken] = useState('');
   const [menubar, setMenubar] = useState(false);
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
@@ -36,7 +39,7 @@ function Setting() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists } = location.state;
+      const { serverLists, email, nickname, token } = location.state;
 
       for(var i=0;i<serverLists.length;i++) {
         if(serverLists[i].online === true) {
@@ -46,6 +49,9 @@ function Setting() {
       }
       
       setLists(serverLists);
+      setEmail(email);
+      setNickname(nickname);
+      setToken(token);
       if(serverLists.length > 0) {
         setServerNot(false)
       }
@@ -71,7 +77,10 @@ function Setting() {
     history.push({
       pathname: '/schedule',
       state: {
-        serverLists: lists
+        serverLists: lists,
+        nickname: nickname,
+        email: email,
+        token: token,
       }
     });
     setMenubar(false);
@@ -103,7 +112,10 @@ function Setting() {
       history.push({
         pathname: '/schedule',
         state: {
-          serverLists: lists
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          token: token,
         }
       })
     }
@@ -174,7 +186,10 @@ function Setting() {
       history.push({
         pathname: '/schedule',
         state: {
-          serverLists: lists
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          token: token,
         }
       })
     } else  {
@@ -187,8 +202,8 @@ function Setting() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists}></MenuBar>
-          <Header title={title[0]}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
+          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
@@ -207,8 +222,8 @@ function Setting() {
             handleChangeTitle={handleChangeTitle} 
             handleRemoveProject={handleRemoveProject}
           />
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists}></MenuBar>
-          <Header title={title[0]} serverlists={lists}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
+          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}

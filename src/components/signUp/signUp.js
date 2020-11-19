@@ -19,9 +19,9 @@ const SignUp = () => {
 
     const handleEmailSend = () => {
         if(email !== '') {
-            axios.get(`http://localhost:5000/api/auth/idcheck/${email}`)
+            axios.get(`http://3.35.169.186:5000/api/auth/idcheck/${email}`)
             .then(res => {
-                axios.post(`http://localhost:500/api/auth/emailsend`, {
+                axios.post(`http://3.35.169.186:5000/api/auth/emailsend`, {
                     email: email,
                 })
                 .then(res => {
@@ -42,7 +42,7 @@ const SignUp = () => {
 
     const handleAuthenticationConfirm = () => {
         if(authentication !== '') {
-            axios.get(`http://localhost:5000/api/auth/emailcheck?id=${email}&code=${authentication}`)
+            axios.get(`http://3.35.169.186:5000/api/auth/emailcheck?id=${email}&code=${authentication}`)
             .then(res => {
                 setAuthenticationBlock(true);
                 console.log(res);
@@ -58,7 +58,7 @@ const SignUp = () => {
     const handleSignUp = () => {
         if(emailBlock && authenticationBlock) {
             if(pasword === passwordCheck && nickname !== '') {
-                axios.post(`http://localhost:5000/api/auth/signup`, {
+                axios.post(`http://3.35.169.186:5000/api/auth/signup`, {
                     id : nickname,
                     password : pasword,
                     email : email,

@@ -14,7 +14,10 @@ import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 const cx = classNames.bind(styles);
 
 function Roadmap() {
-  const title = ["로드맵", 3]
+  const title = ["로드맵", 3];
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [token, setToken] = useState('');
   const [menubar, setMenubar] = useState(false);
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
@@ -33,8 +36,11 @@ function Roadmap() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists } = location.state;
+      const { serverLists, email, nickname, token } = location.state;
       setLists(serverLists);
+      setEmail(email);
+      setNickname(nickname);
+      setToken(token)
       if(serverLists.length > 0) {
         setServerNot(false)
       }
@@ -60,7 +66,10 @@ function Roadmap() {
     history.push({
       pathname: '/schedule',
       state: {
-        serverLists: lists
+        serverLists: lists,
+        nickname: nickname,
+        email: email,
+        token: token,
       }
     });
     setMenubar(false);
@@ -92,7 +101,10 @@ function Roadmap() {
       history.push({
         pathname: '/schedule',
         state: {
-          serverLists: lists
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          token: token,
         }
       })
     }
@@ -134,7 +146,10 @@ function Roadmap() {
       history.push({
         pathname: '/schedule',
         state: {
-          serverLists: lists
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          token: token,
         }
       })
     } else  {
@@ -160,8 +175,8 @@ function Roadmap() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
-          <Header title={title[0]}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
+          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
@@ -173,8 +188,8 @@ function Roadmap() {
         :
         <div>
           <RoadMapPage menubar={menubar}></RoadMapPage>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
-          <Header title={title[0]} serverlists={lists}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
+          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}
