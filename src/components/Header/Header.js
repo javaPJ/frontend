@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const Header = ({title, serverlists}) => {
+const Header = ({title, serverlists, nickname, email, token}) => {
   let history = useHistory();
   const [user, setUser] = useState(false);
 
@@ -14,7 +14,10 @@ const Header = ({title, serverlists}) => {
     history.push({
       pathname: '/profile',
       state: {
-        serverLists: serverlists
+        serverLists: serverlists,
+        nickname: nickname,
+        email: email,
+        token: token,
       }
     })
   }
@@ -30,7 +33,7 @@ const Header = ({title, serverlists}) => {
       <div className={cx('header-pre')}>
         <div className={cx('header-name')}>{title}</div>
         <div className={cx('user-contents')} onClick={() => setUser(!user)}>
-          <div className={cx('user-name')}>nickname</div>
+          <div className={cx('user-name')}>{nickname}</div>
           <AiOutlineUser size="27" className={cx('user-icon')}/>
         </div>
       </div>

@@ -14,7 +14,10 @@ import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 const cx = classNames.bind(styles);
 
 function Schedule() {
-  const title = ["일정", 1]
+  const title = ["일정", 1];
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [token, setToken] = useState('');
   const [menubar, setMenubar] = useState(false);
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
@@ -32,8 +35,11 @@ function Schedule() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists } = location.state;
+      const { serverLists, email, nickname, token } = location.state;
       setLists(serverLists);
+      setEmail(email);
+      setNickname(nickname);
+      setToken(token)
       if(serverLists.length > 0) {
         setServerNot(false)
       }
@@ -59,7 +65,10 @@ function Schedule() {
     history.push({
       pathname: '/schedule',
       state: {
-        serverLists: lists
+        serverLists: lists,
+        nickname: nickname,
+        email: email,
+        token: token,
       }
     });
     setMenubar(false);
@@ -96,7 +105,7 @@ function Schedule() {
   }
 
   useEffect(() => {
-    if(exitTrue !== -1) {
+    if(exitTrue !== -1 && exitTrue !== -2) {
       lists.splice(exitTrue, 1);
 
       for(var i=0;i<lists.length;i++) {
@@ -104,15 +113,31 @@ function Schedule() {
       }
 
       if(lists.length > 0) {
-        lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
+        if(exitTrue-1 === -1) {
+          lists.splice(exitTrue, 1, {id: lists[exitTrue].id, title: lists[exitTrue].title, color: lists[exitTrue].color, online: true});
+        } else {
+          lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
+        }
       }
       
       if(lists.length === 0) {
         setServerNot(true)
       }
 
-      setExitTrue(-1);
+      setExitTrue(-2);
       setMenubar(false);
+    } else if(exitTrue === -2) {
+      history.push({
+        pathname: '/schedule',
+        state: {
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          token: token,
+        }
+      })
+    } else  {
+      return;
     }
   }, [exitTrue])
 
@@ -135,7 +160,7 @@ function Schedule() {
         <div>
           <NotFound></NotFound>
           <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
-          <Header title={title[0]}></Header>
+          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
@@ -148,7 +173,7 @@ function Schedule() {
         <div>
           <Calendar menubar={menubar}></Calendar>
           <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
-          <Header title={title[0]}></Header>
+          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}
@@ -164,8 +189,8 @@ function Schedule() {
           }
           { exit === true &&
             <div>
-              <div className={cx('backOpacity')}></div>
-              <ProjectExit handleProjectExit={handleProjectExit}></ProjectExit>
+              <div className={cx('backOpacity')} onClick={() => setExit(false)}></div>
+              <ProjectExit handleProjectExit={handleProjectExit} handleExitCancel={() => setExit(false)}></ProjectExit>
             </div>
           }
       </div>

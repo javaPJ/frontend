@@ -20,13 +20,16 @@ function Setting() {
   const [color, setColor] = useState('');
   const [team, setTeam] = useState('');
   const [lists, setLists] = useState([]);
-  const [exit, setExit] = useState(false);
-  const [exitTrue, setExitTrue] = useState(-1);
   const [mouseMove, setMouseMove] = useState(false);
   const [chatOnline, setChatOnline] = useState(false);
   const [positionY, setPositionY] = useState(0);
   const [serverNot, setServerNot] = useState(false);
   const [addServerN, setAddServerN] = useState(false);
+
+  const [settingId, setSettingId] = useState(-1),
+        [settingTitle, setSettingTitle] = useState(''),
+        [settingColor, setSettingColor] = useState(''),
+        [settingDelete, setSettingDelete] = useState(-1);
 
   let history = useHistory();
   let location = useLocation();
@@ -34,6 +37,14 @@ function Setting() {
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
       const { serverLists } = location.state;
+
+      for(var i=0;i<serverLists.length;i++) {
+        if(serverLists[i].online === true) {
+          setSettingTitle(serverLists[i].title);
+          setSettingColor(serverLists[i].color);
+        }
+      }
+      
       setLists(serverLists);
       if(serverLists.length > 0) {
         setServerNot(false)
@@ -98,37 +109,6 @@ function Setting() {
     }
   }, [addServerN])
 
-  const handleProjectExit = () => {
-    for(var i=0;i<lists.length;i++) {
-      if(lists[i].online === true) {
-        setExitTrue(i);
-      }
-    }
-
-    setExit(false);
-  }
-
-  useEffect(() => {
-    if(exitTrue !== -1) {
-      lists.splice(exitTrue, 1);
-
-      for(var i=0;i<lists.length;i++) {
-        lists.splice(i,1,{id: i+1, title: lists[i].title, color: lists[i].color, online: false })
-      }
-
-      if(lists.length > 0) {
-        lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
-      }
-      
-      if(lists.length === 0) {
-        setServerNot(true)
-      }
-
-      setExitTrue(-1);
-      setMenubar(false);
-    }
-  }, [exitTrue])
-
   const handleMousePosition = (e) => {
     e.preventDefault();
 
@@ -142,12 +122,72 @@ function Setting() {
     }
   }
 
+  const handleSettingColor = (color) => {
+    setSettingColor(color.hex);
+    for(var i=0;i<lists.length;i++)
+      if(lists[i].online === true)
+        setSettingId(lists[i].id);
+  }
+
+  const handleChangeTitle = (title) => {
+    setSettingTitle(title);
+    for(var i=0;i<lists.length;i++)
+      if(lists[i].online === true)
+        setSettingId(lists[i].id);
+  }
+
+  useEffect(() => {
+    if(settingId !== -1) {
+      lists.splice(settingId-1, 1, {id: settingId, title: settingTitle, color: settingColor, online: true});
+      setSettingId(-1);
+    }
+  }, [settingId])
+
+  const handleRemoveProject = () => {
+    for(var i=0;i<lists.length;i++)
+      if(lists[i].online === true)
+        setSettingDelete(i);
+  }
+
+  useEffect(() => {
+    if(settingDelete !== -1 && settingDelete !== -2) {
+      lists.splice(settingDelete, 1);
+
+      for(var i=0;i<lists.length;i++) {
+        lists.splice(i,1,{id: i+1, title: lists[i].title, color: lists[i].color, online: false })
+      }
+
+      if(lists.length > 0) {
+        if(settingDelete-1 === -1) {
+          lists.splice(settingDelete, 1, {id: lists[settingDelete].id, title: lists[settingDelete].title, color: lists[settingDelete].color, online: true});
+        } else {
+          lists.splice(settingDelete-1, 1, {id: lists[settingDelete-1].id, title: lists[settingDelete-1].title, color: lists[settingDelete-1].color, online: true});
+        }
+      }
+
+      if(lists.length === 0) {
+        setLists([]);
+      }
+      
+      setSettingDelete(-2);
+    } else if(settingDelete === -2) {
+      history.push({
+        pathname: '/schedule',
+        state: {
+          serverLists: lists
+        }
+      })
+    } else  {
+      return;
+    }
+  }, [settingDelete])
+
   return (
     <div onMouseMove={(e) => handleMousePosition(e)}>
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists}></MenuBar>
           <Header title={title[0]}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
@@ -159,9 +199,16 @@ function Setting() {
         </div>
         :
         <div>
-          <SetProject menubar={menubar}></SetProject>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
-          <Header title={title[0]}></Header>
+          <SetProject 
+            menubar={menubar} 
+            pickerColor={settingColor} 
+            handleOnChangeComplete={(color) => handleSettingColor(color)} 
+            title={settingTitle} 
+            handleChangeTitle={handleChangeTitle} 
+            handleRemoveProject={handleRemoveProject}
+          />
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists}></MenuBar>
+          <Header title={title[0]} serverlists={lists}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}
@@ -173,12 +220,6 @@ function Setting() {
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
               <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
-            </div>
-          }
-          { exit === true &&
-            <div>
-              <div className={cx('backOpacity')}></div>
-              <ProjectExit handleProjectExit={handleProjectExit}></ProjectExit>
             </div>
           }
         </div>

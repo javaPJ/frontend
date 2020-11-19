@@ -109,7 +109,7 @@ function Kanban() {
   }
 
   useEffect(() => {
-    if(exitTrue !== -1) {
+    if(exitTrue !== -1 && exitTrue !== -2) {
       lists.splice(exitTrue, 1);
 
       for(var i=0;i<lists.length;i++) {
@@ -117,15 +117,28 @@ function Kanban() {
       }
 
       if(lists.length > 0) {
-        lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
+        if(exitTrue-1 === -1) {
+          lists.splice(exitTrue, 1, {id: lists[exitTrue].id, title: lists[exitTrue].title, color: lists[exitTrue].color, online: true});
+        } else {
+          lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
+        }
       }
       
       if(lists.length === 0) {
         setServerNot(true)
       }
 
-      setExitTrue(-1);
+      setExitTrue(-2);
       setMenubar(false);
+    } else if(exitTrue === -2) {
+      history.push({
+        pathname: '/schedule',
+        state: {
+          serverLists: lists
+        }
+      })
+    } else  {
+      return;
     }
   }, [exitTrue])
 
@@ -161,7 +174,7 @@ function Kanban() {
         <div>
           <KanbanPage menubar={menubar}></KanbanPage>
           <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
-          <Header title={title[0]}></Header>
+          <Header title={title[0]} serverlists={lists}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}
@@ -177,8 +190,8 @@ function Kanban() {
           }
           { exit === true &&
             <div>
-              <div className={cx('backOpacity')}></div>
-              <ProjectExit handleProjectExit={handleProjectExit}></ProjectExit>
+              <div className={cx('backOpacity')} onClick={() => setExit(false)}></div>
+              <ProjectExit handleProjectExit={handleProjectExit} handleExitCancel={() => setExit(false)}></ProjectExit>
             </div>
           }
         </div>
