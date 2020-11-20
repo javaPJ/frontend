@@ -21,9 +21,10 @@ const SignUp = () => {
         if(email !== '') {
             axios.get(`http://3.35.169.186:5000/api/auth/idcheck/${email}`)
             .then(res => {
-                axios.post(`http://3.35.169.186:5000/api/auth/emailsend`, {
-                    email: email,
-                })
+                const data = {
+                    email: `${email}`
+                }
+                axios.post(`http://3.35.169.186:5000/api/auth/emailsend`, data)
                 .then(res => {
                     setEmailBlock(true);
                     console.log(res);

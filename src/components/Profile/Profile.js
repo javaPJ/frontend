@@ -9,28 +9,26 @@ const axios = require('axios');
 const Profile = ({menubar, getNickname, email, lists, token}) => {
     let history = useHistory();
 
-    const [load, setLoad] = useState(false),
-          [nickname, setNickname] = useState(''),
+    const [nickname, setNickname] = useState(''),
           [password, setPassword] = useState(''),
           [passwordCheck, setPasswordCheck] = useState('');
 
     useEffect(() => {
-        if(load === false) {
-            setNickname(getNickname);
-            setLoad(true);
-        }
-    }, [load])
+        setNickname(getNickname);
+    }, [])
 
 
     const handleProfileSave = () => {
         if(password === passwordCheck || nickname !== '') {
-            axios.patch(`http://3.35.169.186:5000/api/account/profile`, {
-                nickname: nickname,
-                password: password,
-                headers : {
-                    Authentication : token
-                }
-            })
+
+            axios.patch(`http://3.35.169.186:5000/api/account/profile`, 
+            {
+                nickname: `${nickname}`,
+                password: `${password}`, 
+            },
+            {headers : {
+                Authentication : `${token}`
+            }})
             .then(res => {
                 console.log(res);
                 history.push({
@@ -60,7 +58,7 @@ const Profile = ({menubar, getNickname, email, lists, token}) => {
             pathname: '/schedule',
             state: {
                 serverLists: lists,
-                nickname: nickname,
+                nickname: getNickname,
                 email: email,
                 token: token,
             }
@@ -79,7 +77,7 @@ const Profile = ({menubar, getNickname, email, lists, token}) => {
                     </div>
                     <div className={cx('profile-nickname')}>
                         <div className={cx('profile-nickname-title')}>Nickname</div>
-                        <input className={cx('profile-nickname-input')} onChange={(e) => setNickname(e.target.value)} placeholder={nickname}/>
+                        <input className={cx('profile-nickname-input')} onChange={(e) => setNickname(e.target.value)} />
                     </div>
                     <div className={cx('profile-password')}>
                         <div className={cx('profile-password-title')}>Password</div>

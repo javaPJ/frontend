@@ -21,11 +21,11 @@ const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handle
         if(load === false) {
             setProjectName(title);
             setTeam([])
-            var array = []
-            for(var i=0;i<20;i++) {
-                array.push({id: i+1, name: 'unknown#'+(i+1), email: 'unknown#'+(i+1)+'@gmail.com', date: '2020-09-11'});
-            }
-            setTeam(array)
+            // var array = []
+            // for(var i=0;i<20;i++) {
+            //     array.push({id: i+1, name: 'unknown#'+(i+1), email: 'unknown#'+(i+1)+'@gmail.com', date: '2020-09-11'});
+            // }
+            // setTeam(array)
             setLoad(true);
         } 
     }, [load])

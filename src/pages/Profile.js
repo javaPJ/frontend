@@ -38,8 +38,6 @@ function Profile() {
       setEmail(email);
       setNickname(nickname);
       setToken(token);
-      if(serverLists.length > 0) {
-      }
     } else {
       // error handling, if message undefined
       setLists([]);
@@ -161,7 +159,7 @@ function Profile() {
     <div onMouseMove={(e) => handleMousePosition(e)}>
       <div>
         <ProfilePage menubar={menubar} getNickname={nickname} email={email} lists={lists} token={token}></ProfilePage>
-        <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists}></MenuBar>
+        <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
         <Header title={title[0]} serverlists={lists} nickname={nickname} email={email}></Header>
         <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
         { create === true &&

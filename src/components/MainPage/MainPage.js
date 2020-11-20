@@ -31,19 +31,20 @@ const MainPage = () => {
             })
             .then(res => {
                 console.log(res);
-                var token = res.data.token;
-                axios.get(`http://3.35.169.186:5000/api/account/profile`,{
+                console.log(res.data.accessToken);
+                var token = res.data.accessToken;
+                axios.post(`http://3.35.169.186:5000/api/account/profile`,{},{
                     headers : {
-                        Authentication : token
+                        Authentication : `${token}`
                     }
                 })
                 .then(res => {
                     history.push({
                         pathname: "/schedule",
                         state: {
-                            nickname: res.data.nickname,
+                            nickname: res.data.name,
                             email: res.data.email,
-                            severLists: res.data.team,
+                            serverLists: res.data.team,
                             token : token,
                         }
                     })

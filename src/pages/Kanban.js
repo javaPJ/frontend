@@ -176,7 +176,7 @@ function Kanban() {
         <div>
           <NotFound></NotFound>
           <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
-          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
+          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} token={token}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
