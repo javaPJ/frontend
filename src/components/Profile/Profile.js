@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 const axios = require('axios');
 
-const Profile = ({menubar, getNickname, email, lists, token}) => {
+const Profile = ({menubar, getNickname, email, lists, accessToken, refreshToken }) => {
     let history = useHistory();
 
     const [nickname, setNickname] = useState(''),
@@ -27,7 +27,7 @@ const Profile = ({menubar, getNickname, email, lists, token}) => {
                 password: `${password}`, 
             },
             {headers : {
-                Authentication : `${token}`
+                Authentication : `${accessToken}`
             }})
             .then(res => {
                 console.log(res);
@@ -37,7 +37,8 @@ const Profile = ({menubar, getNickname, email, lists, token}) => {
                         serverLists: lists,
                         nickname: nickname,
                         email: email,
-                        token: token
+                        accesstoken : accessToken,
+                        refreshtoken : refreshToken
                     }
                 })
             })
@@ -60,7 +61,8 @@ const Profile = ({menubar, getNickname, email, lists, token}) => {
                 serverLists: lists,
                 nickname: getNickname,
                 email: email,
-                token: token,
+                accesstoken : accessToken,
+                refreshtoken : refreshToken
             }
         })
     }

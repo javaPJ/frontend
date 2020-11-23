@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const MenuItem = ({ id, title, now, lists, nickname, email, token }) => {
+const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refreshToken }) => {
   let history = useHistory();
 
   const handleMenuSelect = () => {
@@ -17,7 +17,8 @@ const MenuItem = ({ id, title, now, lists, nickname, email, token }) => {
             serverLists: lists,
             nickname: nickname,
             email: email,
-            token: token,
+            accesstoken : accessToken,
+            refreshtoken : refreshToken
           }
         })
         break;
@@ -28,7 +29,8 @@ const MenuItem = ({ id, title, now, lists, nickname, email, token }) => {
             serverLists: lists,
             nickname: nickname,
             email: email,
-            token: token,
+            accesstoken : accessToken,
+            refreshtoken : refreshToken
           }
         })
         break;
@@ -39,7 +41,8 @@ const MenuItem = ({ id, title, now, lists, nickname, email, token }) => {
             serverLists: lists,
             nickname: nickname,
             email: email,
-            token: token,
+            accesstoken : accessToken,
+            refreshtoken : refreshToken
           }
         })
         break;
@@ -50,7 +53,8 @@ const MenuItem = ({ id, title, now, lists, nickname, email, token }) => {
             serverLists: lists,
             nickname: nickname,
             email: email,
-            token: token,
+            accesstoken : accessToken,
+            refreshtoken : refreshToken
           }
         })
         break;

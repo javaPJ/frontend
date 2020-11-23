@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const Header = ({title, serverlists, nickname, email, token}) => {
+const Header = ({title, serverlists, nickname, email, accessToken, refreshToken}) => {
   let history = useHistory();
   const [user, setUser] = useState(false);
 
@@ -17,7 +17,8 @@ const Header = ({title, serverlists, nickname, email, token}) => {
         serverLists: serverlists,
         nickname: nickname,
         email: email,
-        token: token,
+        accesstoken: accessToken,
+        refreshtoken: refreshToken
       }
     })
   }

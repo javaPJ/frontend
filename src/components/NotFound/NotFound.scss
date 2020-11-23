@@ -1,0 +1,23 @@
+.notfound-back {
+    text-align: center;
+    
+    .notfound-404 {
+        font-size: 120px;
+    }
+
+    .notfound-button {
+        margin-top: 10px;
+        background-color: #8D99AE;
+        border-radius: 5px;
+        border: 2px solid #8D99AE;
+        color: white;
+        padding: 7px 20px;
+        font-size: 25px;
+        cursor: pointer;
+        
+        &:hover {
+            background-color: white;
+            color: #8D99AE;  
+        }
+    }
+}

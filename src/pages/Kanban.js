@@ -11,13 +11,17 @@ import ProjectExit from '../components/MenuBarPage/ProjectExit/ProjectExit';
 import Chatting from './../components/ChattingModal/Chatting';
 import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 
+import useInterval from './useInterval';
+
 const cx = classNames.bind(styles);
+const axios = require('axios');
 
 function Kanban() {
   const title = ["칸반 보드", 2];
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
-  const [token, setToken] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
   const [menubar, setMenubar] = useState(false);
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
@@ -34,18 +38,57 @@ function Kanban() {
   let history = useHistory();
   let location = useLocation();
 
+  useInterval(() => {
+    axios.get(`http://3.35.169.186:5000/api/auth/refreshtoken`,
+    {
+      headers: {
+        Authentication: refreshToken
+      }
+    })
+    .then(res => {setAccessToken(res.data.accessToken)})
+    .catch(err => {console.log(err);})
+  }, 900000);
+
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, token } = location.state;
+      const { serverLists, email, nickname, accesstoken, refreshtoken } = location.state;
+      
+      var array = []
+
+      for(var i=0;i<serverLists.length;i++) {
+        axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
+        {
+          team: serverLists[i]
+        },
+        { headers: {
+          Authentication: accesstoken
+        }})
+        .then(res => {
+          console.log(res);
+          if(i===0) {
+            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: true})
+          } else {
+            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: false})
+          }
+        })
+        .error(err => {
+          console.log(err);
+        })
+      }
+      
       setLists(serverLists);
+
       setEmail(email);
       setNickname(nickname);
-      setToken(token)
+      setAccessToken(accesstoken);
+      setRefreshToken(refreshtoken);
       if(serverLists.length > 0) {
         setServerNot(false)
       }
     } else {
-      // error handling, if message undefined
+      history.push({
+        pathname: '/'
+      })
       setLists([]);
     }
   }, [])
@@ -69,7 +112,8 @@ function Kanban() {
         serverLists: lists,
         nickname: nickname,
         email: email,
-        token: token,
+        accesstoken : accessToken,
+        refreshtoken : refreshToken
       }
     });
     setMenubar(false);
@@ -81,6 +125,23 @@ function Kanban() {
       for (var i = 0; i < lists.length; i++) {
         lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
       }
+
+      axios.post(`http://3.35.169.186:5000/api/project/createProject`,
+      {
+        name: team,
+        color:color
+      },
+      {
+        header: {
+          Authentication: accessToken
+        }
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
       setLists([
         ...lists,
@@ -104,7 +165,8 @@ function Kanban() {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          token: token,
+          accesstoken : accessToken,
+          refreshtoken : refreshToken
         }
       })
     }
@@ -149,7 +211,8 @@ function Kanban() {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          token: token,
+          accesstoken : accessToken,
+          refreshtoken : refreshToken
         }
       })
     } else  {
@@ -175,8 +238,8 @@ function Kanban() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} token={token}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
@@ -188,8 +251,8 @@ function Kanban() {
         :
         <div>
           <KanbanPage menubar={menubar}></KanbanPage>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} token={token}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}

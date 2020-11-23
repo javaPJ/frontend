@@ -30,12 +30,12 @@ const MainPage = () => {
                 password : password,
             })
             .then(res => {
-                console.log(res);
-                console.log(res.data.accessToken);
-                var token = res.data.accessToken;
+                var accesstoken = res.data.accessToken;
+                var refreshtoken = res.data.refreshToken;
+
                 axios.post(`http://3.35.169.186:5000/api/account/profile`,{},{
                     headers : {
-                        Authentication : `${token}`
+                        Authentication : `${accesstoken}`
                     }
                 })
                 .then(res => {
@@ -45,7 +45,8 @@ const MainPage = () => {
                             nickname: res.data.name,
                             email: res.data.email,
                             serverLists: res.data.team,
-                            token : token,
+                            accesstoken : accesstoken,
+                            refreshtoken : refreshtoken
                         }
                     })
                 })

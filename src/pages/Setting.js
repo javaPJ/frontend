@@ -7,17 +7,20 @@ import SetProject from '../components/SetProject/SetProject/SetProject';
 import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/MainCreate';
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
-import ProjectExit from '../components/MenuBarPage/ProjectExit/ProjectExit';
 import Chatting from './../components/ChattingModal/Chatting';
 import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 
+import useInterval from './useInterval';
+
 const cx = classNames.bind(styles);
+const axios = require('axios');
 
 function Setting() {
   const title = ["프로젝트 설정", 4];
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
-  const [token, setToken] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
   const [menubar, setMenubar] = useState(false);
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
@@ -37,26 +40,57 @@ function Setting() {
   let history = useHistory();
   let location = useLocation();
 
+  useInterval(() => {
+    axios.get(`http://3.35.169.186:5000/api/auth/refreshtoken`,
+    {
+      headers: {
+        Authentication: refreshToken
+      }
+    })
+    .then(res => {setAccessToken(res.data.accessToken)})
+    .catch(err => {console.log(err);})
+  }, 900000);
+
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, token } = location.state;
+      const { serverLists, email, nickname, accesstoken, refreshtoken } = location.state;
+      
+      var array = []
 
       for(var i=0;i<serverLists.length;i++) {
-        if(serverLists[i].online === true) {
-          setSettingTitle(serverLists[i].title);
-          setSettingColor(serverLists[i].color);
-        }
+        axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
+        {
+          team: serverLists[i]
+        },
+        { headers: {
+          Authentication: accesstoken
+        }})
+        .then(res => {
+          console.log(res);
+          if(i===0) {
+            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: true})
+          } else {
+            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: false})
+          }
+        })
+        .error(err => {
+          console.log(err);
+        })
       }
       
       setLists(serverLists);
+
       setEmail(email);
       setNickname(nickname);
-      setToken(token);
+      setAccessToken(accesstoken);
+      setRefreshToken(refreshtoken);
       if(serverLists.length > 0) {
         setServerNot(false)
       }
     } else {
-      // error handling, if message undefined
+      history.push({
+        pathname: '/'
+      })
       setLists([]);
     }
   }, [])
@@ -80,7 +114,8 @@ function Setting() {
         serverLists: lists,
         nickname: nickname,
         email: email,
-        token: token,
+        accesstoken : accessToken,
+        refreshtoken : refreshToken
       }
     });
     setMenubar(false);
@@ -92,6 +127,23 @@ function Setting() {
       for (var i = 0; i < lists.length; i++) {
         lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
       }
+
+      axios.post(`http://3.35.169.186:5000/api/project/createProject`,
+      {
+        name: team,
+        color:color
+      },
+      {
+        header: {
+          Authentication: accessToken
+        }
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
       setLists([
         ...lists,
@@ -115,7 +167,8 @@ function Setting() {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          token: token,
+          accesstoken : accessToken,
+          refreshtoken : refreshToken
         }
       })
     }
@@ -189,7 +242,8 @@ function Setting() {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          token: token,
+          accesstoken : accessToken,
+          refreshtoken : refreshToken
         }
       })
     } else  {
@@ -202,8 +256,8 @@ function Setting() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
-          <Header title={title[0]} nickname={nickname} email={email} token={token}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <Header title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
@@ -222,8 +276,8 @@ function Setting() {
             handleChangeTitle={handleChangeTitle} 
             handleRemoveProject={handleRemoveProject}
           />
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} token={token}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} token={token}></Header>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}
