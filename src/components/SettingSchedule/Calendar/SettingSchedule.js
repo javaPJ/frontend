@@ -85,7 +85,7 @@ const SettingSchedule = ({
 
         const thisCheck = members[parseInt(memberId)-1].check;
   
-        if(thisCheck == false) {
+        if(thisCheck === false) {
           members.splice(parseInt(memberId)-1, 1, {key: parseInt(memberId), name: memberName, check: !thisCheck});
   
           thisMember.push({key: parseInt(memberId), name: memberName});

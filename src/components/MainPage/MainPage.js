@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styles from './MainPage.scss';
 import classNames from 'classnames/bind';
@@ -39,6 +39,8 @@ const MainPage = () => {
                     }
                 })
                 .then(res => {
+
+                    console.log(res.data.team);
                     history.push({
                         pathname: "/schedule",
                         state: {
@@ -66,6 +68,12 @@ const MainPage = () => {
             alert("비밀번호를 확인해주세요.");
         }
     }
+
+    const handleEnterKey = (e) => {
+        if(e.keyCode === 13) {
+            handleLogin();
+        }
+    }
     
     return(
         <div className={cx("main-back")}>
@@ -81,7 +89,7 @@ const MainPage = () => {
             <div className={cx('main-input')}>
                 <div className={cx("main-login-title")}>Login</div>
                 <input className={cx("main-email")} onChange={(e) => setEmail(e.target.value)} value={email} placeholder = "Email"/>
-                <input className={cx("main-password")} onChange={(e) => setPassword(e.target.value)} value={password} placeholder="Password" type="password"/>
+                <input className={cx("main-password")} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => handleEnterKey(e)} value={password} placeholder="Password" type="password"/>
                 <div className={cx("main-forgot")} onClick={() => handleForgot()}>Forgot Password?</div>
                 <button className={cx("main-login-button")} onClick={() => handleLogin()}>Login</button>
             </div>

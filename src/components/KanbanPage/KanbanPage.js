@@ -72,7 +72,7 @@ const KanbanPage = ({menubar}) => {
 
         if(deleteTitle !== -1) {
             data.splice(deleteTitle, 1, {key: deleteTitle+1, title: groupName, items: groupItem});
-            for(var index=0;index<itemList.length;index++) {
+            for(index=0;index<itemList.length;index++) {
                 if(itemTitle === itemList[index]) {
                     itemList.splice(index, 1);
                 }

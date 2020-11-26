@@ -37,6 +37,8 @@ function Setting() {
         [settingColor, setSettingColor] = useState(''),
         [settingDelete, setSettingDelete] = useState(-1);
 
+  const [teamMate, setTeamMate] = useState([]);
+
   let history = useHistory();
   let location = useLocation();
 
@@ -53,33 +55,17 @@ function Setting() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken } = location.state;
-      
-      var array = []
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate } = location.state;
 
-      for(var i=0;i<serverLists.length;i++) {
-        axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
-        {
-          team: serverLists[i]
-        },
-        { headers: {
-          Authentication: accesstoken
-        }})
-        .then(res => {
-          console.log(res);
-          if(i===0) {
-            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: true})
-          } else {
-            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: false})
-          }
-        })
-        .error(err => {
-          console.log(err);
-        })
+      for(var index=0;index<serverLists.length;index++) {
+        if(serverLists[index].online === true) {
+          setSettingTitle(serverLists[index].title);
+          setSettingColor(serverLists[index].color);
+        }
       }
       
       setLists(serverLists);
-
+      setTeamMate(teamMate);
       setEmail(email);
       setNickname(nickname);
       setAccessToken(accesstoken);
@@ -134,8 +120,8 @@ function Setting() {
         color:color
       },
       {
-        header: {
-          Authentication: accessToken
+        headers: {
+          Authentication: `${accessToken}`
         }
       })
       .then(res => {
@@ -256,7 +242,7 @@ function Setting() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
           <Header title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
@@ -276,7 +262,7 @@ function Setting() {
             handleChangeTitle={handleChangeTitle} 
             handleRemoveProject={handleRemoveProject}
           />
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
           <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 

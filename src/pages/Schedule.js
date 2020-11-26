@@ -26,6 +26,7 @@ function Schedule() {
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
   const [team, setTeam] = useState('');
+  const [teamMate, setTeamMate] = useState([]);
   const [lists, setLists] = useState([]);
   const [exit, setExit] = useState(false);
   const [exitTrue, setExitTrue] = useState(-1);
@@ -52,30 +53,36 @@ function Schedule() {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
       const { serverLists, email, nickname, accesstoken, refreshtoken } = location.state;
       var array = []
+      console.log(serverLists);
+      if(typeof serverLists[0] === String) {
+        for(var i=0;i<serverLists.length;i++) {
+          axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
+          {
+            team: serverLists[i]
+          },
+          { headers: {
+            Authentication: `${accessToken}`
+          }})
+          .then(res => {
+            console.log(res);
+            if(i===0) {
+              array.push({id: i+1, title: serverLists[i], color: res.data.color, online: true});
+              setTeamMate(res.data.teammate);
+            } else {
+              array.push({id: i+1, title: serverLists[i], color: res.data.color, online: false})
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+        }
+        console.log(array);
+        setLists(array);
 
-      for(var i=0;i<serverLists.length;i++) {
-        axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
-        {
-          team: serverLists[i]
-        },
-        { headers: {
-          Authentication: accesstoken
-        }})
-        .then(res => {
-          console.log(res);
-          if(i===0) {
-            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: true})
-          } else {
-            array.push({id: i+1, title: serverLists[i], color: res.data.color, online: false})
-          }
-        })
-        .error(err => {
-          console.log(err);
-        })
+      } else {
+        setLists(serverLists);
       }
       
-      setLists(serverLists);
-
       setEmail(email);
       setNickname(nickname);
       setAccessToken(accesstoken);
@@ -104,6 +111,21 @@ function Schedule() {
       lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
     }
     lists.splice(e.target.innerText-1, 1, {id: e.target.innerText, title: e.target.title, color: e.target.style.backgroundColor, online: true});
+
+    axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
+    {
+      team: e.target.title
+    },
+    { headers: {
+      Authentication: `${accessToken}`
+    }})
+    .then(res => {
+      setTeamMate(res.data.teammate);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
     history.push({
       pathname: '/schedule',
       state: {
@@ -111,7 +133,8 @@ function Schedule() {
         nickname: nickname,
         email: email,
         accesstoken : accessToken,
-        refreshtoken : refreshToken
+        refreshtoken : refreshToken,
+        teamMate: teamMate
       }
     });
     setMenubar(false);
@@ -124,14 +147,17 @@ function Schedule() {
         lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
       }
 
+      console.log(accessToken);
+      console.log(team);
+      console.log(color);
       axios.post(`http://3.35.169.186:5000/api/project/createProject`,
       {
         name: team,
         color:color
       },
       {
-        header: {
-          Authentication: accessToken
+        headers: {
+          Authentication: `${accessToken}`
         }
       })
       .then(res => {
@@ -174,10 +200,40 @@ function Schedule() {
       if(lists.length > 0) {
         if(exitTrue-1 === -1) {
           lists.splice(exitTrue, 1, {id: lists[exitTrue].id, title: lists[exitTrue].title, color: lists[exitTrue].color, online: true});
+          
+          axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
+          {
+            team: lists[exitTrue]
+          },
+          { headers: {
+            Authentication: `${accessToken}`
+          }})
+          .then(res => {
+            setTeamMate(res.data.teammate);
+          })
+          .catch(err => {
+            console.log(err);
+          })
+
         } else {
           lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
+
+          axios.post(`http://3.35.169.186:5000/api/project/readproject`, 
+          {
+            team: lists[exitTrue-1]
+          },
+          { headers: {
+            Authentication: `${accessToken}`
+          }})
+          .then(res => {
+            setTeamMate(res.data.teammate);
+          })
+          .catch(err => {
+            console.log(err);
+          })
         }
       }
+
       
       if(lists.length === 0) {
         setServerNot(true)
@@ -186,6 +242,7 @@ function Schedule() {
       setExitTrue(-2);
       setMenubar(false);
     } else if(exitTrue === -2) {
+
       history.push({
         pathname: '/schedule',
         state: {
@@ -193,7 +250,8 @@ function Schedule() {
           nickname: nickname,
           email: email,
           accesstoken : accessToken,
-          refreshtoken : refreshToken
+          refreshtoken : refreshToken,
+          teamMate : teamMate
         }
       })
     } else  {
@@ -219,7 +277,7 @@ function Schedule() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
           <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
@@ -232,7 +290,7 @@ function Schedule() {
         :
         <div>
           <Calendar menubar={menubar}></Calendar>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></MenuBar>
+          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
           <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
