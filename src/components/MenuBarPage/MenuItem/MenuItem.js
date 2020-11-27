@@ -5,11 +5,11 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refreshToken, teamMate }) => {
+const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refreshToken, teamMate, leader, code }) => {
   let history = useHistory();
 
   const handleMenuSelect = () => {
-    switch(id) {
+    switch (id) {
       case 1:
         history.push({
           pathname: '/schedule',
@@ -17,8 +17,11 @@ const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refresh
             serverLists: lists,
             nickname: nickname,
             email: email,
-            accesstoken : accessToken,
-            refreshtoken : refreshToken,
+            accesstoken: accessToken,
+            refreshtoken: refreshToken,
+            teamMate: teamMate,
+            leader: leader,
+            code: code,
           }
         })
         break;
@@ -29,9 +32,11 @@ const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refresh
             serverLists: lists,
             nickname: nickname,
             email: email,
-            accesstoken : accessToken,
-            refreshtoken : refreshToken,
-            teamMate: teamMate
+            accesstoken: accessToken,
+            refreshtoken: refreshToken,
+            teamMate: teamMate,
+            leader: leader,
+            code: code,
           }
         })
         break;
@@ -42,9 +47,11 @@ const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refresh
             serverLists: lists,
             nickname: nickname,
             email: email,
-            accesstoken : accessToken,
-            refreshtoken : refreshToken,
-            teamMate: teamMate
+            accesstoken: accessToken,
+            refreshtoken: refreshToken,
+            teamMate: teamMate,
+            leader: leader,
+            code: code,
           }
         })
         break;
@@ -55,9 +62,11 @@ const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refresh
             serverLists: lists,
             nickname: nickname,
             email: email,
-            accesstoken : accessToken,
-            refreshtoken : refreshToken,
-            teamMate: teamMate
+            accesstoken: accessToken,
+            refreshtoken: refreshToken,
+            teamMate: teamMate,
+            leader: leader,
+            code: code,
           }
         })
         break;
@@ -65,15 +74,15 @@ const MenuItem = ({ id, title, now, lists, nickname, email, accessToken, refresh
         return;
     }
   }
-  
+
   let fontColor = now ? "#EF233C" : "#8D99AE";
   let fontBold = now ? "bold" : "none";
 
-  return(
+  return (
     <div className={cx('menuitem-back')} onClick={handleMenuSelect}>
-        <div className={cx('menuitem-contents')}>
-          <div className={cx('menuitem-title')} style={{color: fontColor, fontWeight: fontBold}}>{title}</div>
-        </div>
+      <div className={cx('menuitem-contents')}>
+        <div className={cx('menuitem-title')} style={{ color: fontColor, fontWeight: fontBold }}>{title}</div>
+      </div>
     </div>
   )
 }

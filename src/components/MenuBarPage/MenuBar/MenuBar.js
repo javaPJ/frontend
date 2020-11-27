@@ -6,41 +6,57 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const MenuBar = ({ title, id, menubar, onClick, handleExit, serverlists, nickname, email, accessToken, refreshToken, teamMate }) => {
+const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists, nickname, email, accessToken, refreshToken, teamMate, code }) => {
   const [bar, setBar] = useState(),
         [lists,setLists] = useState([]),
         [onLine, setOnLine] = useState(-1),
-        [owner, setOwner] = useState(true);
+        [owner, setOwner] = useState(false);
 
   useEffect(() => {
     setBar(menubar);
+    let localLeader = false
 
-    if(owner === true && onLine === -1) {
-      setLists([
-        { id: 1, title: "일정", now: false },
-        { id: 2, title: "칸반 보드", now: false },
-        { id: 3, title: "로드맵", now: false },
-        { id: 4, title: "프로젝트 설정", now: false },
-      ]);
-      setOnLine(0);
-    } 
-    
-    if(owner !== true && onLine === -1) {
-      setLists([
-        { id: 1, title: "일정", now: false },
-        { id: 2, title: "칸반 보드", now: false },
-        { id: 3, title: "로드맵", now: false },
-      ]);
-      setOnLine(0);
-    }
-
-    if (id === 0) {
-      return;
+    if(leader === false) {
+      setOwner(true);
+      localLeader = true
     } else {
-      lists.splice(id-1, 1, {id: id, title: title, now: true});
-    }
+      if(leader === nickname) {
+        setOwner(true)
+        localLeader = true
+      } else {
+        setOwner(false)
+        localLeader = false
+      }
 
-  }, [owner, menubar]);
+      if(localLeader === true && onLine === -1) {
+        setLists([
+          { id: 1, title: "일정", now: false },
+          { id: 2, title: "칸반 보드", now: false },
+          { id: 3, title: "로드맵", now: false },
+          { id: 4, title: "프로젝트 설정", now: false },
+        ]);
+        setOnLine(0);
+      } 
+      
+      if(localLeader !== true && onLine === -1) {
+        setLists([
+          { id: 1, title: "일정", now: false },
+          { id: 2, title: "칸반 보드", now: false },
+          { id: 3, title: "로드맵", now: false },
+        ]);
+        setOnLine(0);
+      }
+  
+      if (id === 0) {
+        return;
+      } else {
+        lists.splice(id-1, 1, {id: id, title: title, now: true});
+      }
+  
+
+    }
+  }, [menubar])
+
 
 
   let size = bar ? "230px" : "25px"
@@ -50,7 +66,7 @@ const MenuBar = ({ title, id, menubar, onClick, handleExit, serverlists, nicknam
       {bar === true ?
         <div className={cx('menubar-next')}>
           <div className={cx('menubar-left')} onClick={onClick}><AiFillCaretLeft size="27px" color="gray"/></div>
-          <MenuList lists={lists} Serverlists={serverlists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}/>
+          <MenuList code={code} leader={leader} lists={lists} Serverlists={serverlists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}/>
           { owner === false &&
             <div className={cx('menubar-exit')} onClick={() => handleExit()}>프로젝트 나가기</div>
           }

@@ -15,7 +15,7 @@ const ServerItem = ({ color, title, id, bar, online, onClickServer }) => {
             :
             <div className={cx('serveritem-squre')} style={{backgroundColor: "#343742"}}></div>
           }
-          <div className={cx('serveritem-circle')} style={{backgroundColor: color, color: color}} title={title} onClick={onClickServer}>{id}</div>
+          <div className={cx('serveritem-circle')} id={id} style={{backgroundColor: color, color: color}} title={title} onClick={onClickServer}>{id}</div>
         </div>
         :
         <div className={cx('serveritem-contents')}>

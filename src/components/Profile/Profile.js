@@ -21,7 +21,7 @@ const Profile = ({menubar, getNickname, email, lists, accessToken, refreshToken 
     const handleProfileSave = () => {
         if(password === passwordCheck || nickname !== '') {
 
-            axios.patch(`http://3.35.169.186:5000/api/account/profile`, 
+            axios.patch(`http://3.35.229.52:5000/api/account/profile`, 
             {
                 nickname: `${nickname}`,
                 password: `${password}`, 

@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const Header = ({title, serverlists, nickname, email, accessToken, refreshToken}) => {
+const Header = ({title, serverlists, nickname, email, accessToken, refreshToken, teamMate, leader, code}) => {
   let history = useHistory();
   const [user, setUser] = useState(false);
 
@@ -18,14 +18,17 @@ const Header = ({title, serverlists, nickname, email, accessToken, refreshToken}
         nickname: nickname,
         email: email,
         accesstoken: accessToken,
-        refreshtoken: refreshToken
+        refreshtoken: refreshToken,
+        teamMate: teamMate,
+        leader: leader,
+        code: code
       }
     })
   }
 
   const handleLogOut = () => {
     history.push({
-      pathname: '/'
+      pathname: '/',
     })
   }
 

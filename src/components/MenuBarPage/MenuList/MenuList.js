@@ -1,7 +1,7 @@
 import React from 'react';
 import MenuItem from './../MenuItem/MenuItem';
 
-const MenuList = ({lists, Serverlists, nickname, email, accessToken, refreshToken, teamMate }) => {
+const MenuList = ({ leader, lists, Serverlists, nickname, email, accessToken, refreshToken, teamMate, code }) => {
   const menuList = lists.map(
     list => (
       <MenuItem
@@ -15,6 +15,8 @@ const MenuList = ({lists, Serverlists, nickname, email, accessToken, refreshToke
         accessToken={accessToken} 
         refreshToken={refreshToken}
         teamMate={teamMate}
+        leader={leader}
+        code={code}
       >
       </MenuItem>
     )

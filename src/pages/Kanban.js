@@ -35,32 +35,37 @@ function Kanban() {
   const [positionY, setPositionY] = useState(0);
   const [serverNot, setServerNot] = useState(false);
   const [addServerN, setAddServerN] = useState(false);
+  const [leader, setLeader] = useState('');
+  const [code, setCode] = useState('');
+
 
   let history = useHistory();
   let location = useLocation();
 
   useInterval(() => {
-    axios.get(`http://3.35.169.186:5000/api/auth/refreshtoken`,
-    {
-      headers: {
-        Authentication: refreshToken
-      }
-    })
-    .then(res => {setAccessToken(res.data.accessToken)})
-    .catch(err => {console.log(err);})
+    axios.get(`http://3.35.229.52:5000/api/auth/refreshtoken`,
+      {
+        headers: {
+          Authentication: refreshToken
+        }
+      })
+      .then(res => { setAccessToken(res.data.accessToken) })
+      .catch(err => { console.log(err); })
   }, 900000);
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate } = location.state;
-      
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code } = location.state;
+
       setLists(serverLists);
+      setLeader(leader);
+      setCode(code)
       setTeamMate(teamMate);
       setEmail(email);
       setNickname(nickname);
       setAccessToken(accesstoken);
       setRefreshToken(refreshtoken);
-      if(serverLists.length > 0) {
+      if (serverLists.length > 0) {
         setServerNot(false)
       }
     } else {
@@ -72,7 +77,7 @@ function Kanban() {
   }, [])
 
   useEffect(() => {
-    if(lists.length === 0) {
+    if (lists.length === 0) {
       setServerNot(true)
     } else {
       setServerNot(false)
@@ -81,17 +86,23 @@ function Kanban() {
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
-      lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
+      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
+      if(i === e.target.id-1) {
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: true });
+      }
     }
-    lists.splice(e.target.innerText-1, 1, {id: e.target.innerText, title: e.target.title, color: e.target.style.backgroundColor, online: true});
+    
     history.push({
       pathname: '/schedule',
       state: {
         serverLists: lists,
         nickname: nickname,
         email: email,
-        accesstoken : accessToken,
-        refreshtoken : refreshToken
+        accesstoken: accessToken,
+        refreshtoken: refreshToken,
+        teamMate: teamMate,
+        leader: leader,
+        code: code
       }
     });
     setMenubar(false);
@@ -101,29 +112,29 @@ function Kanban() {
     if (color !== '' && team !== '') {
       setMenubar(false);
       for (var i = 0; i < lists.length; i++) {
-        lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
       }
 
-      axios.post(`http://3.35.169.186:5000/api/project/createProject`,
-      {
-        name: team,
-        color:color
-      },
-      {
-        headers: {
-          Authentication: `${accessToken}`
-        }
-      })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+      axios.post(`http://3.35.229.52:5000/api/project/createProject`,
+        {
+          name: team,
+          color: color
+        },
+        {
+          headers: {
+            Authentication: `${accessToken}`
+          }
+        })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        })
 
       setLists([
         ...lists,
-        {id: lists.length + 1, title: team, color: color, online: true}
+        { id: lists.length + 1, title: team, color: color, online: true }
       ])
       setTeam('');
       setColor('');
@@ -136,23 +147,26 @@ function Kanban() {
   }
 
   useEffect(() => {
-    if(addServerN === true) {
+    if (addServerN === true) {
       history.push({
         pathname: '/schedule',
         state: {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          accesstoken : accessToken,
-          refreshtoken : refreshToken
+          accesstoken: accessToken,
+          refreshtoken: refreshToken,
+          teamMate: teamMate,
+          leader: leader,
+          code: code
         }
       })
     }
   }, [addServerN])
 
   const handleProjectExit = () => {
-    for(var i=0;i<lists.length;i++) {
-      if(lists[i].online === true) {
+    for (var i = 0; i < lists.length; i++) {
+      if (lists[i].online === true) {
         setExitTrue(i);
       }
     }
@@ -161,39 +175,42 @@ function Kanban() {
   }
 
   useEffect(() => {
-    if(exitTrue !== -1 && exitTrue !== -2) {
+    if (exitTrue !== -1 && exitTrue !== -2) {
       lists.splice(exitTrue, 1);
 
-      for(var i=0;i<lists.length;i++) {
-        lists.splice(i,1,{id: i+1, title: lists[i].title, color: lists[i].color, online: false })
+      for (var i = 0; i < lists.length; i++) {
+        lists.splice(i, 1, { id: i + 1, title: lists[i].title, color: lists[i].color, online: false })
       }
 
-      if(lists.length > 0) {
-        if(exitTrue-1 === -1) {
-          lists.splice(exitTrue, 1, {id: lists[exitTrue].id, title: lists[exitTrue].title, color: lists[exitTrue].color, online: true});
+      if (lists.length > 0) {
+        if (exitTrue - 1 === -1) {
+          lists.splice(exitTrue, 1, { id: lists[exitTrue].id, title: lists[exitTrue].title, color: lists[exitTrue].color, online: true });
         } else {
-          lists.splice(exitTrue-1, 1, {id: lists[exitTrue-1].id, title: lists[exitTrue-1].title, color: lists[exitTrue-1].color, online: true});
+          lists.splice(exitTrue - 1, 1, { id: lists[exitTrue - 1].id, title: lists[exitTrue - 1].title, color: lists[exitTrue - 1].color, online: true });
         }
       }
-      
-      if(lists.length === 0) {
+
+      if (lists.length === 0) {
         setServerNot(true)
       }
 
       setExitTrue(-2);
       setMenubar(false);
-    } else if(exitTrue === -2) {
+    } else if (exitTrue === -2) {
       history.push({
         pathname: '/schedule',
         state: {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          accesstoken : accessToken,
-          refreshtoken : refreshToken
+          accesstoken: accessToken,
+          refreshtoken: refreshToken,
+          teamMate: teamMate,
+          leader: leader,
+          code: code
         }
       })
-    } else  {
+    } else {
       return;
     }
   }, [exitTrue])
@@ -201,11 +218,11 @@ function Kanban() {
   const handleMousePosition = (e) => {
     e.preventDefault();
 
-    if(chatOnline === false) {
-      if(e.clientX > 1514) {
+    if (chatOnline === false) {
+      if (e.clientX > 1514) {
         setMouseMove(true);
         setPositionY(e.clientY)
-      }else {
+      } else {
         setMouseMove(false);
       }
     }
@@ -216,10 +233,10 @@ function Kanban() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
-          { create === true &&
+          {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
               <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
@@ -229,22 +246,22 @@ function Kanban() {
         :
         <div>
           <KanbanPage menubar={menubar}></KanbanPage>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
-          <Chatting 
+          <Chatting
             positionY={positionY}
-            mouseMove={mouseMove} 
-            handleChattingOn={() => setChatOnline(true)} 
-            handleChattingOff={() => {setChatOnline(false);setMouseMove(false);}}
+            mouseMove={mouseMove}
+            handleChattingOn={() => setChatOnline(true)}
+            handleChattingOff={() => { setChatOnline(false); setMouseMove(false); }}
           />
-          { create === true &&
+          {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
               <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
             </div>
           }
-          { exit === true &&
+          {exit === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setExit(false)}></div>
               <ProjectExit handleProjectExit={handleProjectExit} handleExitCancel={() => setExit(false)}></ProjectExit>

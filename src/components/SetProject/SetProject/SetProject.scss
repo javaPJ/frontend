@@ -68,6 +68,17 @@
                 white-space:nowrap;
             }
         }
+
+        .setproject-pin {
+            position: relative;
+            left: -4%;
+            top: 40%;
+            font-size: 15px;
+
+            span {
+                font-weight: bold;
+            }
+        }
     }
 
     .setproject-list {

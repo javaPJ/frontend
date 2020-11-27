@@ -5,19 +5,18 @@ import { AiOutlineClose, AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-
 const MoreSchedule = ({
-    year, 
-    month, 
-    day, 
-    moreCancel, 
-    thisSchedule, 
-    handleTitleDelete, 
-    handleMoreScheduleClick, 
-    handleAddSchedule
-  }) => {
+  year,
+  month,
+  day,
+  moreCancel,
+  thisSchedule,
+  handleTitleDelete,
+  handleMoreScheduleClick,
+  handleAddSchedule
+}) => {
   const [schedules, setSchedules] = useState([]);
-  
+
   useEffect(() => {
     setSchedules([]);
     if (thisSchedule.length === 0) {
@@ -26,7 +25,7 @@ const MoreSchedule = ({
     } else {
       setSchedules(thisSchedule);
     }
-  },[])
+  }, [])
 
   return (
     <div className={cx('moreschedule-back')}>
@@ -38,14 +37,14 @@ const MoreSchedule = ({
         <div className={cx('moreschedule-content-header')}>내용</div>
         <div className={cx('moreschedule-plus')} onClick={() => handleAddSchedule()}><AiOutlinePlus color="#343742" size="25"></AiOutlinePlus></div>
         <div className={cx('moreschedule-schedule')}>
-            {thisSchedule.length !== 0 && 
-              schedules.map(
+          {thisSchedule.length !== 0 &&
+            schedules.map(
               schedule => (
-                <div className={cx('moreschedule-text-box')} style={{backgroundColor: schedule.color}}>
+                <div className={cx('moreschedule-text-box')} style={{ backgroundColor: schedule.color }}>
                   <div className={cx('moreschedule-text')} onClick={() => handleMoreScheduleClick(thisSchedule, schedule.key)}>{schedule.title}</div>
                   <div className={cx('moreschedule-text-delete')} onClick={() => handleTitleDelete(schedule.key)}><AiOutlineDelete></AiOutlineDelete></div>
                 </div>
-            ))}
+              ))}
         </div>
       </div>
     </div>

@@ -31,11 +31,13 @@ function Setting() {
   const [positionY, setPositionY] = useState(0);
   const [serverNot, setServerNot] = useState(false);
   const [addServerN, setAddServerN] = useState(false);
+  const [leader, setLeader] = useState('');
+  const [code, setCode] = useState('');
 
   const [settingId, setSettingId] = useState(-1),
-        [settingTitle, setSettingTitle] = useState(''),
-        [settingColor, setSettingColor] = useState(''),
-        [settingDelete, setSettingDelete] = useState(-1);
+    [settingTitle, setSettingTitle] = useState(''),
+    [settingColor, setSettingColor] = useState(''),
+    [settingDelete, setSettingDelete] = useState(-1);
 
   const [teamMate, setTeamMate] = useState([]);
 
@@ -43,34 +45,35 @@ function Setting() {
   let location = useLocation();
 
   useInterval(() => {
-    axios.get(`http://3.35.169.186:5000/api/auth/refreshtoken`,
-    {
-      headers: {
-        Authentication: refreshToken
-      }
-    })
-    .then(res => {setAccessToken(res.data.accessToken)})
-    .catch(err => {console.log(err);})
+    axios.get(`http://3.35.229.52:5000/api/auth/refreshtoken`,
+      {
+        headers: {
+          Authentication: refreshToken
+        }
+      })
+      .then(res => { setAccessToken(res.data.accessToken) })
+      .catch(err => { console.log(err); })
   }, 900000);
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate } = location.state;
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code } = location.state;
 
-      for(var index=0;index<serverLists.length;index++) {
-        if(serverLists[index].online === true) {
+      for (var index = 0; index < serverLists.length; index++) {
+        if (serverLists[index].online === true) {
           setSettingTitle(serverLists[index].title);
           setSettingColor(serverLists[index].color);
         }
       }
-      
+      setCode(code);
+      setLeader(leader)
       setLists(serverLists);
       setTeamMate(teamMate);
       setEmail(email);
       setNickname(nickname);
       setAccessToken(accesstoken);
       setRefreshToken(refreshtoken);
-      if(serverLists.length > 0) {
+      if (serverLists.length > 0) {
         setServerNot(false)
       }
     } else {
@@ -82,7 +85,7 @@ function Setting() {
   }, [])
 
   useEffect(() => {
-    if(lists.length === 0) {
+    if (lists.length === 0) {
       setServerNot(true)
     } else {
       setServerNot(false)
@@ -91,17 +94,23 @@ function Setting() {
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
-      lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
+      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
+      if(i === e.target.id-1) {
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: true });
+      }
     }
-    lists.splice(e.target.innerText-1, 1, {id: e.target.innerText, title: e.target.title, color: e.target.style.backgroundColor, online: true});
+    
     history.push({
       pathname: '/schedule',
       state: {
         serverLists: lists,
         nickname: nickname,
         email: email,
-        accesstoken : accessToken,
-        refreshtoken : refreshToken
+        accesstoken: accessToken,
+        refreshtoken: refreshToken,
+        teamMate: teamMate,
+        leader: leader,
+        code: code
       }
     });
     setMenubar(false);
@@ -111,29 +120,29 @@ function Setting() {
     if (color !== '' && team !== '') {
       setMenubar(false);
       for (var i = 0; i < lists.length; i++) {
-        lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
       }
 
-      axios.post(`http://3.35.169.186:5000/api/project/createProject`,
-      {
-        name: team,
-        color:color
-      },
-      {
-        headers: {
-          Authentication: `${accessToken}`
-        }
-      })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+      axios.post(`http://3.35.229.52:5000/api/project/createProject`,
+        {
+          name: team,
+          color: color
+        },
+        {
+          headers: {
+            Authentication: `${accessToken}`
+          }
+        })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        })
 
       setLists([
         ...lists,
-        {id: lists.length + 1, title: team, color: color, online: true}
+        { id: lists.length + 1, title: team, color: color, online: true }
       ])
       setTeam('');
       setColor('');
@@ -146,15 +155,18 @@ function Setting() {
   }
 
   useEffect(() => {
-    if(addServerN === true) {
+    if (addServerN === true) {
       history.push({
         pathname: '/schedule',
         state: {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          accesstoken : accessToken,
-          refreshtoken : refreshToken
+          accesstoken: accessToken,
+          refreshtoken: refreshToken,
+          teamMate: teamMate,
+          leader: leader,
+          code: code
         }
       })
     }
@@ -163,11 +175,11 @@ function Setting() {
   const handleMousePosition = (e) => {
     e.preventDefault();
 
-    if(chatOnline === false) {
-      if(e.clientX > 1514) {
+    if (chatOnline === false) {
+      if (e.clientX > 1514) {
         setMouseMove(true);
         setPositionY(e.clientY)
-      }else {
+      } else {
         setMouseMove(false);
       }
     }
@@ -175,64 +187,67 @@ function Setting() {
 
   const handleSettingColor = (color) => {
     setSettingColor(color.hex);
-    for(var i=0;i<lists.length;i++)
-      if(lists[i].online === true)
+    for (var i = 0; i < lists.length; i++)
+      if (lists[i].online === true)
         setSettingId(lists[i].id);
   }
 
   const handleChangeTitle = (title) => {
     setSettingTitle(title);
-    for(var i=0;i<lists.length;i++)
-      if(lists[i].online === true)
+    for (var i = 0; i < lists.length; i++)
+      if (lists[i].online === true)
         setSettingId(lists[i].id);
   }
 
   useEffect(() => {
-    if(settingId !== -1) {
-      lists.splice(settingId-1, 1, {id: settingId, title: settingTitle, color: settingColor, online: true});
+    if (settingId !== -1) {
+      lists.splice(settingId - 1, 1, { id: settingId, title: settingTitle, color: settingColor, online: true });
       setSettingId(-1);
     }
   }, [settingId])
 
   const handleRemoveProject = () => {
-    for(var i=0;i<lists.length;i++)
-      if(lists[i].online === true)
+    for (var i = 0; i < lists.length; i++)
+      if (lists[i].online === true)
         setSettingDelete(i);
   }
 
   useEffect(() => {
-    if(settingDelete !== -1 && settingDelete !== -2) {
+    if (settingDelete !== -1 && settingDelete !== -2) {
       lists.splice(settingDelete, 1);
 
-      for(var i=0;i<lists.length;i++) {
-        lists.splice(i,1,{id: i+1, title: lists[i].title, color: lists[i].color, online: false })
+      for (var i = 0; i < lists.length; i++) {
+        lists.splice(i, 1, { id: i + 1, title: lists[i].title, color: lists[i].color, online: false })
       }
 
-      if(lists.length > 0) {
-        if(settingDelete-1 === -1) {
-          lists.splice(settingDelete, 1, {id: lists[settingDelete].id, title: lists[settingDelete].title, color: lists[settingDelete].color, online: true});
+      if (lists.length > 0) {
+        if (settingDelete - 1 === -1) {
+          lists.splice(settingDelete, 1, { id: lists[settingDelete].id, title: lists[settingDelete].title, color: lists[settingDelete].color, online: true });
         } else {
-          lists.splice(settingDelete-1, 1, {id: lists[settingDelete-1].id, title: lists[settingDelete-1].title, color: lists[settingDelete-1].color, online: true});
+          lists.splice(settingDelete - 1, 1, { id: lists[settingDelete - 1].id, title: lists[settingDelete - 1].title, color: lists[settingDelete - 1].color, online: true });
         }
       }
 
-      if(lists.length === 0) {
+      if (lists.length === 0) {
         setLists([]);
       }
-      
+
       setSettingDelete(-2);
-    } else if(settingDelete === -2) {
+    } else if (settingDelete === -2) {
       history.push({
         pathname: '/schedule',
         state: {
           serverLists: lists,
           nickname: nickname,
           email: email,
-          accesstoken : accessToken,
-          refreshtoken : refreshToken
+          accesstoken: accessToken,
+          refreshtoken: refreshToken,
+          teamMate: teamMate,
+          leader: leader,
+          code: code
         }
       })
-    } else  {
+    } else {
       return;
     }
   }, [settingDelete])
@@ -242,10 +257,10 @@ function Setting() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header code={code} leader={false} teamMate={teamMate} title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
-          { create === true &&
+          {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
               <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
@@ -254,24 +269,25 @@ function Setting() {
         </div>
         :
         <div>
-          <SetProject 
-            menubar={menubar} 
-            pickerColor={settingColor} 
-            handleOnChangeComplete={(color) => handleSettingColor(color)} 
-            title={settingTitle} 
-            handleChangeTitle={handleChangeTitle} 
+          <SetProject
+            code={code}
+            menubar={menubar}
+            pickerColor={settingColor}
+            handleOnChangeComplete={(color) => handleSettingColor(color)}
+            title={settingTitle}
+            handleChangeTitle={handleChangeTitle}
             handleRemoveProject={handleRemoveProject}
           />
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
-          <Chatting 
+          <Chatting
             positionY={positionY}
-            mouseMove={mouseMove} 
-            handleChattingOn={() => setChatOnline(true)} 
-            handleChattingOff={() => {setChatOnline(false);setMouseMove(false);}}
+            mouseMove={mouseMove}
+            handleChattingOn={() => setChatOnline(true)}
+            handleChattingOff={() => { setChatOnline(false); setMouseMove(false); }}
           />
-          { create === true &&
+          {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
               <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>

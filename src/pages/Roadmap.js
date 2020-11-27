@@ -35,12 +35,15 @@ function Roadmap() {
   const [positionY, setPositionY] = useState(0);
   const [serverNot, setServerNot] = useState(false);
   const [addServerN, setAddServerN] = useState(false);
+  const [leader, setLeader] = useState('');
+  const [code, setCode] = useState('');
+
 
   let history = useHistory();
   let location = useLocation();
 
   useInterval(() => {
-    axios.get(`http://3.35.169.186:5000/api/auth/refreshtoken`,
+    axios.get(`http://3.35.229.52:5000/api/auth/refreshtoken`,
     {
       headers: {
         Authentication: refreshToken
@@ -52,8 +55,10 @@ function Roadmap() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate } = location.state;
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code } = location.state;
       
+      setCode(code);
+      setLeader(leader);
       setLists(serverLists);
       setTeamMate(teamMate);
       setEmail(email);
@@ -81,9 +86,12 @@ function Roadmap() {
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
-      lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
+      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
+      if(i === e.target.id-1) {
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: true });
+      }
     }
-    lists.splice(e.target.innerText-1, 1, {id: e.target.innerText, title: e.target.title, color: e.target.style.backgroundColor, online: true});
+    
     history.push({
       pathname: '/schedule',
       state: {
@@ -91,7 +99,10 @@ function Roadmap() {
         nickname: nickname,
         email: email,
         accesstoken : accessToken,
-        refreshtoken : refreshToken
+        refreshtoken : refreshToken,
+        teamMate: teamMate,
+        leader: leader,
+        code: code
       }
     });
     setMenubar(false);
@@ -104,7 +115,7 @@ function Roadmap() {
         lists.splice(i, 1, {id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false});
       }
 
-      axios.post(`http://3.35.169.186:5000/api/project/createProject`,
+      axios.post(`http://3.35.229.52:5000/api/project/createProject`,
       {
         name: team,
         color:color
@@ -144,7 +155,10 @@ function Roadmap() {
           nickname: nickname,
           email: email,
           accesstoken : accessToken,
-          refreshtoken : refreshToken
+          refreshtoken : refreshToken,
+          teamMate: teamMate,
+          leader: leader,
+          code: code
         }
       })
     }
@@ -190,7 +204,10 @@ function Roadmap() {
           nickname: nickname,
           email: email,
           accesstoken : accessToken,
-          refreshtoken : refreshToken
+          refreshtoken : refreshToken,
+          teamMate: teamMate,
+          leader: leader,
+          code: code
         }
       })
     } else  {
@@ -216,8 +233,8 @@ function Roadmap() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           { create === true &&
             <div>
@@ -229,8 +246,8 @@ function Roadmap() {
         :
         <div>
           <RoadMapPage menubar={menubar}></RoadMapPage>
-          <MenuBar title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header code={code} leader={leader} teamMate={teamMate} title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           <Chatting 
             positionY={positionY}

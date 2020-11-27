@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handleChangeTitle, handleRemoveProject}) => {
+const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handleChangeTitle, handleRemoveProject, code}) => {
     const [load, setLoad] = useState(false),
           [projectName, setProjectName] = useState(''), //프로젝트 이름 변수
           [projectNameClick, setProjectNameClick] = useState(false), //프로젝트 이름 클릭 시 boolean 값
@@ -96,6 +96,7 @@ const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handle
                             <div className={cx('setproject-title-text')}>{projectName}</div>
                         }
                     </div>
+                    <div className={cx('setproject-pin')}><span>Pin 번호 :</span> {code}</div>
                 </div>
                 <div style={{marginBottom: listMargin}} className={cx('setproject-list')}>
                     <SetProjectList team={team} handleRemoveMember={(num) => setTeamRemove(num)}/>
