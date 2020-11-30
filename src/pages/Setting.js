@@ -25,6 +25,7 @@ function Setting() {
   const [create, setCreate] = useState(false);
   const [color, setColor] = useState('');
   const [team, setTeam] = useState('');
+  const [teamId, setTeamId] = useState('');
   const [lists, setLists] = useState([]);
   const [mouseMove, setMouseMove] = useState(false);
   const [chatOnline, setChatOnline] = useState(false);
@@ -57,14 +58,22 @@ function Setting() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code } = location.state;
-
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code, teamId } = location.state;
       for (var index = 0; index < serverLists.length; index++) {
         if (serverLists[index].online === true) {
           setSettingTitle(serverLists[index].title);
           setSettingColor(serverLists[index].color);
         }
       }
+
+      console.log("setting start");
+      console.log(leader);
+      console.log(nickname);
+      console.log(teamMate);
+      console.log("setting end");
+    
+
+      setTeamId(teamId);
       setCode(code);
       setLeader(leader)
       setLists(serverLists);
@@ -99,21 +108,39 @@ function Setting() {
         lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: true });
       }
     }
-    
-    history.push({
-      pathname: '/schedule',
-      state: {
-        serverLists: lists,
-        nickname: nickname,
-        email: email,
-        accesstoken: accessToken,
-        refreshtoken: refreshToken,
-        teamMate: teamMate,
-        leader: leader,
-        code: code
+
+    console.log(e.target.title);
+
+    axios.post(`http://3.35.229.52:5000/api/project/readproject`,
+    {
+      team: e.target.title
+    },
+    {
+      headers: {
+        Authentication: `${accessToken}`
       }
-    });
-    setMenubar(false);
+    })
+    .then(res => {
+      setMenubar(false);
+
+      history.push({
+        pathname: '/schedule',
+        state: {
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          accesstoken: accessToken,
+          refreshtoken: refreshToken,
+          teamMate: res.data[1],
+          leader: res.data[0].name,
+          code: res.data[0].code,
+          teamId: res.data[0].num
+        }
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   const addServer = () => {
@@ -166,7 +193,7 @@ function Setting() {
           refreshtoken: refreshToken,
           teamMate: teamMate,
           leader: leader,
-          code: code
+          code: code,
         }
       })
     }
@@ -203,6 +230,24 @@ function Setting() {
     if (settingId !== -1) {
       lists.splice(settingId - 1, 1, { id: settingId, title: settingTitle, color: settingColor, online: true });
       setSettingId(-1);
+
+      axios.post(`http://3.35.229.52:5000/api/project/settingproject`,
+      {
+        team: teamId,
+        team_name: settingTitle,
+        color: settingColor
+      },
+      {
+        headers: {
+          Authentication: `${accessToken}`
+        }
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
     }
   }, [settingId])
 
@@ -277,6 +322,8 @@ function Setting() {
             title={settingTitle}
             handleChangeTitle={handleChangeTitle}
             handleRemoveProject={handleRemoveProject}
+            teamId={teamId}
+            teamMate={teamMate}
           />
           <MenuBar code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
           <Header code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>

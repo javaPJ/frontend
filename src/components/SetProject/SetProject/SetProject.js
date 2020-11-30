@@ -6,9 +6,8 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handleChangeTitle, handleRemoveProject, code}) => {
-    const [load, setLoad] = useState(false),
-          [projectName, setProjectName] = useState(''), //프로젝트 이름 변수
+const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handleChangeTitle, handleRemoveProject, code, teamId, teamMate}) => {
+    const [projectName, setProjectName] = useState(''), //프로젝트 이름 변수
           [projectNameClick, setProjectNameClick] = useState(false), //프로젝트 이름 클릭 시 boolean 값
           [projectNameChange, setProjectNameChange] = useState(''), //프로젝트 이름 변경 변수
           [picker, setPicker] = useState(false), //색상 변경 버튼 클릭 시 boolean 값
@@ -18,17 +17,17 @@ const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handle
     
     //first load
     useEffect(() => {
-        if(load === false) {
-            setProjectName(title);
-            setTeam([])
-            // var array = []
-            // for(var i=0;i<20;i++) {
-            //     array.push({id: i+1, name: 'unknown#'+(i+1), email: 'unknown#'+(i+1)+'@gmail.com', date: '2020-09-11'});
-            // }
-            // setTeam(array)
-            setLoad(true);
-        } 
-    }, [load])
+        setProjectName(title);
+        setTeam([])
+
+        console.log(teamMate);
+
+        var array = []
+        for(var i=0;i<teamMate.length;i++) {
+            array.push({id: i+1, name: teamMate[i].name, email: '-', date: '-'});
+        }
+        setTeam(array)
+    }, [])
     
     //when you change project name, you put the Enter key 
     const handleKeyDown = (e) => {

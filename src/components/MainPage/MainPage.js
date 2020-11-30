@@ -45,19 +45,26 @@ const MainPage = () => {
             }
           })
             .then(res => {
+              var array = [];
 
-              console.log(res.data[0]);
+              for(var i=1;i<=2;i++){
+                for(var j=0;j<res.data[i].length;j++) {
+                  array.push((res.data[i])[j]);
+                }
+              }
+
               history.push({
                 pathname: "/schedule",
                 state: {
                   nickname: res.data[0].name,
                   email: res.data[0].email,
-                  serverLists: res.data[1],
+                  serverLists: array,
                   accesstoken: accesstoken,
                   refreshtoken: refreshtoken,
                   teamMate: [],
                   leader: '',
-                  code: ''
+                  code: '',
+                  teamId: '',
                 }
               })
             })

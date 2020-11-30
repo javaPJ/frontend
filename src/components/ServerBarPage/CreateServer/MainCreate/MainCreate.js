@@ -8,7 +8,7 @@ import ServerJoin from './../ServerJoin/ServerJoin.js';
 
 const cx = classNames.bind(styles);
 
-const MainCreate = ({color, colorChange, teamChange, addServer}) => {
+const MainCreate = ({color, colorChange, teamChange, addServer, pinChange, joinServer}) => {
   const [create, setCreate] = useState(false);
   const [join, setJoin] = useState(false);
 
@@ -35,7 +35,7 @@ const MainCreate = ({color, colorChange, teamChange, addServer}) => {
       }
       { join == true &&
         <div>
-          <ServerJoin joinBack={() => setJoin(false)}/>
+          <ServerJoin joinBack={() => setJoin(false)} pinChange={pinChange} joinServer={joinServer}/>
         </div>
       }
     </div>

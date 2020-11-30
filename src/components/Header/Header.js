@@ -5,6 +5,7 @@ import styles from './Header.scss';
 import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
+const axios = require('axios');
 
 const Header = ({title, serverlists, nickname, email, accessToken, refreshToken, teamMate, leader, code}) => {
   let history = useHistory();
@@ -27,9 +28,21 @@ const Header = ({title, serverlists, nickname, email, accessToken, refreshToken,
   }
 
   const handleLogOut = () => {
-    history.push({
-      pathname: '/',
+    axios.post(`http://3.35.229.52:5000/api/auth/logout`, {}, {
+      headers : {
+        authentication : accessToken
+      }
     })
+    .then(res => {
+      console.log(res);
+
+      history.push({
+        pathname: '/',
+      })
+    })
+    .catch(err => {
+      console.log(err);
+    })    
   }
 
   return(

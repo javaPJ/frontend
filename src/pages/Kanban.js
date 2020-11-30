@@ -92,20 +92,35 @@ function Kanban() {
       }
     }
     
-    history.push({
-      pathname: '/schedule',
-      state: {
-        serverLists: lists,
-        nickname: nickname,
-        email: email,
-        accesstoken: accessToken,
-        refreshtoken: refreshToken,
-        teamMate: teamMate,
-        leader: leader,
-        code: code
+    axios.post(`http://3.35.229.52:5000/api/project/readproject`,
+    {
+      team: e.target.title
+    },
+    {
+      headers: {
+        Authentication: `${accessToken}`
       }
-    });
-    setMenubar(false);
+    })
+    .then(res => {
+      setMenubar(false);
+
+      history.push({
+        pathname: '/schedule',
+        state: {
+          serverLists: lists,
+          nickname: nickname,
+          email: email,
+          accesstoken: accessToken,
+          refreshtoken: refreshToken,
+          teamMate: res.data[1],
+          leader: res.data[0].name,
+          code: res.data[0].code
+        }
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   const addServer = () => {
