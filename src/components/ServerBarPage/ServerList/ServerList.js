@@ -8,6 +8,7 @@ const ServerList = ({lists, bar, onClickServer}) => {
         id={list.id}
         title={list.title}
         color={list.color}
+        teamId={list.teamId}
         bar={bar}
         online={list.online}
         onClickServer={onClickServer}

@@ -245,7 +245,7 @@ const SettingSchedule = ({
     if(titleInput === '') {
       alert("제목을 확인해주세요.");
     } else {
-      handleSaveSchedule(titleInput, labelSelect, startDate, endDate);
+      handleSaveSchedule(titleInput, content, labelSelect, startDate, endDate);
       setLabelSelect('');
     }
   }

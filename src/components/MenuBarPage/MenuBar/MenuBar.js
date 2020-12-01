@@ -9,7 +9,8 @@ const cx = classNames.bind(styles);
 const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists, nickname, email, accessToken, refreshToken, teamMate, code, teamId }) => {
   const [bar, setBar] = useState(),
         [lists,setLists] = useState([]),
-        [owner, setOwner] = useState(false);
+        [owner, setOwner] = useState(false),
+        [now, setNow] = useState(-1);
 
   useEffect(() => {
     setBar(menubar);
@@ -20,6 +21,7 @@ const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists,
     if(leader !== false) {
       console.log(leader);
       console.log(nickname);
+      setNow(id);
 
       if(leader === nickname) {
         setLists([
@@ -38,7 +40,19 @@ const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists,
         setOwner(false)
       }
     }
-  }, [menubar])
+  }, [menubar]);
+
+  useEffect(() => {
+    if(now !== -1) {
+      if(now === 0) {
+        setNow(-1);
+        return;
+      } else {
+        lists.splice(now-1, 1, {id: now, title: lists[now-1].title, now: true});
+      }
+      setNow(-1);
+    }
+  },[now])
 
   let size = bar ? "230px" : "25px"
 

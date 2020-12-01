@@ -22,17 +22,17 @@ export const ListSetting = (serverLists, accesstoken) => {
   var teamId = '';
 
   const postArray = array => {
-    return axios.post(url,{team: array.team}, headers)
+    return axios.post(url,{team: array.teamId}, headers)
     .then((res => {
       if (array.id === 0) {
         console.log(res);
-        array2.push({ id: array.id+1, title: array.team, color: res.data[0].color, online: true });
+        array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: true });
         code = res.data[0].code;
         teammate = res.data[1];
         leader = res.data[0].name;
         teamId = res.data[0].num;
       } else {
-        array2.push({ id: array.id+1, title: array.team, color: res.data[0].color, online: false })
+        array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: false })
       }
     }))
   }

@@ -8,7 +8,6 @@ import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/Main
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
 import ProjectExit from '../components/MenuBarPage/ProjectExit/ProjectExit';
-import Chatting from './../components/ChattingModal/Chatting';
 import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 
 import useInterval from './useInterval';
@@ -33,9 +32,7 @@ function Schedule() {
   const [lists, setLists] = useState([]);
   const [exit, setExit] = useState(false);
   const [exitTrue, setExitTrue] = useState(-1);
-  const [mouseMove, setMouseMove] = useState(false);
-  const [chatOnline, setChatOnline] = useState(false);
-  const [positionY, setPositionY] = useState(0);
+  
   const [serverNot, setServerNot] = useState(false);
   const [joinPin, setJoinPin] = useState('');
   const [addServerNum, setAddServerNum] = useState(-1);
@@ -44,26 +41,29 @@ function Schedule() {
   let location = useLocation();
 
   useInterval(() => {
-    const headers = {
+    const refreshheaders = {
       headers: {
-        refreshToken: `${refreshToken}`
+        refreshtoken: `${refreshToken}`
       }
     }
+    
+    const refreshUrl = `http://3.35.229.52:5000/api/auth/refreshtoken`
 
-    axios.get(`http://3.35.229.52:5000/api/auth/refreshtoken`, {}, headers)
-    .then(res => { console.log(res); setAccessToken(res.data.accessToken) })
+    axios.get(refreshUrl, refreshheaders)
+    .then(res => { console.log(res); setAccessToken(res.data.accessToken)})
     .catch(err => { console.log(err); })
-  }, 1000000000);
+  }, 1200000);
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
       const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code, teamId } = location.state;
+
       if(serverLists.length > 0) {
         if (Object.keys(serverLists[0])[0] === "team") {
           var arrays = [];
-
+          console.log(serverLists);
           for(var i = 0; i < serverLists.length; i++) {
-            arrays.push({id: i, team: serverLists[i].teamName, date: serverLists[i].createTime});
+            arrays.push({id: i, team: serverLists[i].teamName, teamId: serverLists[i].team, date: serverLists[i].createTime});
           }
 
           arrays.sort(function(a, b) { 
@@ -81,17 +81,17 @@ function Schedule() {
           var array2 = [];
 
           const postArray = array => {
-            return axios.post(url,{team: array.team}, headers)
+            return axios.post(url,{team: array.teamId}, headers)
             .then((res => {
               if (array.id === 0) {
                 console.log(res);
-                array2.push({ id: array.id+1, title: array.team, color: res.data[0].color, online: true });
+                array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: true });
                 setCode(res.data[0].code);
                 setTeamMate(res.data[1]);
                 setLeader(res.data[0].leadername);
                 setTeamId(res.data[0].num);
               } else {
-                array2.push({ id: array.id+1, title: array.team, color: res.data[0].color, online: false })
+                array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: false })
               }
             }))
           }
@@ -134,15 +134,15 @@ function Schedule() {
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
-      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
-      if(i === e.target.id-1) {
-        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: true });
+      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: false });
+      if(i === e.target.innerText-1) {
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: true });
       }
     }
 
     axios.post(`http://3.35.229.52:5000/api/project/readproject`,
       {
-        team: e.target.title
+        team: e.target.id
       },
       {
         headers: {
@@ -169,7 +169,7 @@ function Schedule() {
       setLists([]);
       setMenubar(false);
       for (var i = 0; i < lists.length; i++) {
-        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: false });
       }
 
       console.log(accessToken);
@@ -196,7 +196,7 @@ function Schedule() {
       setColor('');
       setCreate(false);
       setServerNot(false);
-      setAddServerNum(lists.length)
+      setAddServerNum(0)
     } else {
       alert("색상 또는 팀 이름을 확인해주세요.")
     }
@@ -219,8 +219,9 @@ function Schedule() {
       console.log(err);
     })
 
+    setCreate(false);
     setJoinPin('');
-    setAddServerNum(lists.length)
+    setAddServerNum(0);
   }
 
   useEffect(() => { 
@@ -231,12 +232,18 @@ function Schedule() {
         }
       })
       .then(res => {
-        const serverLists = res.data[1];
+        var serverLists = [];
+
+        for(var i=1;i<=2;i++){
+          for(var j=0;j<res.data[i].length;j++) {
+            serverLists.push((res.data[i])[j]);
+          }
+        }
 
         const arrays = [];
 
         for(var i = 0; i < serverLists.length; i++) {
-          arrays.push({id: i, team: serverLists[i].teamName, date: serverLists[i].createTime});
+          arrays.push({id: i, team: serverLists[i].teamName, teamId: serverLists[i].team, date: serverLists[i].createTime});
         }
 
         arrays.sort(function(a, b) { 
@@ -254,16 +261,16 @@ function Schedule() {
         var array2 = [];
   
         const postArray = array => {
-          return axios.post(url,{team: array.team}, headers)
+          return axios.post(url,{team: array.teamId}, headers)
           .then((res => {
-            if (array.id === 0) {
-              array2.push({ id: array.id+1, title: array.team, color: res.data[0].color, online: true });
+            if (array.id === arrays.length-1) {
+              array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: true });
               setCode(res.data[0].code);
               setTeamMate(res.data[1]);
               setLeader(res.data[0].leadername);
               setTeamId(res.data[0].num);
             } else {
-              array2.push({ id: array.id+1, title: array.team, color: res.data[0].color, online: false })
+              array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: false })
             }
           }))
         }
@@ -373,21 +380,10 @@ function Schedule() {
     }
   }, [exitTrue])
 
-  const handleMousePosition = (e) => {
-    e.preventDefault();
-
-    if (chatOnline === false) {
-      if (e.clientX > 1514) {
-        setMouseMove(true);
-        setPositionY(e.clientY)
-      } else {
-        setMouseMove(false);
-      }
-    }
-  }
+  
 
   return (
-    <div onMouseMove={(e) => handleMousePosition(e)}>
+    <div>
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
@@ -403,16 +399,11 @@ function Schedule() {
         </div>
         :
         <div>
-          <Calendar menubar={menubar}></Calendar>
+          <Calendar menubar={menubar} teamMate={teamMate} nickname={nickname} leader={leader} team={lists} accessToken={accessToken} refreshToken={refreshToken}></Calendar>
           <MenuBar teamId={teamId} code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
           <Header teamId={teamId} code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
-          <Chatting
-            positionY={positionY}
-            mouseMove={mouseMove}
-            handleChattingOn={() => setChatOnline(true)}
-            handleChattingOff={() => { setChatOnline(false); setMouseMove(false); }}
-          />
+
           {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>

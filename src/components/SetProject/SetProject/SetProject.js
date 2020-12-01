@@ -24,7 +24,7 @@ const SetProject = ({menubar, pickerColor, handleOnChangeComplete, title, handle
 
         var array = []
         for(var i=0;i<teamMate.length;i++) {
-            array.push({id: i+1, name: teamMate[i].name, email: '-', date: '-'});
+            array.push({id: i+1, name: teamMate[i].name, email: teamMate[i].email, date: teamMate[i].lastCheck});
         }
         setTeam(array)
     }, [])

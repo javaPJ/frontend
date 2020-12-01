@@ -7,7 +7,6 @@ import SetProject from '../components/SetProject/SetProject/SetProject';
 import MainCreate from '../components/ServerBarPage/CreateServer/MainCreate/MainCreate';
 import styles from './pageSame.scss';
 import classNames from 'classnames/bind';
-import Chatting from './../components/ChattingModal/Chatting';
 import NotFound from './../components/ServerBarPage/NotFound/NotFound';
 
 import useInterval from './useInterval';
@@ -27,11 +26,8 @@ function Setting() {
   const [team, setTeam] = useState('');
   const [teamId, setTeamId] = useState('');
   const [lists, setLists] = useState([]);
-  const [mouseMove, setMouseMove] = useState(false);
-  const [chatOnline, setChatOnline] = useState(false);
-  const [positionY, setPositionY] = useState(0);
+  
   const [serverNot, setServerNot] = useState(false);
-  const [addServerN, setAddServerN] = useState(false);
   const [leader, setLeader] = useState('');
   const [code, setCode] = useState('');
 
@@ -39,6 +35,9 @@ function Setting() {
     [settingTitle, setSettingTitle] = useState(''),
     [settingColor, setSettingColor] = useState(''),
     [settingDelete, setSettingDelete] = useState(-1);
+    
+  const [joinPin, setJoinPin] = useState('');
+  const [addServerNum, setAddServerNum] = useState(-1);
 
   const [teamMate, setTeamMate] = useState([]);
 
@@ -46,15 +45,16 @@ function Setting() {
   let location = useLocation();
 
   useInterval(() => {
-    axios.get(`http://3.35.229.52:5000/api/auth/refreshtoken`,
-      {
-        headers: {
-          Authentication: refreshToken
-        }
-      })
-      .then(res => { setAccessToken(res.data.accessToken) })
-      .catch(err => { console.log(err); })
-  }, 900000);
+    const headers = {
+      headers: {
+        refreshToken: `${refreshToken}`
+      }
+    }
+
+    axios.get(`http://3.35.229.52:5000/api/auth/refreshtoken`, {}, headers)
+    .then(res => { console.log(res); setAccessToken(res.data.accessToken) })
+    .catch(err => { console.log(err); })
+  }, 1000000000);
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
@@ -65,13 +65,6 @@ function Setting() {
           setSettingColor(serverLists[index].color);
         }
       }
-
-      console.log("setting start");
-      console.log(leader);
-      console.log(nickname);
-      console.log(teamMate);
-      console.log("setting end");
-    
 
       setTeamId(teamId);
       setCode(code);
@@ -103,17 +96,88 @@ function Setting() {
 
   const onClickServer = (e) => {
     for (var i = 0; i < lists.length; i++) {
-      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
-      if(i === e.target.id-1) {
-        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: true });
+      lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: false });
+      if(i === e.target.innerText-1) {
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: true });
       }
     }
 
-    console.log(e.target.title);
-
     axios.post(`http://3.35.229.52:5000/api/project/readproject`,
+      {
+        team: e.target.id
+      },
+      {
+        headers: {
+          Authentication: `${accessToken}`
+        }
+      })
+      .then(res => {
+        setMenubar(false);
+
+        history.push({
+          pathname: '/schedule',
+          state: {
+            serverLists: lists,
+            nickname: nickname,
+            email: email,
+            accesstoken: accessToken,
+            refreshtoken: refreshToken,
+            teamMate: res.data[1],
+            leader: res.data[0].leadername,
+            code: res.data[0].code,
+            teamId: res.data[0].num
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  const addServer = () => {
+    console.log("addServer : "+accessToken);
+
+    if (color !== '' && team !== '') {
+      setLists([]);
+      setMenubar(false);
+      for (var i = 0; i < lists.length; i++) {
+        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: false });
+      }
+
+      console.log(accessToken);
+      console.log(team);
+      console.log(color);
+      axios.post(`http://3.35.229.52:5000/api/project/createProject`,
+      {
+        name: team,
+        color: color
+      },
+      {
+        headers: {
+          Authentication: `${accessToken}`
+        }
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+      setTeam('');
+      setColor('');
+      setCreate(false);
+      setServerNot(false);
+      setAddServerNum(0)
+    } else {
+      alert("색상 또는 팀 이름을 확인해주세요.")
+    }
+  }
+
+  const joinServer = () => {
+    axios.post(`http://3.35.229.52:5000/api/project/joinproject`,
     {
-      team: e.target.title
+      pin: joinPin
     },
     {
       headers: {
@@ -121,96 +185,89 @@ function Setting() {
       }
     })
     .then(res => {
-      setMenubar(false);
-
-      history.push({
-        pathname: '/schedule',
-        state: {
-          serverLists: lists,
-          nickname: nickname,
-          email: email,
-          accesstoken: accessToken,
-          refreshtoken: refreshToken,
-          teamMate: res.data[1],
-          leader: res.data[0].name,
-          code: res.data[0].code,
-          teamId: res.data[0].num
-        }
-      });
+      console.log(res);
     })
     .catch(err => {
       console.log(err);
     })
+
+    setCreate(false);
+    setJoinPin('');
+    setAddServerNum(0)
   }
 
-  const addServer = () => {
-    if (color !== '' && team !== '') {
-      setMenubar(false);
-      for (var i = 0; i < lists.length; i++) {
-        lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, color: lists[i].color, online: false });
-      }
+  useEffect(() => { 
+    if(addServerNum !== -1) {
+      axios.post(`http://3.35.229.52:5000/api/account/profile`,{ }, {
+        headers: {
+          Authentication: `${accessToken}`
+        }
+      })
+      .then(res => {
+        var serverLists = [];
 
-      axios.post(`http://3.35.229.52:5000/api/project/createProject`,
-        {
-          name: team,
-          color: color
-        },
-        {
+        for(var i=1;i<=2;i++){
+          for(var j=0;j<res.data[i].length;j++) {
+            serverLists.push((res.data[i])[j]);
+          }
+        }
+
+        const arrays = [];
+
+        for(var i = 0; i < serverLists.length; i++) {
+          arrays.push({id: i, team: serverLists[i].teamName, teamId: serverLists[i].team, date: serverLists[i].createTime});
+        }
+
+        arrays.sort(function(a, b) { 
+          return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+        });
+
+        const url = `http://3.35.229.52:5000/api/project/readproject`
+    
+        const headers = {
           headers: {
             Authentication: `${accessToken}`
           }
-        })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        })
-
-      setLists([
-        ...lists,
-        { id: lists.length + 1, title: team, color: color, online: true }
-      ])
-      setTeam('');
-      setColor('');
-      setCreate(false);
-      setServerNot(false);
-      setAddServerN(true);
-    } else {
-      alert("색상 또는 팀 이름을 확인해주세요.")
-    }
-  }
-
-  useEffect(() => {
-    if (addServerN === true) {
-      history.push({
-        pathname: '/schedule',
-        state: {
-          serverLists: lists,
-          nickname: nickname,
-          email: email,
-          accesstoken: accessToken,
-          refreshtoken: refreshToken,
-          teamMate: teamMate,
-          leader: leader,
-          code: code,
         }
+        
+        var array2 = [];
+  
+        const postArray = array => {
+          return axios.post(url,{team: array.teamId}, headers)
+          .then((res => {
+            if (array.id === arrays.length-1) {
+              array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: true });
+              setCode(res.data[0].code);
+              setTeamMate(res.data[1]);
+              setLeader(res.data[0].leadername);
+              setTeamId(res.data[0].num);
+            } else {
+              array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: false })
+            }
+          }))
+        }
+        
+        arrays.reduce((prevPrams, array) => {
+          return prevPrams.then(() => {
+            return postArray(array)
+          })
+        }, Promise.resolve())
+  
+        setLists(array2);
+
+
       })
-    }
-  }, [addServerN])
+      .catch(err => {
+        console.log(err);
+      })
 
-  const handleMousePosition = (e) => {
-    e.preventDefault();
-
-    if (chatOnline === false) {
-      if (e.clientX > 1514) {
-        setMouseMove(true);
-        setPositionY(e.clientY)
-      } else {
-        setMouseMove(false);
-      }
+      setAddServerNum(-1);
     }
-  }
+  }, [addServerNum])
+
+
+
+  
 
   const handleSettingColor = (color) => {
     setSettingColor(color.hex);
@@ -298,17 +355,17 @@ function Setting() {
   }, [settingDelete])
 
   return (
-    <div onMouseMove={(e) => handleMousePosition(e)}>
+    <div>
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header code={code} leader={false} teamMate={teamMate} title={title[0]} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar teamId={teamId} code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header teamId={teamId} code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
-              <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
+              <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer} pinChange={(e) => setJoinPin(e.target.value)} joinServer={joinServer}></MainCreate>
             </div>
           }
         </div>
@@ -325,19 +382,14 @@ function Setting() {
             teamId={teamId}
             teamMate={teamMate}
           />
-          <MenuBar code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar teamId={teamId} code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header teamId={teamId} code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
-          <Chatting
-            positionY={positionY}
-            mouseMove={mouseMove}
-            handleChattingOn={() => setChatOnline(true)}
-            handleChattingOff={() => { setChatOnline(false); setMouseMove(false); }}
-          />
+
           {create === true &&
             <div>
               <div className={cx('backOpacity')} onClick={() => setCreate(false)}></div>
-              <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer}></MainCreate>
+              <MainCreate color={color} colorChange={(color) => setColor(color.hex)} teamChange={(e) => setTeam(e.target.value)} addServer={addServer} pinChange={(e) => setJoinPin(e.target.value)} joinServer={joinServer}></MainCreate>
             </div>
           }
         </div>

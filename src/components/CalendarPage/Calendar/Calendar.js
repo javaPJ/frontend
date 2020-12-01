@@ -8,9 +8,10 @@ import SettingSchedule from './../../SettingSchedule/Calendar/SettingSchedule.js
 
 const cx = classNames.bind(styles);
 const cx2 = classNames.bind(styles2);
+const axios = require('axios');
 
 
-const Calendar = ({ menubar }) => {
+const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refreshToken }) => {
   let ThisToday = new Date();
   var today = new Date();
 
@@ -50,6 +51,7 @@ const Calendar = ({ menubar }) => {
     [settingDelete, setSettingDelete] = useState(''),
     [saveSchedule, setSaveSchedule] = useState(-1),
     [saveTitle, setSaveTitle] = useState(''),
+    [saveContent, setSaveContent] = useState(''),
     [saveColor, setSaveColor] = useState(''),
     [saveStart, setSaveStart] = useState(''),
     [saveEnd, setSaveEnd] = useState(''),
@@ -433,9 +435,10 @@ const Calendar = ({ menubar }) => {
     setScheduleChangeN(0);
   }
 
-  const handleSaveSchedule = (input, label, start, end) => {
+  const handleSaveSchedule = (input, content, label, start, end) => {
     setScheduleVisible(false);
     setSaveTitle(input);
+    setSaveContent(content)
     if (label === '') {
       setSaveColor("#A8A9Ac");
     } else {
@@ -449,35 +452,72 @@ const Calendar = ({ menubar }) => {
   useEffect(() => {
     if (saveSchedule !== -1) {
 
-      var SYear = saveStart.substring(0, 4);
-      var SMonth = saveStart.substring(5, 7);
-      var SDay = saveStart.substring(8, 10);
+      // var SYear = saveStart.substring(0, 4);
+      // var SMonth = saveStart.substring(5, 7);
+      // var SDay = saveStart.substring(8, 10);
 
-      var EYear = saveEnd.substring(0, 4);
-      var EMonth = saveEnd.substring(5, 7);
-      var EDay = saveEnd.substring(8, 10);
+      // var EYear = saveEnd.substring(0, 4);
+      // var EMonth = saveEnd.substring(5, 7);
+      // var EDay = saveEnd.substring(8, 10);
 
-      var startValue, endValue;
+      // var startValue, endValue;
 
-      for (var index = 0; index < lists.length; index++) {
-        if (parseInt(SYear) === lists[index].year && parseInt(SMonth) === lists[index].month && parseInt(SDay) === lists[index].day) {
-          startValue = index
-        }
-        if (parseInt(EYear) === lists[index].year && parseInt(EMonth) === lists[index].month && parseInt(EDay) === lists[index].day) {
-          endValue = index;
+      // for (var index = 0; index < lists.length; index++) {
+      //   if (parseInt(SYear) === lists[index].year && parseInt(SMonth) === lists[index].month && parseInt(SDay) === lists[index].day) {
+      //     startValue = index
+      //   }
+      //   if (parseInt(EYear) === lists[index].year && parseInt(EMonth) === lists[index].month && parseInt(EDay) === lists[index].day) {
+      //     endValue = index;
+      //   }
+      // }
+
+      // for (index = startValue; index < endValue + 1; index++) {
+      //   var array = scheduleList[index].schedule;
+
+      //   for (var index2 = 0; index2 < array.length; index2++) {
+      //     array.splice(index2, 1, { key: index2 + 2, title: array[index2].title, color: array[index2].color })
+      //   }
+
+      //   array.unshift({ key: 1, title: saveTitle, color: saveColor });
+
+      // }
+
+
+      console.log("team : ");
+      console.log(teamMate);
+
+      var teamNum = 0;
+
+      for(var i=0;i<team.length;i++) {
+        if(team.online === true) {
+          teamNum = i;
         }
       }
 
-      for (index = startValue; index < endValue + 1; index++) {
-        var array = scheduleList[index].schedule;
 
-        for (var index2 = 0; index2 < array.length; index2++) {
-          array.splice(index2, 1, { key: index2 + 2, title: array[index2].title, color: array[index2].color })
+      axios.post(`http://3.35.229.52:5000/api/project/createschedule`, {
+        title: saveTitle,
+        team: team[teamNum].title,
+        contents: saveContent,
+        writer: nickname,
+        startDate: saveStart,
+        endDate: saveEnd,
+        member: [],
+        stat: '',
+        color: saveColor
+      },
+      {
+        headers: {
+          authentication: `${accessToken}`
         }
-
-        array.unshift({ key: 1, title: saveTitle, color: saveColor });
-
-      }
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      
 
       setSaveSchedule(-1);
     }
