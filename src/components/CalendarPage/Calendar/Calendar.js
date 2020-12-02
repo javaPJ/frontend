@@ -10,8 +10,7 @@ const cx = classNames.bind(styles);
 const cx2 = classNames.bind(styles2);
 const axios = require('axios');
 
-
-const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refreshToken }) => {
+const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, readScheduleList }) => {
   let ThisToday = new Date();
   var today = new Date();
 
@@ -277,6 +276,72 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
     }
   }
 
+  var timer = setTimeout(function() {         
+    setThreeSecond(true); 
+    clearTimeout(timer);    
+  }, 1000);
+
+  const [threeSecond, setThreeSecond] = useState(false);
+  const [teamMember, setTeamMember] = useState([]);
+
+  useEffect(() => {
+    if(threeSecond === true && load === -2) {
+      for(var readIndex=0;readIndex<readScheduleList.length;readIndex++) {
+        var SYear = readScheduleList[readIndex].startDate.substring(0, 4);
+        var SMonth = readScheduleList[readIndex].startDate.substring(5, 7);
+        var SDay = readScheduleList[readIndex].startDate.substring(8, 10);
+  
+        var EYear = readScheduleList[readIndex].endDate.substring(0, 4);
+        var EMonth = readScheduleList[readIndex].endDate.substring(5, 7);
+        var EDay = readScheduleList[readIndex].endDate.substring(8, 10);
+  
+        var startValue, endValue;
+  
+        for (var index = 0; index < lists.length; index++) {
+          if (parseInt(SYear) === lists[index].year && parseInt(SMonth) === lists[index].month && parseInt(SDay) === lists[index].day) {
+            startValue = index
+          }
+          if (parseInt(EYear) === lists[index].year && parseInt(EMonth) === lists[index].month && parseInt(EDay) === lists[index].day) {
+            endValue = index;
+          }
+        }
+  
+        for (index = startValue; index < endValue + 1; index++) {
+          var array = scheduleList[index].schedule;
+  
+          for (var index2 = 0; index2 < array.length; index2++) {
+            array.splice(index2, 1, { key: index2 + 2, title: array[index2].title, color: array[index2].color })
+          }
+
+          var writer = '';
+
+
+          var memberArray = [];
+          for(var i=0;i<teamMate.length;i++) {
+            memberArray.push({key: i+2, name: teamMate[i].name, check: false});
+          }
+
+          memberArray.unshift({key: 1, name: leader, check: false});
+          setTeamMember(memberArray);
+
+          for(var index3=0;index3<teamMate.length;index3++) {
+            if(readScheduleList[readIndex].writer === teamMate[index3].user) {
+              writer = teamMate[index3].name;
+            }
+          }
+
+          if(writer === '') {
+            writer = leader;
+          }
+  
+          scheduleList[index].schedule.unshift({ key: 1, title: readScheduleList[readIndex].title, color: readScheduleList[readIndex].color, writer: writer, writeDate: readScheduleList[readIndex].date.substring(0, 10), contents: readScheduleList[readIndex].contents});
+        }
+      }
+
+      setLoad(-3)
+    }
+  }, [threeSecond, load])
+
   const thisDayClick = (e, num) => {
     moreDelete.push(num);
     setMore(true);
@@ -336,10 +401,17 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
     setScheduleChangeN(num1);
   }
 
+  const [writer, setWriter] = useState(''),
+        [writeDate, setWriteDate] = useState(''),
+        [contents, setContents] = useState('');
+
   const handleScheduleClick = (num, object) => {
     setTitle(object[0].title);
     setDateN(num);
     setScheduleN(object[0].key);
+    setWriter(object[0].writer);
+    setWriteDate(object[0].writeDate);
+    setContents(object[0].contents);
 
     for (var index = 0; index < scheduleList.length; index++) {
       var check = false;
@@ -385,6 +457,9 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
     setDateN(moreDelete[0]);
     setScheduleN(object[num - 1].key);
     setThisLabel(object[num - 1].color);
+    setWriteDate(object[num - 1].writeDate);
+    setWriter(object[num - 1].writer);
+    setContents(object[num - 1].contents);
 
     for (var index = 0; index < scheduleList.length; index++) {
       var check = false;
@@ -435,7 +510,9 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
     setScheduleChangeN(0);
   }
 
-  const handleSaveSchedule = (input, content, label, start, end) => {
+  const [saveMember, setSaveMember] = useState([]);
+
+  const handleSaveSchedule = (input, content, label, start, end, thisMember) => {
     setScheduleVisible(false);
     setSaveTitle(input);
     setSaveContent(content)
@@ -446,54 +523,26 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
     }
     setSaveStart(start);
     setSaveEnd(end);
+    setSaveMember(thisMember)
     setSaveSchedule(0);
   }
 
   useEffect(() => {
     if (saveSchedule !== -1) {
 
-      // var SYear = saveStart.substring(0, 4);
-      // var SMonth = saveStart.substring(5, 7);
-      // var SDay = saveStart.substring(8, 10);
-
-      // var EYear = saveEnd.substring(0, 4);
-      // var EMonth = saveEnd.substring(5, 7);
-      // var EDay = saveEnd.substring(8, 10);
-
-      // var startValue, endValue;
-
-      // for (var index = 0; index < lists.length; index++) {
-      //   if (parseInt(SYear) === lists[index].year && parseInt(SMonth) === lists[index].month && parseInt(SDay) === lists[index].day) {
-      //     startValue = index
-      //   }
-      //   if (parseInt(EYear) === lists[index].year && parseInt(EMonth) === lists[index].month && parseInt(EDay) === lists[index].day) {
-      //     endValue = index;
-      //   }
-      // }
-
-      // for (index = startValue; index < endValue + 1; index++) {
-      //   var array = scheduleList[index].schedule;
-
-      //   for (var index2 = 0; index2 < array.length; index2++) {
-      //     array.splice(index2, 1, { key: index2 + 2, title: array[index2].title, color: array[index2].color })
-      //   }
-
-      //   array.unshift({ key: 1, title: saveTitle, color: saveColor });
-
-      // }
-
-
-      console.log("team : ");
-      console.log(teamMate);
-
       var teamNum = 0;
 
       for(var i=0;i<team.length;i++) {
-        if(team.online === true) {
+        if(team[i].online === true) {
           teamNum = i;
         }
       }
 
+      var array = [];
+
+      for(var i=0;i<saveMember.length;i++) {
+        array.push(saveMember[i].name);
+      }
 
       axios.post(`http://3.35.229.52:5000/api/project/createschedule`, {
         title: saveTitle,
@@ -502,7 +551,7 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
         writer: nickname,
         startDate: saveStart,
         endDate: saveEnd,
-        member: [],
+        member: array,
         stat: '',
         color: saveColor
       },
@@ -520,6 +569,7 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
       
 
       setSaveSchedule(-1);
+      setLoad(-1);
     }
   }, [saveSchedule])
 
@@ -762,6 +812,10 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, refr
           endYear={endYear}
           endMonth={endMonth}
           endDay={endDay}
+          writer={writer}
+          writeDate={writeDate}
+          contents={contents}
+          teamMember={teamMember}
           handleStartDateChange={handleStartDateChange}
           handleEndDateChange={handleEndDateChange}
         >

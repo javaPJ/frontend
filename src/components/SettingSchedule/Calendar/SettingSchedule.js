@@ -25,16 +25,16 @@ const SettingSchedule = ({
     endYear,
     endMonth,
     endDay,
+    writer,
+    writeDate,
+    contents,
+    teamMember,
     handleStartDateChange,
     handleEndDateChange
   }) => {
     
   const [title, setTitle] = useState(textTitle),
-        [writer, setWriter] = useState('nickname'),
         [content, setContent] = useState(''),
-        [year, setYear] = useState('2020'),
-        [month, setMonth] = useState('10'),
-        [day, setDay] = useState('9'),
         [startDate, setStartDate] = useState(''),
         [endDate, setEndDate] = useState(''),
         [members, setMembers] = useState([]),
@@ -48,34 +48,26 @@ const SettingSchedule = ({
         [titleInput, setTitleInput] = useState('');
 
   useEffect(() => {
+    setContent(contents);
+  }, [])
+
+  useEffect(() => {
     setMembers([]);
 
     if(memberCheck === true) {
       const memberId = memberTarget[0];
 
       if(memberId === undefined) {
-        setMembers([
-          {key: 1, name: 'user', check: false},
-          {key: 2, name: 'user2', check: false},
-          {key: 3, name: 'user3', check: false},
-          {key: 4, name: 'user4', check: false},
-          {key: 5, name: 'useruseruseruseruseruser', check: false},
-        ]);
+        setMembers(teamMember);
         return;
       } else {
-        setMembers([
-          {key: 1, name: 'user', check: false},
-          {key: 2, name: 'user2', check: false},
-          {key: 3, name: 'user3', check: false},
-          {key: 4, name: 'user4', check: false},
-          {key: 5, name: 'useruseruseruseruseruser', check: false},
-        ]);
+        setMembers(teamMember);
   
         if(thisMember.length > 0) {
           for(var i = 0; i < members.length; i++) {
             for(var j = 0; j< thisMember.length; j++){
               if(members[i]['name'] === thisMember[j]['name']){
-                members.splice(i, 1, {key: i, name: thisMember[j]['name'], check: true});
+                members.splice(i, 1, {key: i+1, name: thisMember[j]['name'], check: true});
               }
             }
           }
@@ -85,17 +77,17 @@ const SettingSchedule = ({
 
         const thisCheck = members[parseInt(memberId)-1].check;
   
-        if(thisCheck === false) {
+        if(members[memberId-1].name === memberName) {
           members.splice(parseInt(memberId)-1, 1, {key: parseInt(memberId), name: memberName, check: !thisCheck});
-  
-          thisMember.push({key: parseInt(memberId), name: memberName});
-        } else {
-          members.splice(parseInt(memberId)-1, 1, {key: parseInt(memberId), name: memberName, check: !thisCheck});
-  
-          for(i = 0; i < thisMember.length; i++) {
-            if(thisMember[i]['name'] === memberName) {
-              thisMember.splice(i, 1);
+          
+          if(thisCheck) {
+            for(i = 0; i < thisMember.length; i++) {
+              if(thisMember[i]['name'] === memberName) {
+                thisMember.splice(i, 1);
+              }
             }
+          } else {
+            thisMember.push({name: memberName})
           }
         }
       }
@@ -245,7 +237,7 @@ const SettingSchedule = ({
     if(titleInput === '') {
       alert("제목을 확인해주세요.");
     } else {
-      handleSaveSchedule(titleInput, content, labelSelect, startDate, endDate);
+      handleSaveSchedule(titleInput, content, labelSelect, startDate, endDate, thisMember);
       setLabelSelect('');
     }
   }
@@ -312,7 +304,7 @@ const SettingSchedule = ({
         }
         <div className={cx('settingschedule-writer-impormation')}>
           <div className={cx('settingschedule-writer')}>작성자 {writer}</div>
-          <div className={cx('settingschedule-writeday')}>작성일 {year}-{month}-{day}</div>
+          <div className={cx('settingschedule-writeday')}>작성일 {writeDate}</div>
         </div>
       </div>
       <div className={cx('settingschedule-content')}>
@@ -326,6 +318,7 @@ const SettingSchedule = ({
           onKeyUp={() => ySize()} 
           onChange={(e) => setContent(e.target.value)} 
           placeHolder="내용을 입력해주세요."
+          value={content}
           ></textarea>
         </div>
 

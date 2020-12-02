@@ -5,8 +5,9 @@ import { AiOutlinePlus } from "react-icons/ai";
 import SettingSchedule from '.././SettingSchedule/RoadMap/SettingSchedule';
 
 const cx = classNames.bind(styles);
+const axios = require('axios');
 
-const RoadMap = ({menubar}) => {
+const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readScheduleList }) => {
     var today = new Date();
 
     const [load, setLoad] = useState(-1),  //처음 로드했는지 확인하는 변수
@@ -51,7 +52,9 @@ const RoadMap = ({menubar}) => {
 
           [rightClick, setRightClick] = useState(-1),
           [positionX, setPositionX] = useState(0),
-          [positionY, setPositionY] = useState(0);
+          [positionY, setPositionY] = useState(0),
+
+          [teamMember, setTeamMember] = useState([]);
 
     //처음 로드했을 때 날짜와 스케쥴을 불러옴..
     useEffect(() => {
@@ -79,54 +82,95 @@ const RoadMap = ({menubar}) => {
             setDayLists(array);
 
             var array2 = [];
-            // var date3 = today;
-            // var i = 0;
-            // for(i=0;i<20;i++) {
-            //     array2.push({key: i, title: "test"+i});
-            // }
+            var i = 0;
+
+            for(i=0;i<readScheduleList.length;i++) {
+                var writer = '';
+
+                for(var index3=0;index3<teamMate.length;index3++) {
+                    if(readScheduleList[i].writer === teamMate[index3].user) {
+                        writer = teamMate[index3].name;
+                    }
+                }
+    
+                if(writer === '') {
+                    writer = leader;
+                }
+
+                array2.push({key: i, title: readScheduleList[i].title, writer: writer, writeDate: readScheduleList[i].date.substring(0, 10), contents: readScheduleList[i].contents});
+            }
 
             setScheduleLists(array2);
 
             var array3 = [];
 
-            // var date3 = today;
-            // var i = 0;
-            // for(i=0;i<20;i++) {
-            //     array3.push({key: i, startDay: new Date(Date.parse(date3)+i*1000*60*60*24), endDay: new Date(Date.parse(date3)+(i+10)*1000*60*60*24), color: "red"});
-            // }
+            var i = 0;
+            for(i=0;i<readScheduleList.length;i++) {
+
+                var SYear = readScheduleList[i].startDate.substring(0, 4);
+                var SMonth = readScheduleList[i].startDate.substring(5, 7);
+                var SDay = readScheduleList[i].startDate.substring(8, 10);
+
+                var EYear = readScheduleList[i].endDate.substring(0, 4);
+                var EMonth = readScheduleList[i].endDate.substring(5, 7);
+                var EDay = readScheduleList[i].endDate.substring(8, 10);
+
+                array3.push({key: i, startDay: new Date(SYear, SMonth - 1, SDay), endDay: new Date(EYear, EMonth - 1, EDay), color: readScheduleList[i].color});
+            }
 
             setCalendarLists(array3);
 
-            setLoad(1);
+
+            var memberArray = [];
+            for(var i=0;i<teamMate.length;i++) {
+                memberArray.push({key: i+2, name: teamMate[i].name, check: false});
+            }
+
+            memberArray.unshift({key: 1, name: leader, check: false});
+            setTeamMember(memberArray);
+
+            setLoad(0);
         } else if(load === 0) {
             var array = [];
             var array2 = [];
             var array3 = [];
-            var monthLength = 0;
 
-            for(var index=0;index<7;index++) {
-                for(var index2=0;index2<dayLists[index].day.length;index2++) {
-                    for(var index3=0;index3<20;index3++) {
-                        if(calendarLists[index3].startDay.getFullYear() === dayLists[index].year && calendarLists[index3].startDay.getMonth()+1 === dayLists[index].month && calendarLists[index3].startDay.getDate() === dayLists[index].day[index2].day){
-                            array.push(monthLength+index2);
-                        }
-                        if(calendarLists[index3].endDay.getFullYear() === dayLists[index].year && calendarLists[index3].endDay.getMonth()+1 === dayLists[index].month && calendarLists[index3].endDay.getDate() === dayLists[index].day[index2].day){
-                            array2.push(monthLength+index2);
-                        }
-                    }
+
+            for(var index3=0;index3<calendarLists.length;index3++) {
+                var startElapsedMSec = 0;
+                if(today.getTime() >= calendarLists[index3].startDay.getTime()) {
+                    startElapsedMSec = today.getTime() - calendarLists[index3].startDay.getTime();
+                    const startElapsedDay = startElapsedMSec / 1000 / 60 / 60 / 24;
+                    array.push(90 - Math.round(startElapsedDay) + 1)
+                } else {
+                    startElapsedMSec = calendarLists[index3].startDay.getTime() - today.getTime();
+                    const startElapsedDay = startElapsedMSec / 1000 / 60 / 60 / 24;
+                    array.push(90 + Math.round(startElapsedDay) + 1)
                 }
-                monthLength = monthLength + dayLists[index].day.length;
+
+                var endElapsedMSec = 0;
+                if(today.getTime() >= calendarLists[index3].endDay.getTime()) {
+                    endElapsedMSec = today.getTime() - calendarLists[index3].endDay.getTime();
+                    const endElapsedDay = endElapsedMSec / 1000 / 60 / 60 / 24;
+                    array2.push(90 - Math.round(endElapsedDay) + 1)
+                } else {
+                    endElapsedMSec = calendarLists[index3].endDay.getTime() - today.getTime();
+                    const endElapsedDay = endElapsedMSec / 1000 / 60 / 60 / 24;
+                    array2.push(90 + Math.round(endElapsedDay) + 1)
+                }
             }
 
-            for(var i=0;i<20;i++) {
+            for(var i=0;i<calendarLists.length;i++) {
                 array3.push({key: i, start: array[i], end: array2[i]-array[i]});
             }
 
-            for(var i=0;i<20;i++) {
-                calendarLists.splice(i,1,{key: calendarLists[i].key, startDay: calendarLists[i].startDay, endDay: calendarLists[i].endDay, start: array3[i].start, end: array3[i].end, color: calendarLists[i].color});
+            
+
+            for(var i=0;i<calendarLists.length;i++) {
+                calendarLists.splice(i,1,{key: calendarLists[i].key, startDay: calendarLists[i].startDay, endDay: calendarLists[i].endDay, start: array3[i].start, end: array3[i].end, color: calendarLists[i].color, writer: scheduleLists[i].writer, writeDate: scheduleLists[i].writeDate, contents: scheduleLists[i].contents });
             }
 
-            for(var i=0;i<20;i++) {
+            for(var i=0;i<calendarLists.length;i++) {
                 checkTitleArray.push(scheduleLists[i]);
             }
 
@@ -169,8 +213,12 @@ const RoadMap = ({menubar}) => {
         scroll.scrollTop = schedule.scrollTop;
     }
 
+    const [writer,setWriter] = useState(''),//setting으로 보낼 작성자, 작성일, 내용
+          [writeDate, setWriteDate] = useState(''),
+          [contents, setContents] = useState('');
+
     //Schedule Click하여 setting 열어줄 때
-    const handleScheduleClick = (num, color, start, end) => {
+    const handleScheduleClick = (num, color, start, end, writer, writeDate, contents) => {
         setTitle(scheduleLists[num].title);
         setThisLabel(color);
         setScheduleN(num);
@@ -182,6 +230,10 @@ const RoadMap = ({menubar}) => {
         setEndYaer(end.getFullYear());
         setEndMonth(end.getMonth()+1);
         setEndDay(end.getDate());
+
+        setWriter(writer)
+        setWriteDate(writeDate)
+        setContents(contents)
 
         setScheduleVisible(true);
     }
@@ -230,63 +282,103 @@ const RoadMap = ({menubar}) => {
     }
 
     //Save Schedule
-    const handleSaveSchedule = (title, color, start, end) => {
+    const handleSaveSchedule = (title, content, color, start, end, thisMember) => {
         setSaveTitle(title);
         setSaveColor(color);
         setSaveStart(start);
         setSaveEnd(end);
+
+        var array = [];
+
+        for(var i=0;i<thisMember.length;i++) {
+            array.push(thisMember[i].name);
+        }
+
+        var teamNum = 0;
+
+        for(var i=0;i<team.length;i++) {
+            if(team[i].online === true) {
+            teamNum = i;
+            }
+        }
+
+        axios.post(`http://3.35.229.52:5000/api/project/createschedule`, {
+            title: title,
+            team: team[teamNum].title,
+            contents: content,
+            writer: nickname,
+            startDate: start,
+            endDate: end,
+            member: array,
+            stat: '',
+            color: color
+        },
+        {
+            headers: {
+            authentication: `${accessToken}`
+            }
+        })
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+
+
         setSaveSchedule(0);
         setScheduleVisible(false);
     }
 
     //Save schedule update
-    useEffect(() => {
-        if(saveSchedule !== -1) {
-            scheduleLists.unshift({key: 0, title: saveTitle});
+    // useEffect(() => {
+    //     if(saveSchedule !== -1) {
+    //         scheduleLists.unshift({key: 0, title: saveTitle});
 
-            for(var i =0;i<scheduleLists.length;i++) {
-                scheduleLists.splice(i,1,{key:i, title: scheduleLists[i].title});
-            }
+    //         for(var i =0;i<scheduleLists.length;i++) {
+    //             scheduleLists.splice(i,1,{key:i, title: scheduleLists[i].title});
+    //         }
 
-            var SYear = saveStart.substring(0,4);
-            var SMonth = saveStart.substring(5,7);
-            var SDay = saveStart.substring(8,10);
+    //         var SYear = saveStart.substring(0,4);
+    //         var SMonth = saveStart.substring(5,7);
+    //         var SDay = saveStart.substring(8,10);
 
-            var EYear = saveEnd.substring(0,4);
-            var EMonth = saveEnd.substring(5,7);
-            var EDay = saveEnd.substring(8,10);
+    //         var EYear = saveEnd.substring(0,4);
+    //         var EMonth = saveEnd.substring(5,7);
+    //         var EDay = saveEnd.substring(8,10);
 
-            var monthLength=0;
-            var startValue, endValue;
+    //         var monthLength=0;
+    //         var startValue, endValue;
 
-            for(var index=0;index<7;index++) {
-                for(var index2=0;index2<dayLists[index].day.length;index2++) {
-                    if(parseInt(SYear) === dayLists[index].year && parseInt(SMonth) === dayLists[index].month && parseInt(SDay) === dayLists[index].day[index2].day){
-                        startValue = monthLength+index2;
-                    }
-                    if(parseInt(EYear) === dayLists[index].year && parseInt(EMonth) === dayLists[index].month && parseInt(EDay) === dayLists[index].day[index2].day){
-                        endValue = monthLength+index2;
-                    }
-                }
-                monthLength = monthLength + dayLists[index].day.length;
-            }
+    //         for(var index=0;index<7;index++) {
+    //             for(var index2=0;index2<dayLists[index].day.length;index2++) {
+    //                 if(parseInt(SYear) === dayLists[index].year && parseInt(SMonth) === dayLists[index].month && parseInt(SDay) === dayLists[index].day[index2].day){
+    //                     startValue = monthLength+index2;
+    //                 }
+    //                 if(parseInt(EYear) === dayLists[index].year && parseInt(EMonth) === dayLists[index].month && parseInt(EDay) === dayLists[index].day[index2].day){
+    //                     endValue = monthLength+index2;
+    //                 }
+    //             }
+    //             monthLength = monthLength + dayLists[index].day.length;
+    //         }
 
-            calendarLists.unshift({key: 0, startDay: new Date(SYear, SMonth-1, SDay), endDay: new Date(EYear, EMonth-1, EDay), start: startValue, end: endValue-startValue, color: saveColor});
+    //         calendarLists.unshift({key: 0, startDay: new Date(SYear, SMonth-1, SDay), endDay: new Date(EYear, EMonth-1, EDay), start: startValue, end: endValue-startValue, color: saveColor});
 
-            for(var i=0;i<calendarLists.length;i++) {
-                calendarLists.splice(i,1, {key: i, startDay: calendarLists[i].startDay, endDay: calendarLists[i].endDay, start: calendarLists[i].start, end: calendarLists[i].end, color: calendarLists[i].color});
-            }
+    //         for(var i=0;i<calendarLists.length;i++) {
+    //             calendarLists.splice(i,1, {key: i, startDay: calendarLists[i].startDay, endDay: calendarLists[i].endDay, start: calendarLists[i].start, end: calendarLists[i].end, color: calendarLists[i].color});
+    //         }
             
-            setSaveTitle('');
-            setSaveColor('');
-            setSaveStart('');
-            setSaveEnd('');
+    //         setSaveTitle('');
+    //         setSaveColor('');
+    //         setSaveStart('');
+    //         setSaveEnd('');
 
-            setSaveSchedule(-1);
-        }
-    }, [saveSchedule])
+    //         setSaveSchedule(-1);
+    //     }
+    // }, [saveSchedule])
 
     //Date Change
+    
     const handleDateChange = (num, start, end) => {
         setChangeStart(start);
         setChangeEnd(end);
@@ -405,7 +497,7 @@ const RoadMap = ({menubar}) => {
                                     <div 
                                         style={{backgroundColor: list.color, color: list.color, marginLeft: list.start*33.2+1.2, width: 33.2*(list.end+1)}} 
                                         className={cx('roadmap-schedule-label')}
-                                        onClick={() => handleScheduleClick(list.key, list.color, list.startDay, list.endDay)}
+                                        onClick={() => handleScheduleClick(list.key, list.color, list.startDay, list.endDay, list.writer, list.writeDate, list.contents)}
                                         onContextMenu={(e) => handleRightClick(e, list.key)}
                                     >.
                                     </div>
@@ -441,6 +533,10 @@ const RoadMap = ({menubar}) => {
                     endYear={endYear}
                     endMonth={endMonth}
                     endDay={endDay}
+                    writer={writer}
+                    writeDate={writeDate}
+                    contents={contents}
+                    teamMember={teamMember}
                     handleSettingDelete={(num) => setSettingDelete(num)}
                     changeCheckList={checkTitleArray}
                     handleSaveSchedule={handleSaveSchedule}

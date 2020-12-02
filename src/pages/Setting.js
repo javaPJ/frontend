@@ -40,6 +40,7 @@ function Setting() {
   const [addServerNum, setAddServerNum] = useState(-1);
 
   const [teamMate, setTeamMate] = useState([]);
+  const [readScheduleList, setReadScheduleList] = useState([]);
 
   let history = useHistory();
   let location = useLocation();
@@ -58,14 +59,14 @@ function Setting() {
 
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code, teamId } = location.state;
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code, teamId, readScheduleList } = location.state;
       for (var index = 0; index < serverLists.length; index++) {
         if (serverLists[index].online === true) {
           setSettingTitle(serverLists[index].title);
           setSettingColor(serverLists[index].color);
         }
       }
-
+      setReadScheduleList(readScheduleList);
       setTeamId(teamId);
       setCode(code);
       setLeader(leader)
@@ -135,8 +136,6 @@ function Setting() {
   }
 
   const addServer = () => {
-    console.log("addServer : "+accessToken);
-
     if (color !== '' && team !== '') {
       setLists([]);
       setMenubar(false);
@@ -144,9 +143,6 @@ function Setting() {
         lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: false });
       }
 
-      console.log(accessToken);
-      console.log(team);
-      console.log(color);
       axios.post(`http://3.35.229.52:5000/api/project/createProject`,
       {
         name: team,
@@ -359,8 +355,8 @@ function Setting() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar teamId={teamId} code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header teamId={teamId} code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar readScheduleList={readScheduleList} teamId={teamId} code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header readScheduleList={readScheduleList} teamId={teamId} code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           {create === true &&
             <div>
@@ -382,8 +378,8 @@ function Setting() {
             teamId={teamId}
             teamMate={teamMate}
           />
-          <MenuBar teamId={teamId} code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header teamId={teamId} code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar readScheduleList={readScheduleList} teamId={teamId} code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header readScheduleList={readScheduleList} teamId={teamId} code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
 
           {create === true &&

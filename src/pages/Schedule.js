@@ -37,6 +37,8 @@ function Schedule() {
   const [joinPin, setJoinPin] = useState('');
   const [addServerNum, setAddServerNum] = useState(-1);
 
+  const [readScheduleList, setReadScheduleList] = useState([]);
+
   let history = useHistory();
   let location = useLocation();
 
@@ -54,9 +56,10 @@ function Schedule() {
     .catch(err => { console.log(err); })
   }, 1200000);
 
+
   useEffect(() => {
     if (typeof (location.state) !== 'undefined' && location.state !== null) {
-      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code, teamId } = location.state;
+      const { serverLists, email, nickname, accesstoken, refreshtoken, teamMate, leader, code, teamId, readScheduleList } = location.state;
 
       if(serverLists.length > 0) {
         if (Object.keys(serverLists[0])[0] === "team") {
@@ -84,12 +87,25 @@ function Schedule() {
             return axios.post(url,{team: array.teamId}, headers)
             .then((res => {
               if (array.id === 0) {
-                console.log(res);
                 array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: true });
                 setCode(res.data[0].code);
                 setTeamMate(res.data[1]);
                 setLeader(res.data[0].leadername);
                 setTeamId(res.data[0].num);
+
+                axios.post(`http://3.35.229.52:5000/api/project/readschedule`, {
+                  team: `${array.team}`
+                },{
+                  headers: {
+                    authentication: accesstoken
+                  }
+                })
+                .then(res => {
+                  setReadScheduleList(res.data);
+                })
+                .catch(err => {
+                  console.log(err);
+                })
               } else {
                 array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: false })
               }
@@ -105,6 +121,7 @@ function Schedule() {
           setLists(array2);
 
         } else {
+          setReadScheduleList(readScheduleList);
           setLists(serverLists);
           setCode(code);
           setTeamMate(teamMate);
@@ -114,6 +131,7 @@ function Schedule() {
       } else {
         setServerNot(true);
         setCode('');
+        setReadScheduleList([]);
         setLists([]);
         setTeamMate([]);
         setLeader('');
@@ -163,8 +181,6 @@ function Schedule() {
   }
 
   const addServer = () => {
-    console.log("addServer : "+accessToken);
-
     if (color !== '' && team !== '') {
       setLists([]);
       setMenubar(false);
@@ -172,9 +188,6 @@ function Schedule() {
         lists.splice(i, 1, { id: lists[i].id, title: lists[i].title, teamId: lists[i].teamId, color: lists[i].color, online: false });
       }
 
-      console.log(accessToken);
-      console.log(team);
-      console.log(color);
       axios.post(`http://3.35.229.52:5000/api/project/createProject`,
       {
         name: team,
@@ -387,8 +400,8 @@ function Schedule() {
       { serverNot === true ?
         <div>
           <NotFound></NotFound>
-          <MenuBar teamId={teamId} code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header teamId={teamId} code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <MenuBar readScheduleList={readScheduleList} teamId={teamId} code={code} leader={false} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header readScheduleList={readScheduleList} teamId={teamId} code={code} leader={false} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
           {create === true &&
             <div>
@@ -399,9 +412,9 @@ function Schedule() {
         </div>
         :
         <div>
-          <Calendar menubar={menubar} teamMate={teamMate} nickname={nickname} leader={leader} team={lists} accessToken={accessToken} refreshToken={refreshToken}></Calendar>
-          <MenuBar teamId={teamId} code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
-          <Header teamId={teamId} code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
+          <Calendar readScheduleList={readScheduleList} menubar={menubar} teamMate={teamMate} nickname={nickname} leader={leader} team={lists} accessToken={accessToken}></Calendar>
+          <MenuBar readScheduleList={readScheduleList} teamId={teamId} code={code} leader={leader} title={title[0]} id={title[1]} menubar={menubar} onClick={() => setMenubar(!menubar)} handleExit={() => setExit(true)} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}></MenuBar>
+          <Header readScheduleList={readScheduleList} teamId={teamId} code={code} leader={leader} teamMate={teamMate} title={title[0]} serverlists={lists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken}></Header>
           <ServerBar lists={lists} createServer={() => setCreate(true)} onClickServer={onClickServer}></ServerBar>
 
           {create === true &&

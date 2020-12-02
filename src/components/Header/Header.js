@@ -7,7 +7,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 const axios = require('axios');
 
-const Header = ({title, serverlists, nickname, email, accessToken, refreshToken, teamMate, leader, code}) => {
+const Header = ({title, serverlists, nickname, email, accessToken, refreshToken, teamMate, leader, code, readScheduleList}) => {
   let history = useHistory();
   const [user, setUser] = useState(false);
 
@@ -22,7 +22,8 @@ const Header = ({title, serverlists, nickname, email, accessToken, refreshToken,
         refreshtoken: refreshToken,
         teamMate: teamMate,
         leader: leader,
-        code: code
+        code: code,
+        readScheduleList: readScheduleList
       }
     })
   }

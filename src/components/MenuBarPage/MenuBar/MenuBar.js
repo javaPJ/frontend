@@ -6,7 +6,7 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 
 const cx = classNames.bind(styles);
 
-const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists, nickname, email, accessToken, refreshToken, teamMate, code, teamId }) => {
+const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists, nickname, email, accessToken, refreshToken, teamMate, code, teamId, readScheduleList }) => {
   const [bar, setBar] = useState(),
         [lists,setLists] = useState([]),
         [owner, setOwner] = useState(false),
@@ -14,13 +14,8 @@ const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists,
 
   useEffect(() => {
     setBar(menubar);
-    console.log(menubar);
-
-    let localLeader = false;
 
     if(leader !== false) {
-      console.log(leader);
-      console.log(nickname);
       setNow(id);
 
       if(leader === nickname) {
@@ -61,7 +56,7 @@ const MenuBar = ({ leader, title, id, menubar, onClick, handleExit, serverlists,
       {bar === true ?
         <div className={cx('menubar-next')}>
           <div className={cx('menubar-left')} onClick={onClick}><AiFillCaretLeft size="27px" color="gray"/></div>
-          <MenuList teamId={teamId} code={code} leader={leader} lists={lists} Serverlists={serverlists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}/>
+          <MenuList readScheduleList={readScheduleList} teamId={teamId} code={code} leader={leader} lists={lists} Serverlists={serverlists} nickname={nickname} email={email} accessToken={accessToken} refreshToken={refreshToken} teamMate={teamMate}/>
           { owner === false &&
             <div className={cx('menubar-exit')} onClick={() => handleExit()}>프로젝트 나가기</div>
           }
