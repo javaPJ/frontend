@@ -122,12 +122,61 @@ function Schedule() {
           setLists(array2);
 
         } else {
-          setReadScheduleList(readScheduleList);
-          setLists(serverLists);
-          setCode(code);
-          setTeamMate(teamMate);
-          setLeader(leader);
-          setTeamId(teamId);
+
+          var arrays = [];
+          console.log(serverLists);
+          for(var i = 0; i < serverLists.length; i++) {
+            arrays.push({id: i, team: serverLists[i].title, teamId: serverLists[i].teamId});
+          }
+
+          const url = `http://3.35.229.52:5000/api/project/readproject`
+          
+          const headers = {
+            headers: {
+              Authentication: `${accesstoken}`
+            }
+          }
+          
+          var array2 = [];
+
+          const postArray = array => {
+            return axios.post(url,{team: array.teamId}, headers)
+            .then((res => {
+              if (array.id === 0) {
+                array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: true });
+                setCode(res.data[0].code);
+                setTeamMate(res.data[1]);
+                setLeader(res.data[0].leadername);
+                setTeamId(res.data[0].num);
+
+                axios.post(`http://3.35.229.52:5000/api/project/readschedule`, {
+                  team: `${array.team}`
+                },{
+                  headers: {
+                    authentication: accesstoken
+                  }
+                })
+                .then(res => {
+                  console.log(res.data);
+                  setReadScheduleList(res.data);
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+              } else {
+                array2.push({ id: array.id+1, title: array.team, teamId: array.teamId, color: res.data[0].color, online: false })
+              }
+            }))
+          }
+          
+          arrays.reduce((prevPrams, array) => {
+            return prevPrams.then(() => {
+              return postArray(array)
+            })
+          }, Promise.resolve())
+
+          setLists(array2);
+
         }
       } else {
         setServerNot(true);

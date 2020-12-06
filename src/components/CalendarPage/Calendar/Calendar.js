@@ -300,14 +300,7 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
   const [readLength, setReadLength] = useState(-1);
 
   useEffect(() => {
-    console.log("스케쥴 불러오기");
-    console.log(threeSecond);
-    console.log(load);
-    console.log(startRead);
-    console.log();
-    console.log();
     if(threeSecond === true && load === -2 && startRead === true && calendaerReadScheduleList.length >readLength ) {
-      console.log(calendaerReadScheduleList);
       setReadLength(calendaerReadScheduleList.length);
 
       for(var readIndex=0;readIndex<calendaerReadScheduleList.length;readIndex++) {
@@ -363,7 +356,6 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
           scheduleList[index].schedule.unshift({ key: 1, title: calendaerReadScheduleList[readIndex].title, color: calendaerReadScheduleList[readIndex].color, writer: writer, writeDate: calendaerReadScheduleList[readIndex].date.substring(0, 10), contents: calendaerReadScheduleList[readIndex].contents});
         }
       }
-      console.log(scheduleList);
     }
   }, [threeSecond, load, startRead, calendaerReadScheduleList])
 
@@ -616,7 +608,6 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
         })
         .then(res => {
           console.log(res);
-          console.log(res.data);
           setCalendarReadScheduleList(res.data);
         })
         .catch(err => {

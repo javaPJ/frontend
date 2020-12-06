@@ -10,7 +10,7 @@ const axios = require('axios');
 const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readScheduleList }) => {
     var today = new Date();
 
-    const [load, setLoad] = useState(-1),  //처음 로드했는지 확인하는 변수
+    const [load, setLoad] = useState(-50),  //처음 로드했는지 확인하는 변수
 
           [dayLists, setDayLists] = useState([]), //날짜 리스트
           [scheduleLists, setScheduleLists] = useState([]),  //스케쥴 리스트
@@ -56,18 +56,19 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
 
           [teamMember, setTeamMember] = useState([]),
 
-          [calendaerReadScheduleList, setCalendarReadScheduleList] = useState([]),  //readScheduleList를 저장하기 위한 배열
-          [clear, setClear] = useState(false);
+          [roadReadScheduleList, setRoadReadScheduleList] = useState([]),  //readScheduleList를 저장하기 위한 배열
+          [clear, setClear] = useState(false), //timer를 제어하기 위한 변수
+          [readLength, setReadLength] = useState(-1); // roadREadScheduleList의 길이를 나타내는 변수
 
-
-    // 1초 후 readScehdulList를 불러옴
+    // 0.5초 후 readScehdulList를 불러옴
     var timer = setTimeout(function() { 
       if(readScheduleList.length !== 0 && clear === false) {
-        setCalendarReadScheduleList(readScheduleList);
+        setRoadReadScheduleList(readScheduleList);
         setClear(true);
+        setLoad(-1);
         clearTimeout(timer);
       }
-    }, 1000);
+    }, 500);
 
     //처음 로드했을 때 날짜와 스케쥴을 불러옴..
     useEffect(() => {
@@ -97,11 +98,13 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
             var array2 = [];
             var i = 0;
 
-            for(i=0;i<calendaerReadScheduleList.length;i++) {
+            setReadLength(roadReadScheduleList.length);
+
+            for(i=0;i<roadReadScheduleList.length;i++) {
                 var writer = '';
 
                 for(var index3=0;index3<teamMate.length;index3++) {
-                    if(calendaerReadScheduleList[i].writer === teamMate[index3].user) {
+                    if(roadReadScheduleList[i].writer === teamMate[index3].user) {
                         writer = teamMate[index3].name;
                     }
                 }
@@ -110,7 +113,7 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
                     writer = leader;
                 }
 
-                array2.push({key: i, title: calendaerReadScheduleList[i].title, writer: writer, writeDate: calendaerReadScheduleList[i].date.substring(0, 10), contents: calendaerReadScheduleList[i].contents});
+                array2.push({key: i, title: roadReadScheduleList[i].title, writer: writer, writeDate: roadReadScheduleList[i].date.substring(0, 10), contents: roadReadScheduleList[i].contents});
             }
 
             setScheduleLists(array2);
@@ -118,17 +121,17 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
             var array3 = [];
 
             var i = 0;
-            for(i=0;i<calendaerReadScheduleList.length;i++) {
+            for(i=0;i<roadReadScheduleList.length;i++) {
 
-                var SYear = calendaerReadScheduleList[i].startDate.substring(0, 4);
-                var SMonth = calendaerReadScheduleList[i].startDate.substring(5, 7);
-                var SDay = calendaerReadScheduleList[i].startDate.substring(8, 10);
+                var SYear = roadReadScheduleList[i].startDate.substring(0, 4);
+                var SMonth = roadReadScheduleList[i].startDate.substring(5, 7);
+                var SDay = roadReadScheduleList[i].startDate.substring(8, 10);
 
-                var EYear = calendaerReadScheduleList[i].endDate.substring(0, 4);
-                var EMonth = calendaerReadScheduleList[i].endDate.substring(5, 7);
-                var EDay = calendaerReadScheduleList[i].endDate.substring(8, 10);
+                var EYear = roadReadScheduleList[i].endDate.substring(0, 4);
+                var EMonth = roadReadScheduleList[i].endDate.substring(5, 7);
+                var EDay = roadReadScheduleList[i].endDate.substring(8, 10);
 
-                array3.push({key: i, startDay: new Date(SYear, SMonth - 1, SDay), endDay: new Date(EYear, EMonth - 1, EDay), color: calendaerReadScheduleList[i].color});
+                array3.push({key: i, startDay: new Date(SYear, SMonth - 1, SDay), endDay: new Date(EYear, EMonth - 1, EDay), color: roadReadScheduleList[i].color});
             }
 
             setCalendarLists(array3);
@@ -350,6 +353,21 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
         })
         .then(res => {
             console.log(res);
+            axios.post(`http://3.35.229.52:5000/api/project/readschedule`, {
+              team: team[teamNum].title
+            },{
+              headers: {
+                authentication: accessToken
+              }
+            })
+            .then(res => {
+              console.log(res);
+              console.log(res.data);
+              setRoadReadScheduleList(res.data);
+            })
+            .catch(err => {
+              console.log(err);
+            })
         })
         .catch(err => {
             console.log(err);
@@ -362,11 +380,15 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
 
     //Save schedule update
     useEffect(() => {
-        if(saveSchedule !== -1) {
-            
+        if(saveSchedule !== -1 && roadReadScheduleList.length > readLength) {
+            setReadLength(roadReadScheduleList.length);
+
+
+            console.log(roadReadScheduleList);
+            setLoad(-1);
             setSaveSchedule(-1);
         }
-    }, [saveSchedule])
+    }, [saveSchedule, roadReadScheduleList])
 
     //Date Change
     

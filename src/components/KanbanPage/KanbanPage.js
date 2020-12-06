@@ -181,27 +181,27 @@ const KanbanPage = ({menubar}) => {
         }
     }
 
-    const handleUpMove = () => {
-        var array = data[grpI].items;
-        var tmp = array[itemI];
-        array.splice(itemI, 1);
-        array.unshift(tmp);
-        setGroupItem(array);
-        setGroupName(data[grpI].title);
-        setMove(grpI);
-        setRightClick(false);
-    }
+    // const handleUpMove = () => {
+    //     var array = data[grpI].items;
+    //     var tmp = array[itemI];
+    //     array.splice(itemI, 1);
+    //     array.unshift(tmp);
+    //     setGroupItem(array);
+    //     setGroupName(data[grpI].title);
+    //     setMove(grpI);
+    //     setRightClick(false);
+    // }
 
-    const handleDownMove = () => {
-        var array = data[grpI].items;
-        var tmp = array[itemI];
-        array.splice(itemI, 1);
-        array.push(tmp);
-        setGroupItem(array);
-        setGroupName(data[grpI].title);
-        setMove(grpI);
-        setRightClick(false);
-    }
+    // const handleDownMove = () => {
+    //     var array = data[grpI].items;
+    //     var tmp = array[itemI];
+    //     array.splice(itemI, 1);
+    //     array.push(tmp);
+    //     setGroupItem(array);
+    //     setGroupName(data[grpI].title);
+    //     setMove(grpI);
+    //     setRightClick(false);
+    // }
 
     const handleSettingDelete = (num1, num2) => {
         setGroupName(data[num1].title);
@@ -359,8 +359,8 @@ const KanbanPage = ({menubar}) => {
                 <div>
                     <div className={cx('dnd-item-delete-hidden')} onClick={() => setRightClick(false)}></div>
                     <div style={{top: positionY, left: positionX}} className={cx('dnd-item-delete')}>
-                        <li onClick={() => {handleUpMove()}}>맨 위로 이동</li>
-                        <li onClick={() => handleDownMove()}>맨 아래로 이동</li>
+                        {/* <li onClick={() => {handleUpMove()}}>맨 위로 이동</li>
+                        <li onClick={() => handleDownMove()}>맨 아래로 이동</li> */}
                         <li onClick={(e) => {handleDeleteTitle()}}>삭제</li>
                     </div>
                 </div>
