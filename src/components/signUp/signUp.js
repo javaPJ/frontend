@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import styles from './SignUp.scss';
+import styles from './signUp.scss';
 import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);

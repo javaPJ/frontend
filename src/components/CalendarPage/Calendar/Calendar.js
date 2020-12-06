@@ -54,7 +54,8 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
     [saveColor, setSaveColor] = useState(''),
     [saveStart, setSaveStart] = useState(''),
     [saveEnd, setSaveEnd] = useState(''),
-    [changeTitleN, setChangeTitleN] = useState(['', '']);
+    [changeTitleN, setChangeTitleN] = useState(['', '']),
+    [calendaerReadScheduleList, setCalendarReadScheduleList] = useState([]);
 
 
   useEffect(() => {
@@ -275,25 +276,48 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
       setMonth(month + 1);
     }
   }
+  
+  const [threeSecond, setThreeSecond] = useState(false);
+  const [clear, setClear] = useState(false);
 
-  var timer = setTimeout(function() {         
-    setThreeSecond(true); 
-    clearTimeout(timer);    
+  var timer = setTimeout(function() { 
+    if(readScheduleList.length !== 0 && clear === false) {
+      setThreeSecond(true);
+      setCalendarReadScheduleList(readScheduleList);
+      setClear(true);
+      clearTimeout(timer);
+    }
   }, 1000);
 
-  const [threeSecond, setThreeSecond] = useState(false);
+
+  const [startRead, setStartRead] = useState(false);
+  var timer2 = setTimeout(function() {
+    setStartRead(true);
+    clearTimeout(timer2);
+  }, 2000)
+
   const [teamMember, setTeamMember] = useState([]);
+  const [readLength, setReadLength] = useState(-1);
 
   useEffect(() => {
-    if(threeSecond === true && load === -2) {
-      for(var readIndex=0;readIndex<readScheduleList.length;readIndex++) {
-        var SYear = readScheduleList[readIndex].startDate.substring(0, 4);
-        var SMonth = readScheduleList[readIndex].startDate.substring(5, 7);
-        var SDay = readScheduleList[readIndex].startDate.substring(8, 10);
+    console.log("스케쥴 불러오기");
+    console.log(threeSecond);
+    console.log(load);
+    console.log(startRead);
+    console.log();
+    console.log();
+    if(threeSecond === true && load === -2 && startRead === true && calendaerReadScheduleList.length >readLength ) {
+      console.log(calendaerReadScheduleList);
+      setReadLength(calendaerReadScheduleList.length);
+
+      for(var readIndex=0;readIndex<calendaerReadScheduleList.length;readIndex++) {
+        var SYear = calendaerReadScheduleList[readIndex].startDate.substring(0, 4);
+        var SMonth = calendaerReadScheduleList[readIndex].startDate.substring(5, 7);
+        var SDay = calendaerReadScheduleList[readIndex].startDate.substring(8, 10);
   
-        var EYear = readScheduleList[readIndex].endDate.substring(0, 4);
-        var EMonth = readScheduleList[readIndex].endDate.substring(5, 7);
-        var EDay = readScheduleList[readIndex].endDate.substring(8, 10);
+        var EYear = calendaerReadScheduleList[readIndex].endDate.substring(0, 4);
+        var EMonth = calendaerReadScheduleList[readIndex].endDate.substring(5, 7);
+        var EDay = calendaerReadScheduleList[readIndex].endDate.substring(8, 10);
   
         var startValue, endValue;
   
@@ -305,12 +329,13 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
             endValue = index;
           }
         }
+
   
         for (index = startValue; index < endValue + 1; index++) {
           var array = scheduleList[index].schedule;
   
           for (var index2 = 0; index2 < array.length; index2++) {
-            array.splice(index2, 1, { key: index2 + 2, title: array[index2].title, color: array[index2].color })
+            array.splice(index2, 1, { key: index2 + 2, title: array[index2].title, color: array[index2].color, writer:array[index2]. writer, writeDate: array[index2].writeDate, contents: array[index2].contents })
           }
 
           var writer = '';
@@ -322,10 +347,11 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
           }
 
           memberArray.unshift({key: 1, name: leader, check: false});
+
           setTeamMember(memberArray);
 
           for(var index3=0;index3<teamMate.length;index3++) {
-            if(readScheduleList[readIndex].writer === teamMate[index3].user) {
+            if(calendaerReadScheduleList[readIndex].writer === teamMate[index3].user) {
               writer = teamMate[index3].name;
             }
           }
@@ -334,13 +360,12 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
             writer = leader;
           }
   
-          scheduleList[index].schedule.unshift({ key: 1, title: readScheduleList[readIndex].title, color: readScheduleList[readIndex].color, writer: writer, writeDate: readScheduleList[readIndex].date.substring(0, 10), contents: readScheduleList[readIndex].contents});
+          scheduleList[index].schedule.unshift({ key: 1, title: calendaerReadScheduleList[readIndex].title, color: calendaerReadScheduleList[readIndex].color, writer: writer, writeDate: calendaerReadScheduleList[readIndex].date.substring(0, 10), contents: calendaerReadScheduleList[readIndex].contents});
         }
       }
-
-      setLoad(-3)
+      console.log(scheduleList);
     }
-  }, [threeSecond, load])
+  }, [threeSecond, load, startRead, calendaerReadScheduleList])
 
   const thisDayClick = (e, num) => {
     moreDelete.push(num);
@@ -505,6 +530,24 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
     setEndYear(thisYear.toString());
     setEndMonth(thisMonth.toString());
     setEndDay(thisDay.toString());
+
+    var year = String(today.getFullYear());
+    var month = today.getMonth() + 1 < 10 ? '0'+ today.getMonth() + 1 : String(today.getMonth());
+    var day = today.getDate()<10 ? '0' + today.getDate() : String(today.getDate())
+
+    setContents("");
+    setWriter(leader);
+    setWriteDate(year+"-"+month+"-"+day);
+
+    var memberArray = [];
+    for(var i=0;i<teamMate.length;i++) {
+      memberArray.push({key: i+2, name: teamMate[i].name, check: false});
+    }
+
+    memberArray.unshift({key: 1, name: leader, check: false});
+
+    setTeamMember(memberArray);
+
     setMore(false);
     setScheduleVisible(true);
     setScheduleChangeN(0);
@@ -544,6 +587,7 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
         array.push(saveMember[i].name);
       }
 
+
       axios.post(`http://3.35.229.52:5000/api/project/createschedule`, {
         title: saveTitle,
         team: team[teamNum].title,
@@ -562,11 +606,27 @@ const Calendar = ({ menubar, leader, teamMate, team, nickname, accessToken, read
       })
       .then(res => {
         console.log(res);
+
+        axios.post(`http://3.35.229.52:5000/api/project/readschedule`, {
+          team: team[teamNum].title
+        },{
+          headers: {
+            authentication: accessToken
+          }
+        })
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+          setCalendarReadScheduleList(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        })      
+
       })
       .catch(err => {
         console.log(err);
       })
-      
 
       setSaveSchedule(-1);
       setLoad(-1);

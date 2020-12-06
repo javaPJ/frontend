@@ -101,6 +101,7 @@ function Schedule() {
                   }
                 })
                 .then(res => {
+                  console.log(res.data);
                   setReadScheduleList(res.data);
                 })
                 .catch(err => {

@@ -54,7 +54,20 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
           [positionX, setPositionX] = useState(0),
           [positionY, setPositionY] = useState(0),
 
-          [teamMember, setTeamMember] = useState([]);
+          [teamMember, setTeamMember] = useState([]),
+
+          [calendaerReadScheduleList, setCalendarReadScheduleList] = useState([]),  //readScheduleList를 저장하기 위한 배열
+          [clear, setClear] = useState(false);
+
+
+    // 1초 후 readScehdulList를 불러옴
+    var timer = setTimeout(function() { 
+      if(readScheduleList.length !== 0 && clear === false) {
+        setCalendarReadScheduleList(readScheduleList);
+        setClear(true);
+        clearTimeout(timer);
+      }
+    }, 1000);
 
     //처음 로드했을 때 날짜와 스케쥴을 불러옴..
     useEffect(() => {
@@ -84,11 +97,11 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
             var array2 = [];
             var i = 0;
 
-            for(i=0;i<readScheduleList.length;i++) {
+            for(i=0;i<calendaerReadScheduleList.length;i++) {
                 var writer = '';
 
                 for(var index3=0;index3<teamMate.length;index3++) {
-                    if(readScheduleList[i].writer === teamMate[index3].user) {
+                    if(calendaerReadScheduleList[i].writer === teamMate[index3].user) {
                         writer = teamMate[index3].name;
                     }
                 }
@@ -97,7 +110,7 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
                     writer = leader;
                 }
 
-                array2.push({key: i, title: readScheduleList[i].title, writer: writer, writeDate: readScheduleList[i].date.substring(0, 10), contents: readScheduleList[i].contents});
+                array2.push({key: i, title: calendaerReadScheduleList[i].title, writer: writer, writeDate: calendaerReadScheduleList[i].date.substring(0, 10), contents: calendaerReadScheduleList[i].contents});
             }
 
             setScheduleLists(array2);
@@ -105,17 +118,17 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
             var array3 = [];
 
             var i = 0;
-            for(i=0;i<readScheduleList.length;i++) {
+            for(i=0;i<calendaerReadScheduleList.length;i++) {
 
-                var SYear = readScheduleList[i].startDate.substring(0, 4);
-                var SMonth = readScheduleList[i].startDate.substring(5, 7);
-                var SDay = readScheduleList[i].startDate.substring(8, 10);
+                var SYear = calendaerReadScheduleList[i].startDate.substring(0, 4);
+                var SMonth = calendaerReadScheduleList[i].startDate.substring(5, 7);
+                var SDay = calendaerReadScheduleList[i].startDate.substring(8, 10);
 
-                var EYear = readScheduleList[i].endDate.substring(0, 4);
-                var EMonth = readScheduleList[i].endDate.substring(5, 7);
-                var EDay = readScheduleList[i].endDate.substring(8, 10);
+                var EYear = calendaerReadScheduleList[i].endDate.substring(0, 4);
+                var EMonth = calendaerReadScheduleList[i].endDate.substring(5, 7);
+                var EDay = calendaerReadScheduleList[i].endDate.substring(8, 10);
 
-                array3.push({key: i, startDay: new Date(SYear, SMonth - 1, SDay), endDay: new Date(EYear, EMonth - 1, EDay), color: readScheduleList[i].color});
+                array3.push({key: i, startDay: new Date(SYear, SMonth - 1, SDay), endDay: new Date(EYear, EMonth - 1, EDay), color: calendaerReadScheduleList[i].color});
             }
 
             setCalendarLists(array3);
@@ -278,6 +291,23 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
         setEndMonth('');
         setEndDay('');
 
+        var year = String(today.getFullYear());
+        var month = today.getMonth() + 1 < 10 ? '0'+ today.getMonth() + 1 : String(today.getMonth());
+        var day = today.getDate()<10 ? '0' + today.getDate() : String(today.getDate())
+
+        setContents("");
+        setWriter(leader);
+        setWriteDate(year+"-"+month+"-"+day);
+
+        var memberArray = [];
+        for(var i=0;i<teamMate.length;i++) {
+        memberArray.push({key: i+2, name: teamMate[i].name, check: false});
+        }
+
+        memberArray.unshift({key: 1, name: leader, check: false});
+
+        setTeamMember(memberArray);
+
         setScheduleVisible(true);
     }
 
@@ -331,51 +361,12 @@ const RoadMap = ({ menubar, leader, teamMate, team, nickname, accessToken, readS
     }
 
     //Save schedule update
-    // useEffect(() => {
-    //     if(saveSchedule !== -1) {
-    //         scheduleLists.unshift({key: 0, title: saveTitle});
-
-    //         for(var i =0;i<scheduleLists.length;i++) {
-    //             scheduleLists.splice(i,1,{key:i, title: scheduleLists[i].title});
-    //         }
-
-    //         var SYear = saveStart.substring(0,4);
-    //         var SMonth = saveStart.substring(5,7);
-    //         var SDay = saveStart.substring(8,10);
-
-    //         var EYear = saveEnd.substring(0,4);
-    //         var EMonth = saveEnd.substring(5,7);
-    //         var EDay = saveEnd.substring(8,10);
-
-    //         var monthLength=0;
-    //         var startValue, endValue;
-
-    //         for(var index=0;index<7;index++) {
-    //             for(var index2=0;index2<dayLists[index].day.length;index2++) {
-    //                 if(parseInt(SYear) === dayLists[index].year && parseInt(SMonth) === dayLists[index].month && parseInt(SDay) === dayLists[index].day[index2].day){
-    //                     startValue = monthLength+index2;
-    //                 }
-    //                 if(parseInt(EYear) === dayLists[index].year && parseInt(EMonth) === dayLists[index].month && parseInt(EDay) === dayLists[index].day[index2].day){
-    //                     endValue = monthLength+index2;
-    //                 }
-    //             }
-    //             monthLength = monthLength + dayLists[index].day.length;
-    //         }
-
-    //         calendarLists.unshift({key: 0, startDay: new Date(SYear, SMonth-1, SDay), endDay: new Date(EYear, EMonth-1, EDay), start: startValue, end: endValue-startValue, color: saveColor});
-
-    //         for(var i=0;i<calendarLists.length;i++) {
-    //             calendarLists.splice(i,1, {key: i, startDay: calendarLists[i].startDay, endDay: calendarLists[i].endDay, start: calendarLists[i].start, end: calendarLists[i].end, color: calendarLists[i].color});
-    //         }
+    useEffect(() => {
+        if(saveSchedule !== -1) {
             
-    //         setSaveTitle('');
-    //         setSaveColor('');
-    //         setSaveStart('');
-    //         setSaveEnd('');
-
-    //         setSaveSchedule(-1);
-    //     }
-    // }, [saveSchedule])
+            setSaveSchedule(-1);
+        }
+    }, [saveSchedule])
 
     //Date Change
     
